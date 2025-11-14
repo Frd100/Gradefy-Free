@@ -8,7 +8,7 @@ import SwiftUI
 
 // ✅ MODIFIÉ : PaywallView n'est plus nécessaire - Application entièrement gratuite
 struct PaywallView: View {
-    let premiumManager: PremiumManager
+    let featureManager: FeatureManager
     @State private var showingPremiumView = false
 
     var body: some View {
@@ -20,6 +20,6 @@ struct PaywallView: View {
 // MARK: - Preview
 
 #Preview {
-    PaywallView(premiumManager: PremiumManager.shared)
+    PaywallView(featureManager: FeatureManager.shared)
         .padding()
 }

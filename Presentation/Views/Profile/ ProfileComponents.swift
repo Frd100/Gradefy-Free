@@ -1,5 +1,5 @@
 //
-//  ProfileComponents.swift
+//   ProfileComponents.swift
 // PARALLAX
 //
 // Created by  on 6/28/25.
@@ -65,10 +65,10 @@ struct DebugView: View {
 
 // MARK: - Premium Feature Row
 
-struct PremiumFeatureRow: View {
-    let feature: PremiumFeature
+struct FeatureRow: View {
+    let feature: Feature
     let hasAccess: Bool
-    let premiumManager: PremiumManager
+    let featureManager: FeatureManager
 
     var body: some View {
         HStack {

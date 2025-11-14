@@ -1,5 +1,5 @@
 //
-// PremiumManager.swift
+// FeatureManager.swift
 // PARALLAX
 //
 // Created by  on 7/9/25.
@@ -15,7 +15,7 @@ enum SubscriptionStatus {
     case active, inactive, expired, trial, pending
 }
 
-enum PremiumFeature: String, CaseIterable {
+enum Feature: String, CaseIterable {
     case unlimitedFlashcardsPerDeck = "unlimited_flashcards_per_deck"
     case unlimitedDecks = "unlimited_decks" // ✅ AJOUTER cette ligne
     case customThemes = "custom_themes"
@@ -28,7 +28,7 @@ enum PremiumFeature: String, CaseIterable {
 enum QuotaOperation {
     case createDeck(currentCount: Int) // ✅ MODIFIÉ : Ajouter le paramètre count
     case createFlashcard(currentDeckCount: Int, context: NSManagedObjectContext)
-    case useFeature(PremiumFeature)
+    case useFeature(Feature)
 }
 
 enum QuotaResult {
@@ -39,23 +39,23 @@ enum QuotaResult {
 
 @MainActor
 @Observable
-final class PremiumManager {
-    static let shared = PremiumManager()
+final class FeatureManager {
+    static let shared = FeatureManager()
 
-    // MARK: - État premium avec setter intelligent
+    // MARK: - État avec accès complet (application entièrement gratuite)
 
-    private var _isPremium: Bool = false
+    private var _hasFullAccess: Bool = false
     private var _subscriptionStatus: SubscriptionStatus = .inactive
-    private var _features: Set<PremiumFeature> = []
+    private var _features: Set<Feature> = []
 
     // ✅ MODIFIÉ : Toujours retourner true - Application entièrement gratuite
-    var isPremium: Bool {
+    var hasFullAccess: Bool {
         get { true } // Toujours gratuit
         set {
             // Ne rien faire - l'application est toujours gratuite
-            _isPremium = true
+            _hasFullAccess = true
             _subscriptionStatus = .active
-            _features = Set(PremiumFeature.allCases)
+            _features = Set(Feature.allCases)
 
             // Synchronisation App Group
             syncToAppGroup(true)
@@ -66,7 +66,7 @@ final class PremiumManager {
     }
 
     var subscriptionStatus: SubscriptionStatus { _subscriptionStatus }
-    var features: Set<PremiumFeature> { _features }
+    var features: Set<Feature> { _features }
 
     // MARK: - Validation avec circuit breaker amélioré
 
@@ -100,10 +100,10 @@ final class PremiumManager {
     private let notificationDebounce: TimeInterval = 1.0
 
     private init() {
-        loadPremiumStatus()
+        loadFullAccessStatus()
     }
 
-    // MARK: - Méthodes de limitation Premium
+    // MARK: - Méthodes de limitation (toujours illimitées - application gratuite)
 
     // Compter le total de flashcards
     private func getTotalFlashcardCount(context: NSManagedObjectContext) -> Int {
@@ -236,17 +236,17 @@ final class PremiumManager {
 
     // MARK: - Méthodes Publiques
 
-    func hasAccess(to _: PremiumFeature) -> Bool {
+    func hasAccess(to _: Feature) -> Bool {
         return true // Toujours autorisé - toutes les fonctionnalités sont gratuites
     }
 
     // ✅ MODIFIÉ : Méthodes conservées pour compatibilité mais toujours actives - Application entièrement gratuite
-    func activatePremium() {
-        isPremium = true // Toujours actif - Application entièrement gratuite
+    func activateFullAccess() {
+        hasFullAccess = true // Toujours actif - Application entièrement gratuite
         print("🌟 Accès illimité activé")
     }
 
-    func deactivatePremium() {
+    func deactivateFullAccess() {
         // Ne fait rien - Application toujours gratuite
         print("ℹ️ Tentative de désactivation ignorée - Application entièrement gratuite")
     }
@@ -261,9 +261,9 @@ final class PremiumManager {
             return
         }
 
-        // ✅ PROTECTION : Si premium vient d'être désactivé manuellement, attendre
-        if !isPremium, now.timeIntervalSince(lastValidationAttempt) < 5.0 {
-            print("🐛 Validation ignorée - premium récemment désactivé manuellement")
+        // ✅ PROTECTION : Si accès vient d'être désactivé manuellement, attendre
+        if !hasFullAccess, now.timeIntervalSince(lastValidationAttempt) < 5.0 {
+            print("🐛 Validation ignorée - accès récemment désactivé manuellement")
             return
         }
 
@@ -298,11 +298,11 @@ final class PremiumManager {
 
     // MARK: - Méthodes Privées
 
-    private func loadPremiumStatus() {
-        // ✅ MODIFIÉ : Toujours activer premium - Application entièrement gratuite
-        _isPremium = true
+    private func loadFullAccessStatus() {
+        // ✅ MODIFIÉ : Toujours activer accès complet - Application entièrement gratuite
+        _hasFullAccess = true
         _subscriptionStatus = .active
-        _features = Set(PremiumFeature.allCases)
+        _features = Set(Feature.allCases)
     }
 
     // ✅ CORRECTION : Gestion d'erreur 509 robuste
@@ -324,8 +324,8 @@ final class PremiumManager {
         }
 
         // ✅ CORRECTION : Utilisation du setter intelligent pour éviter boucle
-        if hasValidEntitlement != isPremium {
-            isPremium = hasValidEntitlement
+        if hasValidEntitlement != hasFullAccess {
+            hasFullAccess = hasValidEntitlement
             if hasValidEntitlement {
                 validationAttempts = 0 // Reset sur succès
             }
@@ -342,9 +342,9 @@ final class PremiumManager {
     }
 
     // ✅ CORRECTION : Synchronisation App Group avec gestion d'erreur
-    private func syncToAppGroup(_ isPremium: Bool) {
+    private func syncToAppGroup(_ hasFullAccess: Bool) {
         let appGroupDefaults = UserDefaults(suiteName: "group.com.Coefficient.PARALLAX2")
-        appGroupDefaults?.set(isPremium, forKey: "isPremium")
+        appGroupDefaults?.set(hasFullAccess, forKey: "hasFullAccess")
         appGroupDefaults?.synchronize()
 
         // ✅ MODIFIÉ : Toujours synchroniser - Application entièrement gratuite
@@ -362,21 +362,21 @@ final class PremiumManager {
     // MARK: - Méthodes Debug
 
     #if DEBUG
-        func enableDebugPremium() {
+        func enableDebugFullAccess() {
             // ✅ MODIFIÉ : Toujours actif - Application entièrement gratuite
             debugOverride = true
-            isPremium = true
+            hasFullAccess = true
             print("🐛 DEBUG: Accès illimité activé - widgets mis à jour")
         }
 
-        func disableDebugPremium() {
+        func disableDebugFullAccess() {
             // ✅ MODIFIÉ : Ne fait rien - Application toujours gratuite
             debugOverride = false
             print("🐛 DEBUG: Tentative de désactivation ignorée - Application entièrement gratuite")
         }
     #endif
 
-    func getFeatureDescription(for feature: PremiumFeature) -> String {
+    func getFeatureDescription(for feature: Feature) -> String {
         switch feature {
         case .unlimitedFlashcardsPerDeck:
             return String(localized: "premium_feature_unlimited_flashcards")
@@ -397,7 +397,7 @@ final class PremiumManager {
 }
 
 extension Notification.Name {
-    static let premiumStatusChanged = Notification.Name("premiumStatusChanged")
+    static let fullAccessStatusChanged = Notification.Name("fullAccessStatusChanged")
 }
 
 enum StoreKitError: LocalizedError {

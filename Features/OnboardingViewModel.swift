@@ -365,11 +365,16 @@ class OnboardingViewModel: ObservableObject {
                     do {
                         print("💾 [BACKGROUND] Création Period dans background context")
 
+                        // Capture des valeurs localement pour éviter les warnings d'isolation
+                        let periodName = await MainActor.run { self.userProfile.periodName }
+                        let periodStartDate = await MainActor.run { self.userProfile.periodStartDate }
+                        let periodEndDate = await MainActor.run { self.userProfile.periodEndDate }
+
                         let newPeriod = Period(context: backgroundContext)
                         newPeriod.id = UUID()
-                        newPeriod.name = self.userProfile.periodName
-                        newPeriod.startDate = self.userProfile.periodStartDate
-                        newPeriod.endDate = self.userProfile.periodEndDate
+                        newPeriod.name = periodName
+                        newPeriod.startDate = periodStartDate
+                        newPeriod.endDate = periodEndDate
                         newPeriod.createdAt = Date()
 
                         print("💾 [BACKGROUND] Période configurée: '\(newPeriod.name ?? "sans nom")'")
@@ -520,14 +525,11 @@ struct AppleStyleOnboardingView: View {
     }
 
     var body: some View {
-        _ = print("👀 [AppleStyleOnboardingView] body appelé - viewID: \(viewID)")
-
-        return NavigationStack(path: $viewModel.path) {
+        NavigationStack(path: $viewModel.path) {
             viewForStep(.intro)
                 .navigationBarHidden(viewModel.currentStep == .intro || viewModel.currentStep == .welcome)
                 .navigationDestination(for: Int.self) { stepValue in
-                    _ = print("🧭 [AppleStyleOnboardingView] Navigation to step: \(stepValue)")
-                    return viewForStep(OnboardingStep(rawValue: stepValue) ?? .intro)
+                    viewForStep(OnboardingStep(rawValue: stepValue) ?? .intro)
                         .navigationTitle(OnboardingStep(rawValue: stepValue)?.title ?? "")
                         .navigationBarTitleDisplayMode(.large)
                         .navigationBarBackButtonHidden(true)
@@ -567,7 +569,6 @@ struct AppleStyleOnboardingView: View {
 
     @ViewBuilder
     private func viewForStep(_ step: OnboardingStep) -> some View {
-        _ = print("🔍 [AppleStyleOnboardingView] viewForStep appelé pour: \(step)")
         GeometryReader { geometry in
             ZStack {
                 Color(UIColor.systemBackground).ignoresSafeArea()
@@ -603,7 +604,6 @@ struct AppleStyleOnboardingView: View {
 
     @ViewBuilder
     private func currentStepContent(_ step: OnboardingStep) -> some View {
-        _ = print("🔍 [AppleStyleOnboardingView] currentStepContent pour: \(step)")
         switch step {
         case .intro:
             IntroView()

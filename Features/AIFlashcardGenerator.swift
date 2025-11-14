@@ -130,7 +130,14 @@ class AIFlashcardGenerator: ObservableObject {
 
     private func getModelPath() -> String {
         // Utiliser le même chemin que ModelManager
-        let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let appSupport: URL
+        do {
+            appSupport = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        } catch {
+            // En cas d'erreur, utiliser un chemin par défaut
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            appSupport = documentsPath
+        }
         let modelPath = appSupport.appendingPathComponent("Models").appendingPathComponent(modelName)
         return modelPath.path
     }
@@ -630,17 +637,17 @@ class AIFlashcardGenerator: ObservableObject {
         var depth = 0
         var startIndex: String.Index?
 
-        for i in sanitized.indices {
-            let ch = sanitized[i]
-            if ch == "{" {
+        for index in sanitized.indices {
+            let character = sanitized[index]
+            if character == "{" {
                 if depth == 0 {
-                    startIndex = i
+                    startIndex = index
                 }
                 depth += 1
-            } else if ch == "}" {
+            } else if character == "}" {
                 depth -= 1
                 if depth == 0, let start = startIndex {
-                    let jsonString = String(sanitized[start ... i])
+                    let jsonString = String(sanitized[start ... index])
 
                     // ✅ CRITIQUE - Vérifier que ce n'est pas le JSON d'exemple
                     if !jsonString.contains("\"question\":\"...\""), !jsonString.contains("\"answer\":\"...\"") {
@@ -783,9 +790,9 @@ class AIFlashcardGenerator: ObservableObject {
 
             let minCount = min(questionMatches.count, answerMatches.count)
 
-            for i in 0 ..< minCount {
-                if let questionRange = Range(questionMatches[i].range(at: 1), in: text),
-                   let answerRange = Range(answerMatches[i].range(at: 1), in: text)
+            for matchIndex in 0 ..< minCount {
+                if let questionRange = Range(questionMatches[matchIndex].range(at: 1), in: text),
+                   let answerRange = Range(answerMatches[matchIndex].range(at: 1), in: text)
                 {
                     let question = String(text[questionRange])
                     let answer = String(text[answerRange])

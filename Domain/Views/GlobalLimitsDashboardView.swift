@@ -4,15 +4,15 @@ import SwiftUI
 struct GlobalLimitsDashboardView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var refreshTrigger = UUID() // ✅ NOUVEAU : Trigger pour forcer les mises à jour
 
     private var flashcardInfo: (current: Int, max: Int, remaining: Int) {
-        premiumManager.getTotalFlashcardInfo(context: viewContext)
+        featureManager.getTotalFlashcardInfo(context: viewContext)
     }
 
     private var mediaInfo: (current: Int, max: Int, remaining: Int) {
-        premiumManager.getTotalMediaInfo(context: viewContext)
+        featureManager.getTotalMediaInfo(context: viewContext)
     }
 
     private var flashcardProgress: Double {

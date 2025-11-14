@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DeckLimitsWidget: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
 
     // ✅ NOUVEAU : Paramètre deck pour calculer les vraies statistiques
     let deck: FlashcardDeck?
@@ -19,7 +19,7 @@ struct DeckLimitsWidget: View {
         }
 
         let currentCount = (deck.flashcards as? Set<Flashcard>)?.count ?? 0
-        let maxCount = premiumManager.maxFlashcardsPerDeckProperty
+        let maxCount = featureManager.maxFlashcardsPerDeckProperty
         let remaining = max(0, maxCount - currentCount)
 
         return (current: currentCount, max: maxCount, remaining: remaining)
@@ -28,7 +28,7 @@ struct DeckLimitsWidget: View {
     private var deckMediaInfo: (current: Int, max: Int, remaining: Int) {
         guard let deck = deck else {
             // Fallback si pas de deck fourni
-            return (current: 0, max: premiumManager.maxMediaPerDeckProperty, remaining: premiumManager.maxMediaPerDeckProperty)
+            return (current: 0, max: featureManager.maxMediaPerDeckProperty, remaining: featureManager.maxMediaPerDeckProperty)
         }
 
         let flashcards = (deck.flashcards as? Set<Flashcard>) ?? []
@@ -41,7 +41,7 @@ struct DeckLimitsWidget: View {
             if flashcard.answerContentType != .text { mediaCount += 1 }
         }
 
-        let maxMedia = premiumManager.maxMediaPerDeckProperty // Utiliser la vraie limite
+        let maxMedia = featureManager.maxMediaPerDeckProperty // Utiliser la vraie limite
         let remaining = max(0, maxMedia - mediaCount)
 
         return (current: mediaCount, max: maxMedia, remaining: remaining)

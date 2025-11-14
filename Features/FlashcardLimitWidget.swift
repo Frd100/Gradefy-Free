@@ -17,7 +17,7 @@ import SwiftUI
 
 struct UnifiedLimitWidget: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var refreshTrigger = UUID() // ✅ NOUVEAU : Trigger pour forcer les mises à jour
 
     var body: some View {
@@ -34,7 +34,7 @@ struct UnifiedLimitWidget: View {
 
             // Section Flashcards
             VStack(alignment: .leading, spacing: 6) {
-                let flashcardInfo = premiumManager.getTotalFlashcardInfo(context: viewContext)
+                let flashcardInfo = featureManager.getTotalFlashcardInfo(context: viewContext)
 
                 HStack {
                     Image(systemName: "rectangle.stack")
@@ -57,7 +57,7 @@ struct UnifiedLimitWidget: View {
 
             // Section Médias
             VStack(alignment: .leading, spacing: 6) {
-                let mediaInfo = premiumManager.getTotalMediaInfo(context: viewContext)
+                let mediaInfo = featureManager.getTotalMediaInfo(context: viewContext)
 
                 HStack {
                     Image(systemName: "photo.on.rectangle.angled")
@@ -143,11 +143,11 @@ typealias FlashcardLimitWidget = UnifiedLimitWidget
 
 struct DeckLimitWidget: View {
     let currentDeckCount: Int
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            let deckInfo = premiumManager.getDeckFlashcardInfo(currentDeckCount: currentDeckCount)
+            let deckInfo = featureManager.getDeckFlashcardInfo(currentDeckCount: currentDeckCount)
 
             HStack {
                 Image(systemName: "folder.fill")

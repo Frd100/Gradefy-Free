@@ -29,7 +29,7 @@ struct ProfileView: View {
     @AppStorage("enableHaptics") private var enableHaptics: Bool = true
     @AppStorage("darkModeEnabled") private var darkModeEnabled: Bool = false
     @AppStorage("GradingSystem") private var selectedGradingSystem: String = "france"
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
 
     // MARK: - State Variables
 
@@ -104,7 +104,9 @@ struct ProfileView: View {
         switch destination {
         case .editProfile:
             EditProfileView()
-        // ✅ MODIFIÉ : Cas premium supprimé - Application entièrement gratuite
+        case .premium:
+            // ✅ MODIFIÉ : Plus de vue premium - Application entièrement gratuite
+            EmptyView()
         case .debug:
             DebugView()
         case .about:
@@ -203,7 +205,7 @@ extension ProfileView {
                     Spacer()
 
                     // Badge conditionnel pour les utilisateurs premium
-                    if premiumManager.isPremium {
+                    if featureManager.hasFullAccess {
                         Text(String(localized: "premium_active_badge"))
                             .font(.caption.weight(.bold))
                             .foregroundColor(.white)

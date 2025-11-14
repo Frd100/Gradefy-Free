@@ -246,8 +246,8 @@ class DataImportExportManager: ObservableObject {
     private func processMediaChunk(files: [URL], targetDir: URL, chunkSize: Int, fileType: String) async throws -> Int {
         var processedCount = 0
 
-        for i in stride(from: 0, to: files.count, by: chunkSize) {
-            let chunk = Array(files[i ..< min(i + chunkSize, files.count)])
+        for startIndex in stride(from: 0, to: files.count, by: chunkSize) {
+            let chunk = Array(files[startIndex ..< min(startIndex + chunkSize, files.count)])
 
             // Traiter le chunk
             for file in chunk {
@@ -267,7 +267,7 @@ class DataImportExportManager: ObservableObject {
 
             // ✅ Libérer la mémoire entre les chunks
             try await Task.sleep(nanoseconds: 100_000_000) // 100ms
-            print("📁 [IMPORT] Chunk \(i / chunkSize + 1) traité (\(chunk.count) fichiers)")
+            print("📁 [IMPORT] Chunk \(startIndex / chunkSize + 1) traité (\(chunk.count) fichiers)")
         }
 
         return processedCount
@@ -573,7 +573,7 @@ class DataImportExportManager: ObservableObject {
         let flashcardsRequest: NSFetchRequest<Flashcard> = Flashcard.fetchRequest()
         let flashcards = try context.fetch(flashcardsRequest)
 
-        let mediaStorage = MediaStorageManager.shared
+        _ = MediaStorageManager.shared
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let sourceMediaDir = documentsPath.appendingPathComponent("GradefyMedia")
 
@@ -682,7 +682,12 @@ class DataImportExportManager: ObservableObject {
         let zipURL = directory.appendingPathExtension("zip")
 
         // Créer le ZIP avec le contenu du dossier, pas le dossier lui-même
-        let archive = Archive(url: zipURL, accessMode: .create)!
+        let archive: Archive
+        do {
+            archive = try Archive(url: zipURL, accessMode: .create)
+        } catch {
+            throw ImportExportError.exportFailed("Impossible de créer l'archive ZIP: \(error.localizedDescription)")
+        }
 
         // Ajouter data.json
         let jsonURL = directory.appendingPathComponent("data.json")

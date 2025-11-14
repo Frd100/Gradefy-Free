@@ -15,7 +15,7 @@ import WidgetKit
 
 struct AppIconSelectionView: View {
     @StateObject private var iconManager = AppIconManager.shared
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var showingPremiumView = false
     @Environment(\.colorScheme) private var colorScheme
 
@@ -30,28 +30,28 @@ struct AppIconSelectionView: View {
                 displayName: String(localized: "icon_default"),
                 color: .blue,
                 previewImageName: "AppIconPreview",
-                isPremium: false
+                hasFullAccess: false
             ),
             AppIconDisplayItem(
                 name: "AppIconDark",
                 displayName: String(localized: "icon_dark"),
                 color: .black,
                 previewImageName: "iconDarkPreview",
-                isPremium: true
+                hasFullAccess: true
             ),
             AppIconDisplayItem(
                 name: "AppIconColorful",
                 displayName: String(localized: "icon_colorful"),
                 color: .purple,
                 previewImageName: "iconColorfulPreview",
-                isPremium: true
+                hasFullAccess: true
             ),
             AppIconDisplayItem(
                 name: "AppIconMinimal",
                 displayName: String(localized: "icon_minimal"),
                 color: .gray,
                 previewImageName: "iconMinimalPreview",
-                isPremium: true
+                hasFullAccess: true
             ),
         ]
     }
@@ -121,7 +121,7 @@ struct AppIconSelectionView: View {
                     icon: icon,
                     isSelected: iconManager.currentIcon == icon.name,
                     isChanging: iconManager.isChanging && iconManager.currentIcon == icon.name,
-                    isPremium: true // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
+                    hasFullAccess: true // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
                 ) {
                     selectIcon(icon)
                 }
@@ -143,7 +143,7 @@ struct AppIconRow: View {
     let icon: AppIconDisplayItem
     let isSelected: Bool
     let isChanging: Bool
-    let isPremium: Bool
+    let hasFullAccess: Bool
     let action: () -> Void
 
     var body: some View {
@@ -191,7 +191,7 @@ struct AppIconRow: View {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.title3)
                             .foregroundColor(.blue)
-                    } else if icon.isPremium && !isPremium {
+                    } else if icon.hasFullAccess && !hasFullAccess {
                         // 🔒 CADENAS DORÉ aligné
                         Image(systemName: "lock.fill")
                             .font(.title3) // ✅ MÊME TAILLE QUE LE CHECKMARK
@@ -222,7 +222,7 @@ struct AppIconDisplayItem: Identifiable {
     let displayName: String
     let color: Color
     let previewImageName: String
-    let isPremium: Bool
+    let hasFullAccess: Bool
 }
 
 // MARK: - App Icon Manager

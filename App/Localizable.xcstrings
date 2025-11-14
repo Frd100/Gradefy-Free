@@ -4,13 +4,7 @@
     "" : {
 
     },
-    " Gradefy Pro" : {
-
-    },
     "--" : {
-
-    },
-    "." : {
 
     },
     "(%lld/%lld)" : {
@@ -66,9 +60,6 @@
 
     },
     "%lld/4" : {
-
-    },
-    "•" : {
 
     },
     "about_app_name" : {
@@ -2249,9 +2240,6 @@
         }
       }
     },
-    "Bientôt limité" : {
-
-    },
     "card_add_title" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3180,9 +3168,6 @@
         }
       }
     },
-    "Découvrir" : {
-
-    },
     "Delete audio" : {
 
     },
@@ -3601,9 +3586,6 @@
       }
     },
     "en retard" : {
-
-    },
-    "En savoir plus sur Gradefy Pro" : {
 
     },
     "Enregistrer un audio" : {
@@ -5138,9 +5120,6 @@
     "Générer 30 cartes de test" : {
 
     },
-    "Gradefy Pro" : {
-
-    },
     "Gradefy Pro vous permet d'importer toutes les cartes selon vos limites globales." : {
 
     },
@@ -6342,18 +6321,6 @@
         }
       }
     },
-    "LIMITE ATTEINTE" : {
-
-    },
-    "Limite de 300 cartes atteinte. Importez jusqu'à 2000 cartes avec Gradefy Pro." : {
-
-    },
-    "Limite de 2000 cartes atteinte. Vous ne pouvez plus importer de cartes." : {
-
-    },
-    "Limite de listes atteinte. Créez des listes illimitées avec Gradefy Pro." : {
-
-    },
     "Limites d'utilisation" : {
 
     },
@@ -7270,6 +7237,7 @@
       }
     },
     "premium_add_unlimited" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7328,6 +7296,7 @@
       }
     },
     "premium_close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7356,6 +7325,7 @@
       }
     },
     "premium_create_50_plus" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7384,6 +7354,7 @@
       }
     },
     "premium_deck_limit_reached" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7410,30 +7381,6 @@
           }
         }
       }
-    },
-    "premium_error" : {
-
-    },
-    "premium_error_connection" : {
-
-    },
-    "premium_error_load_products" : {
-
-    },
-    "premium_error_no_account" : {
-
-    },
-    "premium_error_no_restore" : {
-
-    },
-    "premium_error_payment_pending" : {
-
-    },
-    "premium_error_purchase" : {
-
-    },
-    "premium_error_restore_failed" : {
-
     },
     "premium_feature_advanced_stats" : {
       "localizations" : {
@@ -7464,6 +7411,7 @@
       }
     },
     "premium_feature_backup_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7492,6 +7440,7 @@
       }
     },
     "premium_feature_backup_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7576,6 +7525,7 @@
       }
     },
     "premium_feature_icons_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7604,6 +7554,7 @@
       }
     },
     "premium_feature_icons_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7716,6 +7667,7 @@
       }
     },
     "premium_feature_unlimited_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7744,6 +7696,7 @@
       }
     },
     "premium_feature_unlimited_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7800,6 +7753,7 @@
       }
     },
     "premium_feature_widgets_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7828,6 +7782,7 @@
       }
     },
     "premium_feature_widgets_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7856,6 +7811,7 @@
       }
     },
     "premium_features_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7884,6 +7840,7 @@
       }
     },
     "premium_flashcard_limit_premium" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7912,6 +7869,7 @@
       }
     },
     "premium_flashcard_limit_reached" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7968,6 +7926,7 @@
       }
     },
     "premium_hero_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8054,10 +8013,8 @@
         }
       }
     },
-    "premium_ok" : {
-
-    },
     "premium_plan_monthly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8086,6 +8043,7 @@
       }
     },
     "premium_plan_yearly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8114,6 +8072,7 @@
       }
     },
     "premium_privacy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8142,6 +8101,7 @@
       }
     },
     "premium_restore_purchases" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8170,6 +8130,7 @@
       }
     },
     "premium_subscribe_monthly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8198,6 +8159,7 @@
       }
     },
     "premium_subscribe_yearly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8226,6 +8188,7 @@
       }
     },
     "premium_success_button" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8254,6 +8217,7 @@
       }
     },
     "premium_success_subtitle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8282,6 +8246,7 @@
       }
     },
     "premium_success_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8310,6 +8275,7 @@
       }
     },
     "premium_terms" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8367,6 +8333,7 @@
       }
     },
     "premium_unlimited_cards_title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8422,45 +8389,6 @@
           }
         }
       }
-    },
-    "price_loading" : {
-
-    },
-    "price_unavailable" : {
-
-    },
-    "privacy_contact_text" : {
-
-    },
-    "privacy_data_collection_text" : {
-
-    },
-    "privacy_data_collection_title" : {
-
-    },
-    "privacy_effective_date" : {
-
-    },
-    "privacy_intro" : {
-
-    },
-    "privacy_nav_title" : {
-
-    },
-    "privacy_rights_text" : {
-
-    },
-    "privacy_rights_title" : {
-
-    },
-    "privacy_storage_text" : {
-
-    },
-    "privacy_storage_title" : {
-
-    },
-    "privacy_title" : {
-
     },
     "profile_edit_title" : {
       "localizations" : {
@@ -10356,45 +10284,6 @@
     "Terminé" : {
 
     },
-    "terms_contact_text" : {
-
-    },
-    "terms_contact_title" : {
-
-    },
-    "terms_effective_date" : {
-
-    },
-    "terms_intro" : {
-
-    },
-    "terms_last_updated" : {
-
-    },
-    "terms_modifications_text" : {
-
-    },
-    "terms_modifications_title" : {
-
-    },
-    "terms_nav_title" : {
-
-    },
-    "terms_subscription_text" : {
-
-    },
-    "terms_subscription_title" : {
-
-    },
-    "terms_title" : {
-
-    },
-    "terms_usage_text" : {
-
-    },
-    "terms_usage_title" : {
-
-    },
     "Testez vos connaissances de manière ludique" : {
 
     },
@@ -10506,12 +10395,6 @@
           }
         }
       }
-    },
-    "Vous pouvez importer %lld cartes (limite 2000)." : {
-
-    },
-    "Vous pouvez importer %lld cartes. Importez jusqu'à 2000 cartes avec Gradefy Pro." : {
-
     },
     "welcome_features_title" : {
       "localizations" : {

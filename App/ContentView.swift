@@ -224,7 +224,7 @@ struct ContentView: View {
         [Color(hex: "DBC7F9"), Color(hex: "C6A8EF")],
         [Color(hex: "F8C79B"), Color(hex: "F5A26A")],
     ]
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     // ✅ MODIFIÉ : Supprimé - Plus de popover de limite - Application entièrement gratuite
     @State private var navigationUpdateTimer: Timer?
     @State private var cachedRelevantDecks: [FlashcardDeck] = []

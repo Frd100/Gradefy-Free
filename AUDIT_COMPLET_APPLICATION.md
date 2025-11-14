@@ -1,8 +1,9 @@
 # Audit Complet de l'Application PARALLAX (Gradefy)
 
-**Date de l'audit** : 2025-01-27  
+**Date de l'audit** : 2025-11-14  
 **Version de l'application** : 1.0 (Build 1)  
-**Bundle Identifier** : `Coefficient.Gradefy`
+**Bundle Identifier** : `Coefficient.Gradefy`  
+**Statut** : Application entièrement gratuite
 
 ---
 
@@ -55,16 +56,16 @@ Le projet contient **4 cibles** :
 
 ### Fichiers Swift
 
-- **Nombre total de fichiers Swift** : 98 fichiers
-- **Nombre total de lignes de code** : 43,173 lignes
-- **Fichiers avec imports** : 96 fichiers
+- **Nombre total de fichiers Swift** : 97 fichiers
+- **Nombre total de lignes de code** : 42,111 lignes
+- **Fichiers avec imports** : 95 fichiers
 - **Fichiers avec classes/structs/enums** : 89 fichiers
-- **Nombre total de déclarations** (func/var/let) : 6,557 déclarations
+- **Nombre total de déclarations** (func/var/let) : ~6,500 déclarations
 
 ### Répartition par Dossier
 
 - **App/** : Fichiers principaux de l'application (PARALLAXApp.swift, ContentView.swift)
-- **Features/** : Fonctionnalités métier (12 fichiers)
+- **Features/** : Fonctionnalités métier (11 fichiers)
 - **Revision/** : Système de révision SRS (18 fichiers)
 - **Domain/** : Entités et logique métier (7 fichiers)
 - **Data/** : Persistance et cache (11 fichiers)
@@ -114,7 +115,7 @@ L'application suit une architecture **MVVM (Model-View-ViewModel)** avec SwiftUI
 
 - **Modèle** : Core Data (entités : Subject, Evaluation, Flashcard, FlashcardDeck, Period, UserConfiguration)
 - **Vue** : SwiftUI Views dans `Presentation/` et `App/`
-- **ViewModel** : Classes `@Observable` et `@StateObject` (ex: `PremiumManager`, `OnboardingViewModel`)
+- **ViewModel** : Classes `@Observable` et `@StateObject` (ex: `FeatureManager`, `OnboardingViewModel`)
 
 ### Organisation des Dossiers
 
@@ -125,9 +126,10 @@ PARALLAX/
 │   ├── ContentView.swift   # Vue principale
 │   └── Core/               # Utilitaires core
 ├── Features/               # Fonctionnalités métier
-│   ├── PremiumManager.swift
+│   ├── FeatureManager.swift
 │   ├── AIFlashcardGenerator.swift
 │   ├── ModelManager.swift
+│   ├── DebugAccessButton.swift
 │   └── ...
 ├── Revision/               # Système SRS (Spaced Repetition)
 │   ├── SimpleSRSManager.swift
@@ -148,7 +150,7 @@ PARALLAX/
 
 ### Patterns de Conception Identifiés
 
-1. **Singleton** : `PersistenceController.shared`, `PremiumManager.shared`, `SimpleSRSManager.shared`, `AIFlashcardGenerator.shared`, `GradefyCacheManager.shared`, `MediaStorageManager.shared`, `AudioManager.shared`, `HapticFeedbackManager.shared`, `ModelManager.shared`, `DeckSharingManager.shared`, `StoreKitHelper.shared`, `ConfigurationManager`, `WidgetDataManager.shared`
+1. **Singleton** : `PersistenceController.shared`, `FeatureManager.shared`, `SimpleSRSManager.shared`, `AIFlashcardGenerator.shared`, `GradefyCacheManager.shared`, `MediaStorageManager.shared`, `AudioManager.shared`, `HapticFeedbackManager.shared`, `ModelManager.shared`, `DeckSharingManager.shared`, `StoreKitHelper.shared`, `ConfigurationManager`, `WidgetDataManager.shared`
 2. **Observable** : Utilisation de `@Observable` (iOS 17+) et `@Published` pour la réactivité
    - **@Observable** : 443 occurrences dans 40 fichiers
    - **@Published** : Utilisé dans les ViewModels et Managers
@@ -271,9 +273,9 @@ PARALLAX/
 - **Compression images** : Qualité adaptative selon usage (thumbnail, flashcard)
 
 **Limites** :
-- **Gratuit** : 50 médias totaux, 200 par deck
-- **Premium** : 200 médias totaux, 200 par deck
-- **Durée audio max** : 30 secondes (arrêt automatique)
+- **Toutes les limites supprimées** : Application entièrement gratuite
+- **Médias** : Illimités (Int.max)
+- **Durée audio max** : 30 secondes (arrêt automatique, conservée pour UX)
 - **Taille fichier max** : 500MB pour import
 
 **Gestion** :
@@ -333,85 +335,47 @@ PARALLAX/
 
 **Fonctionnalités** :
 - Synchronisation avec App Group
-- Verrouillage premium
+- Tous les widgets accessibles (verrouillage premium supprimé)
 - Mise à jour automatique via WidgetKit
 
 ---
 
 ## Business Model
 
-### Modèle Freemium
+### Modèle : Application Entièrement Gratuite
 
-**Abonnement Premium** : "Gradefy Pro"
+L'application est entièrement gratuite. Toutes les fonctionnalités sont accessibles sans limitation.
 
-**Produits StoreKit** :
-1. **Gradefy Pro Monthly** (`com.gradefy.pro.monthly`)
-   - Prix : 2.99€/mois
-   - Période : Mensuelle (P1M)
-   - Partage familial : Non
-
-2. **Gradefy Pro Annual** (`com.gradefy.pro.annual`)
-   - Prix : 29.99€/an
-   - Période : Annuelle (P1Y)
-   - Partage familial : Non
-
-**Groupe d'abonnements** : "Gradefy Pro" (ID: BB924613)
-
-### Limites Gratuites vs Premium
+### Limites et Fonctionnalités
 
 #### Flashcards
 
-- **Gratuit** :
-  - 300 flashcards totales maximum
-  - 200 flashcards maximum par deck
-  - 3 decks maximum
+- **Flashcards** : Illimitées
+- **Decks** : Illimités
+- **Médias** : Illimités
+- **Widgets** : Tous accessibles
 
-- **Premium** :
-  - 2000 flashcards totales maximum
-  - 200 flashcards maximum par deck
-  - Decks illimités
+### Gestion des Fonctionnalités (FeatureManager)
 
-#### Médias
-
-- **Gratuit** : 50 médias totaux, 200 par deck
-- **Premium** : 200 médias totaux, 200 par deck
-
-#### Fonctionnalités Premium
-
-1. **unlimited_flashcards_per_deck** : Limite augmentée à 2000 totales
-2. **unlimited_decks** : Decks illimités
-3. **custom_themes** : Thèmes personnalisés
-4. **premium_widgets** : Widgets premium
-5. **advanced_stats** : Statistiques avancées
-6. **export_data** : Export de données
-7. **priority_support** : Support prioritaire
-
-### Gestion Premium
-
-**PremiumManager** :
-- Validation automatique via StoreKit 2
-- Circuit breaker avec exponential backoff
+**FeatureManager** :
+- `hasFullAccess` : Toujours `true`
+- Toutes les fonctionnalités activées par défaut
 - Synchronisation App Group pour widgets
-- Mode debug avec override (`debugOverride`)
-- Protection contre validation excessive
-- Notification `premiumStatusChanged` pour réactivité UI
-- Persistance dans UserDefaults
-- Statut de validation : `isValidating`, `lastValidation`
+- Notification `fullAccessStatusChanged` pour réactivité UI
+- Mode debug disponible (`debugOverride`)
 
 **StoreKitHelper** :
-- Chargement automatique des produits au démarrage
-- Écoute des transactions en arrière-plan
-- Throttling des vérifications (minimum 5 secondes entre vérifications)
-- Vérification de compte App Store actif
-- Gestion des erreurs spécifiques (noActiveAccount, paymentPending, etc.)
-- Synchronisation avec PremiumManager
+- Conservé pour compatibilité technique
+- Non utilisé activement dans le modèle gratuit
 
-**Validation** :
-- Vérification des entitlements StoreKit (`Transaction.currentEntitlements`)
-- Cooldown de 5 minutes entre validations
-- Maximum 3 tentatives avant circuit breaker
-- Reset automatique après succès
-- Vérification de révocation des transactions
+**Fonctionnalités disponibles** :
+1. **unlimited_flashcards_per_deck** : Activée (illimité)
+2. **unlimited_decks** : Activée (illimité)
+3. **custom_themes** : Activée
+4. **premium_widgets** : Activée (tous les widgets accessibles)
+5. **advanced_stats** : Activée
+6. **export_data** : Activée
+7. **priority_support** : Activée
 
 ---
 
@@ -647,35 +611,41 @@ PARALLAX/
 
 ### Points d'Attention
 
-1. **Logging excessif** : 1,651 occurrences de `print()` dans 49 fichiers
+1. **Logging excessif** : ~1,600 occurrences de `print()` dans 49 fichiers
    - Impact : Performance en production, taille de logs
    - Suggestion : Utiliser des niveaux de log conditionnels
    - Note : Beaucoup de logs sont structurés avec préfixes pour faciliter le debug
 
-2. **Marqueurs TODO/FIXME** : 7 occurrences identifiées (principalement dans tests et DataImportExportManager)
+2. **Marqueurs TODO/FIXME** : 4 occurrences identifiées (principalement dans tests et DataImportExportManager)
    - TODO compression audio dans DataImportExportManager
    - TODOs dans tests pour corrections API
    - Indique du code en cours de développement
 
 3. **Complexité** : Certains fichiers très volumineux
-   - `ContentView.swift` : 2,677 lignes (fichier principal de l'application)
-   - `DeckManagement.swift` : 3,890 lignes (gestion complète des decks)
-   - `SimpleSRSManager.swift` : 1,522 lignes (algorithme SM-2 complet)
-   - `DataImportExportManager.swift` : 1,727 lignes (import/export complet)
-   - `AIFlashcardGenerator.swift` : 979 lignes (génération IA)
-   - `OnboardingViewModel.swift` : 1,245 lignes (onboarding complet)
+   - `ContentView.swift` : ~2,600 lignes (fichier principal de l'application)
+   - `DeckManagement.swift` : ~3,800 lignes (gestion complète des decks)
+   - `SimpleSRSManager.swift` : ~1,500 lignes (algorithme SM-2 complet)
+   - `DataImportExportManager.swift` : 1,737 lignes (import/export complet)
+   - `AIFlashcardGenerator.swift` : 972 lignes (génération IA)
+   - `OnboardingViewModel.swift` : ~1,200 lignes (onboarding complet)
 
-4. **Dépendances MLX** : 3 fichiers utilisent MLX (AIFlashcardGenerator, ModelManager, configuration)
+4. **Qualité du code** :
+   - Variables nommées de manière descriptive (alpha, red, green, blue)
+   - Gestion d'erreurs sécurisée avec do-catch
+   - Headers de fichiers corrects
+   - Code conforme aux standards SwiftLint
+
+5. **Dépendances MLX** : 3 fichiers utilisent MLX (AIFlashcardGenerator, ModelManager, configuration)
    - Packages MLX chargés : 13 packages dans le projet
    - Réellement utilisés : MLX, MLXLLM, MLXLMCommon
    - Impact sur la taille de l'application : Modèle SmolLM3-3B-4bit (~100MB compressé)
 
-5. **UserDefaults et @AppStorage** : 231 occurrences dans 29 fichiers
+6. **UserDefaults et @AppStorage** : 231 occurrences dans 29 fichiers
    - Utilisation extensive pour préférences utilisateur
    - Synchronisation avec App Group pour widgets
    - Gestion de la période active via UserDefaults
 
-6. **NotificationCenter** : 89 occurrences dans 22 fichiers
+7. **NotificationCenter** : 89 occurrences dans 22 fichiers
    - Communication entre composants
    - Notifications pour changements de données, statut premium, etc.
 
@@ -801,17 +771,17 @@ PARALLAX/
 - `PARALLAXWidgetBundle.swift` : Bundle principal
 - `MainWidgets.swift` : Widgets principaux
 - `EvaluationDataManager.swift` : Gestion données évaluations
-- `WidgetPremiumHelper.swift` : Gestion premium
-- `WidgetLockedView.swift` : Vue verrouillée
+- `WidgetAccessHelper.swift` : Gestion d'accès
+- `WidgetLockedView.swift` : Vue verrouillée (non utilisée, tous les widgets accessibles)
 - `PARALLAXWidgetLiveActivity.swift` : Live Activity
 - `AppIntent.swift` : Intents App
 
 **Fonctionnalités** :
-- Widget de révision (cartes à réviser)
-- Widget de notes (moyennes)
-- Live Activity pour sessions
-- Synchronisation App Group
-- Verrouillage premium
+- Widget de révision (cartes à réviser) : Accessible à tous
+- Widget de notes (moyennes) : Accessible à tous
+- Live Activity pour sessions : Accessible à tous
+- Synchronisation App Group : Active
+- Verrouillage premium : Supprimé (tous les widgets accessibles)
 
 ### RevisionLiveActivityExtension
 
@@ -840,18 +810,15 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
 - **Cache disque** : Données critiques
   - Dossier : `Documents/GradefyCache/`
 
-### Gestion Premium
+### Gestion des Fonctionnalités
 
-- **Validation** : StoreKit 2 avec vérification serveur
-  - Vérification des entitlements
-  - Détection de révocation
-- **Circuit Breaker** : Protection contre validation excessive
-  - Maximum 3 tentatives
-  - Exponential backoff
-  - Cooldown de 5 minutes
+- **Statut** : Application entièrement gratuite
+  - `hasFullAccess` toujours à `true`
+  - Toutes les fonctionnalités activées
 - **Synchronisation** : App Group pour widgets
-  - Synchronisation automatique du statut premium
+  - Synchronisation automatique du statut d'accès
   - Mise à jour des widgets via WidgetCenter
+- **StoreKit** : Conservé pour compatibilité technique
 
 ### Données Sensibles
 
@@ -897,10 +864,10 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
    - Optimisations Core Data (batch, préchargement)
    - Debouncing et throttling pour éviter surcharge
 
-5. **Modèle économique clair** : Freemium avec limites bien définies
-   - 2 produits StoreKit (mensuel, annuel)
-   - 7 fonctionnalités premium distinctes
-   - Gestion robuste avec circuit breaker
+5. **Modèle économique** : Application entièrement gratuite
+   - Toutes les fonctionnalités accessibles sans limitation
+   - Aucun paywall ou restriction premium
+   - Code refactorisé pour refléter le statut gratuit
 
 6. **Gestion d'erreurs robuste** : 
    - 3 enums d'erreurs personnalisés (ImportExportError, DataError, PeriodError, StoreKitHelperError, AIGenerationError)
@@ -940,22 +907,23 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
 
 ### Métriques Clés
 
-- **Taille du code** : 43,173 lignes Swift (40,307 lignes sans tests)
-- **Fichiers** : 98 fichiers Swift
-- **Tests** : 15 fichiers, 7,135 lignes
-- **Dépendances externes** : 15 packages (13 MLX + 2 autres)
+- **Taille du code** : 42,111 lignes Swift (~35,000 lignes sans tests)
+- **Fichiers** : 97 fichiers Swift
+- **Tests** : 15 fichiers, ~7,000 lignes
+- **Dépendances externes** : 10 packages Swift (mlx-swift, Lottie, ZIPFoundation, etc.)
 - **Entités Core Data** : 6 entités (Subject, Evaluation, Flashcard, FlashcardDeck, Period, UserConfiguration)
 - **Systèmes de notation** : 5 systèmes (France, USA, Allemagne, Espagne, Canada)
 - **Modes de révision** : 4 modes (Swipe, Quiz, Association, Libre)
-- **Types définis** : 306 types (classes, structs, enums)
+- **Types définis** : ~300 types (classes, structs, enums)
 - **Extensions** : 75 extensions
-- **Déclarations** : 6,900 déclarations (func/var/let/class/struct/enum)
+- **Déclarations** : ~6,500 déclarations (func/var/let/class/struct/enum)
 - **Imports uniques** : 28 frameworks/packages différents
 - **Fichiers avec cache** : 33 fichiers utilisant NSCache
 - **Utilisation @AppStorage** : 231 occurrences dans 29 fichiers
 - **Notifications** : 89 occurrences de NotificationCenter dans 22 fichiers
 - **Fichiers avec MARK:** : 68 fichiers organisés
 - **Composants SwiftUI** : Nombreux composants réutilisables (AdaptiveLottieView, AdaptiveImage, etc.)
+- **Statut** : Application entièrement gratuite
 
 ---
 
@@ -979,7 +947,7 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
 - **NotificationCenter** : 89 occurrences dans 22 fichiers
 - **Notifications personnalisées** :
   - `dataDidChange` : Changements Core Data
-  - `premiumStatusChanged` : Changement statut premium
+  - `fullAccessStatusChanged` : Changement statut d'accès
   - `activePeriodChanged` : Changement période active
   - `OnboardingCompleted` : Complétion onboarding
   - `RestartOnboarding` : Redémarrage onboarding
@@ -1032,7 +1000,6 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
 
 - **Schemes supportés** : `parallax://`, `gradefy://`
 - **Routes** :
-  - `parallax://premium` : Ouverture PremiumView
   - `parallax://evaluations` : Navigation vers évaluations
   - `parallax://stats` : Navigation vers statistiques
   - `parallax://streak-stats` : Widget vers statistiques
@@ -1054,6 +1021,8 @@ Extension pour Live Activities de révision (non analysée en détail dans cet a
 - **Nettoyage automatique** : Cache assets vidé en cas d'alerte mémoire
 - **Préservation données critiques** : Sauvegarde avant nettoyage
 - **Cache adaptatif** : Limites selon capacité appareil (AdaptiveCacheConfiguration)
+
+---
 
 ---
 

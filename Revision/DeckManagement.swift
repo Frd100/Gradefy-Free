@@ -32,7 +32,7 @@ struct RevisionFlashcardView: View {
     @State private var selectedSubject: Subject?
     @State private var showingAddSubject: Bool = false
     @State private var selectedNavigationMode: NavigationMode = .subjects
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
 
     // ✅ BACKGROUND ADAPTATIF : F6F7FB seulement en mode clair
     private var adaptiveBackground: Color {
@@ -645,7 +645,7 @@ struct DeckStackView: View {
 struct RevisionDeckView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var showingAddDeck = false
     @State private var deckName: String = ""
     @State private var selectedDeckToEdit: FlashcardDeck?
@@ -1907,8 +1907,8 @@ struct EditFlashcardView: View {
                     let seconds = CMTimeGetSeconds(duration)
 
                     // ✅ NOUVEAU : Vérification de la durée audio avec alerte SwiftUI
-                    let premiumManager = PremiumManager.shared
-                    if !premiumManager.isValidAudioDuration(seconds) {
+                    let featureManager = FeatureManager.shared
+                    if !featureManager.isValidAudioDuration(seconds) {
                         await MainActor.run {
                             // Supprimer le fichier temporaire
                             try? FileManager.default.removeItem(at: destinationURL)
@@ -2118,7 +2118,7 @@ struct DeckDetailView: View {
     @State private var showAIGenerationSheet = false
 
     // ✅ AUTRES VARIABLES
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var isViewActive = true
     @State private var showShareSheet = false
     @State private var shareURL: URL?

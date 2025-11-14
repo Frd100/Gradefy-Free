@@ -15,7 +15,7 @@ struct ImportDeckView: View {
     let onImport: (ShareableDeck, Bool) -> Void
     let onCancel: () -> Void
 
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var showingPremiumView = false
     @State private var currentDeckCount: Int = 0
     @State private var currentFlashcardCount: Int = 0

@@ -458,8 +458,8 @@ struct CardFaceContentEditor: View {
                     let seconds = CMTimeGetSeconds(duration)
 
                     // ✅ NOUVEAU : Vérification de la durée audio avec alerte SwiftUI
-                    let premiumManager = PremiumManager.shared
-                    if !premiumManager.isValidAudioDuration(seconds) {
+                    let featureManager = FeatureManager.shared
+                    if !featureManager.isValidAudioDuration(seconds) {
                         await MainActor.run {
                             // Supprimer le fichier temporaire
                             try? FileManager.default.removeItem(at: destinationURL)

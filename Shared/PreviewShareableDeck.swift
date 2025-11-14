@@ -34,18 +34,18 @@ struct PreviewShareableDeck {
 
 struct ImportDeckPreviewView: View {
     let shareableDeck: PreviewShareableDeck
-    let isPremium: Bool
+    let hasFullAccess: Bool
     let onImport: (Bool) -> Void
     let onCancel: () -> Void
 
     // Note: Cette logique simplifiée ne prend pas en compte les limites globales
     // car c'est seulement une preview. La vraie logique est dans ImportDeckView
     private var canImportAll: Bool {
-        isPremium // Premium peut tout importer, gratuit sera limité par la logique globale
+        hasFullAccess // Premium peut tout importer, gratuit sera limité par la logique globale
     }
 
     private var hasMoreCards: Bool {
-        !isPremium && shareableDeck.metadata.totalCards > 100 // Seuil indicatif pour la preview
+        !hasFullAccess && shareableDeck.metadata.totalCards > 100 // Seuil indicatif pour la preview
     }
 
     var body: some View {
@@ -161,7 +161,7 @@ struct ImportDeckPreview_Previews: PreviewProvider {
                     ),
                     flashcards: []
                 ),
-                isPremium: true,
+                hasFullAccess: true,
                 onImport: { _ in },
                 onCancel: {}
             )
@@ -181,7 +181,7 @@ struct ImportDeckPreview_Previews: PreviewProvider {
                     ),
                     flashcards: []
                 ),
-                isPremium: false,
+                hasFullAccess: false,
                 onImport: { _ in },
                 onCancel: {}
             )
@@ -201,7 +201,7 @@ struct ImportDeckPreview_Previews: PreviewProvider {
                     ),
                     flashcards: []
                 ),
-                isPremium: false,
+                hasFullAccess: false,
                 onImport: { _ in },
                 onCancel: {}
             )

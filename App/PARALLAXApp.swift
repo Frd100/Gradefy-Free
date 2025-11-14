@@ -48,7 +48,7 @@ struct PARALLAXApp: App {
 
     // MARK: - App State
 
-    @State private var premiumManager = PremiumManager.shared
+    @State private var featureManager = FeatureManager.shared
     @State private var isInitialized = false {
         didSet {
             print("🚀 [PARALLAXApp] isInitialized changed: \(oldValue) -> \(isInitialized)")
@@ -206,8 +206,8 @@ struct PARALLAXApp: App {
 
             // MARK: - Notification Observers
 
-            .onReceive(NotificationCenter.default.publisher(for: .premiumStatusChanged)) { notification in
-                print("📬 [PARALLAXApp] Notification premiumStatusChanged reçue")
+            .onReceive(NotificationCenter.default.publisher(for: .fullAccessStatusChanged)) { notification in
+                print("📬 [PARALLAXApp] Notification fullAccessStatusChanged reçue")
                 handlePremiumStatusChange(notification)
             }
             .onAppear {
@@ -767,7 +767,7 @@ struct PARALLAXApp: App {
         let guards = [
             ("onboarding", !hasCompletedOnboarding),
             ("cooldown", Date().timeIntervalSince(lastPremiumValidation) <= premiumValidationCooldown),
-            ("validating", premiumManager.isValidating),
+            ("validating", featureManager.isValidating),
         ]
 
         print("🔍 [PARALLAXApp] Vérification guards:")
@@ -776,7 +776,7 @@ struct PARALLAXApp: App {
         }
 
         #if DEBUG
-            if premiumManager.debugOverride {
+            if featureManager.debugOverride {
                 print("🐛 [PARALLAXApp] Mode debug actif - validation ignorée")
                 logger.info("🐛 Validation ignorée - mode debug actif")
                 return
@@ -805,7 +805,7 @@ struct PARALLAXApp: App {
         lastPremiumValidation = Date()
         print("🔄 [PARALLAXApp] Lancement validation subscription")
         Task {
-            await premiumManager.validateSubscription()
+            await featureManager.validateSubscription()
         }
     }
 
@@ -869,7 +869,7 @@ struct PARALLAXApp: App {
 
     private func initializeWidgets() async {
         print("🎨 [PARALLAXApp] initializeWidgets() démarré")
-        if premiumManager.isPremium {
+        if featureManager.hasFullAccess {
             print("💎 [PARALLAXApp] Widgets premium disponibles")
             logger.info("🎨 Widgets premium disponibles")
         } else {
@@ -1011,7 +1011,7 @@ extension PARALLAXApp {
             logger.info("- Notification traitée: \(hasProcessedOnboardingCompletion)")
             logger.info("- App chargée: \(isAppFullyLoaded)")
             logger.info("- Import en attente: \(shouldShowImportAfterLoad)")
-            logger.info("- Premium: \(premiumManager.isPremium)")
+            logger.info("- Premium: \(featureManager.hasFullAccess)")
             logger.info("- Dark Mode: \(darkModeEnabled)")
             logger.info("- Initialized: \(isInitialized)")
             logger.info("============================")

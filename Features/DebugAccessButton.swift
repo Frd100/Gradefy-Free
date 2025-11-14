@@ -1,5 +1,5 @@
 //
-// DebugPremiumButton.swift
+// DebugAccessButton.swift
 // PARALLAX
 //
 // Created by  on 7/9/25.
@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DebugPremiumButton: View {
-    @State private var premiumManager = PremiumManager.shared
-    @State private var isPremium: Bool = false
+    @State private var featureManager = FeatureManager.shared
+    @State private var hasFullAccess: Bool = false
     @State private var isToggling: Bool = false
 
     var body: some View {
@@ -22,7 +22,7 @@ struct DebugPremiumButton: View {
                     HStack(spacing: 12) {
                         ZStack {
                             Circle()
-                                .fill(isPremium ? Color.yellow : Color.gray.opacity(0.3))
+                                .fill(hasFullAccess ? Color.yellow : Color.gray.opacity(0.3))
                                 .frame(width: 32, height: 32)
 
                             if isToggling {
@@ -30,18 +30,18 @@ struct DebugPremiumButton: View {
                                     .scaleEffect(0.7)
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             } else {
-                                Image(systemName: isPremium ? "crown.fill" : "crown")
-                                    .foregroundColor(isPremium ? .white : .gray)
+                                Image(systemName: hasFullAccess ? "crown.fill" : "crown")
+                                    .foregroundColor(hasFullAccess ? .white : .gray)
                                     .font(.system(size: 16, weight: .semibold))
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(isPremium ? "Mode Premium" : "Mode Gratuit")
+                            Text(hasFullAccess ? "Mode Premium" : "Mode Gratuit")
                                 .font(.headline)
                                 .foregroundColor(.primary)
 
-                            Text(isPremium ? "Toutes les fonctionnalités" : "Fonctionnalités limitées")
+                            Text(hasFullAccess ? "Toutes les fonctionnalités" : "Fonctionnalités limitées")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -50,7 +50,7 @@ struct DebugPremiumButton: View {
 
                         // ✅ SWITCH VISUEL
                         Toggle("", isOn: Binding(
-                            get: { isPremium },
+                            get: { hasFullAccess },
                             set: { _ in togglePremiumForTesting() }
                         ))
                         .labelsHidden()
@@ -60,8 +60,8 @@ struct DebugPremiumButton: View {
                     .padding(.vertical, 12)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(isPremium ? Color.yellow.opacity(0.1) : Color.gray.opacity(0.05))
-                            .stroke(isPremium ? Color.yellow.opacity(0.3) : Color.gray.opacity(0.2), lineWidth: 1)
+                            .fill(hasFullAccess ? Color.yellow.opacity(0.1) : Color.gray.opacity(0.05))
+                            .stroke(hasFullAccess ? Color.yellow.opacity(0.3) : Color.gray.opacity(0.2), lineWidth: 1)
                     )
                 }
                 .disabled(isToggling)
@@ -75,14 +75,14 @@ struct DebugPremiumButton: View {
 
                         Spacer()
 
-                        Text(premiumManager.debugOverride ? "ACTIF" : "INACTIF")
+                        Text(featureManager.debugOverride ? "ACTIF" : "INACTIF")
                             .font(.caption.weight(.bold))
-                            .foregroundColor(premiumManager.debugOverride ? .green : .red)
+                            .foregroundColor(featureManager.debugOverride ? .green : .red)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
                             .background(
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(premiumManager.debugOverride ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                                    .fill(featureManager.debugOverride ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
                             )
                     }
 
@@ -93,7 +93,7 @@ struct DebugPremiumButton: View {
 
                         Spacer()
 
-                        Text("\(premiumManager.features.count) disponibles")
+                        Text("\(featureManager.features.count) disponibles")
                             .font(.caption.weight(.medium))
                             .foregroundColor(.blue)
                     }
@@ -142,8 +142,8 @@ struct DebugPremiumButton: View {
             .onAppear {
                 updatePremiumStatus()
             }
-            .onReceive(NotificationCenter.default.publisher(for: .premiumStatusChanged)) { _ in
-                print("🔔 Notification reçue: premiumStatusChanged")
+            .onReceive(NotificationCenter.default.publisher(for: .fullAccessStatusChanged)) { _ in
+                print("🔔 Notification reçue: fullAccessStatusChanged")
                 DispatchQueue.main.async {
                     updatePremiumStatus()
                 }
@@ -152,8 +152,8 @@ struct DebugPremiumButton: View {
     }
 
     private func togglePremiumForTesting() {
-        print("🔧 Toggle Premium - État actuel: \(isPremium)")
-        print("🔧 Debug Override actuel: \(premiumManager.debugOverride)")
+        print("🔧 Toggle Premium - État actuel: \(hasFullAccess)")
+        print("🔧 Debug Override actuel: \(featureManager.debugOverride)")
 
         // ✅ ANIMATION DE FEEDBACK
         withAnimation(.easeInOut(duration: 0.2)) {
@@ -164,11 +164,11 @@ struct DebugPremiumButton: View {
         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
         impactFeedback.impactOccurred()
 
-        if isPremium {
-            premiumManager.disableDebugPremium()
+        if hasFullAccess {
+            featureManager.disableDebugFullAccess()
             print("🔧 Désactivation du mode Premium")
         } else {
-            premiumManager.enableDebugPremium()
+            featureManager.enableDebugFullAccess()
             print("🔧 Activation du mode Premium")
         }
 
@@ -193,16 +193,16 @@ struct DebugPremiumButton: View {
         }
 
         // ✅ RESET COMPLET
-        premiumManager.debugOverride = false
-        premiumManager.deactivatePremium()
+        featureManager.debugOverride = false
+        featureManager.deactivateFullAccess()
 
         // ✅ CLEAR USERDEFAULTS
-        UserDefaults.standard.removeObject(forKey: "isPremium")
+        UserDefaults.standard.removeObject(forKey: "hasFullAccess")
         UserDefaults.standard.synchronize()
 
         // ✅ CLEAR APP GROUP
         let appGroupDefaults = UserDefaults(suiteName: "group.com.Coefficient.PARALLAX2")
-        appGroupDefaults?.removeObject(forKey: "isPremium")
+        appGroupDefaults?.removeObject(forKey: "hasFullAccess")
         appGroupDefaults?.synchronize()
 
         print("🧹 Reset complet effectué - tous les paramètres premium supprimés")
@@ -216,11 +216,11 @@ struct DebugPremiumButton: View {
     }
 
     private func updatePremiumStatus() {
-        let newStatus = premiumManager.isPremium
-        print("🔄 Mise à jour statut: \(isPremium) -> \(newStatus)")
+        let newStatus = featureManager.hasFullAccess
+        print("🔄 Mise à jour statut: \(hasFullAccess) -> \(newStatus)")
 
         withAnimation(.easeInOut(duration: 0.2)) {
-            isPremium = newStatus
+            hasFullAccess = newStatus
         }
     }
 

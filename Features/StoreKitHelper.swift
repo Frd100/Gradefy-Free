@@ -116,7 +116,7 @@ final class StoreKitHelper: ObservableObject {
 
         purchasedProducts = purchased
         if !purchased.isEmpty || !purchasedProducts.isEmpty {
-            await updatePremiumManagerStatus()
+            await updateFeatureManagerStatus()
         }
     }
 
@@ -129,18 +129,18 @@ final class StoreKitHelper: ObservableObject {
             purchasedProducts.remove(transaction.productID)
         }
 
-        // Informer le PremiumManager
-        await updatePremiumManagerStatus()
+        // Informer le FeatureManager
+        await updateFeatureManagerStatus()
     }
 
-    // ✅ MÉTHODE : Synchronisation avec PremiumManager
-    private func updatePremiumManagerStatus() async {
+    // ✅ MÉTHODE : Synchronisation avec FeatureManager
+    private func updateFeatureManagerStatus() async {
         let hasPremium = !purchasedProducts.isEmpty
         await MainActor.run {
             if hasPremium {
-                PremiumManager.shared.activatePremium()
+                FeatureManager.shared.activateFullAccess()
             } else {
-                PremiumManager.shared.deactivatePremium()
+                FeatureManager.shared.deactivateFullAccess()
             }
         }
     }

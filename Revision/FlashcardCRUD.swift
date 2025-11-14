@@ -930,8 +930,8 @@ struct AddFlashcardView: View {
                     let seconds = CMTimeGetSeconds(duration)
 
                     // ✅ NOUVEAU : Vérification de la durée audio avec alerte SwiftUI
-                    let premiumManager = PremiumManager.shared
-                    if !premiumManager.isValidAudioDuration(seconds) {
+                    let featureManager = FeatureManager.shared
+                    if !featureManager.isValidAudioDuration(seconds) {
                         await MainActor.run {
                             // Supprimer le fichier temporaire
                             try? FileManager.default.removeItem(at: destinationURL)
@@ -982,7 +982,7 @@ struct AddFlashcardView: View {
 
     private func saveFlashcard() {
         // ✅ VÉRIFICATION DES LIMITES MÉDIAS
-        let premiumManager = PremiumManager.shared
+        let featureManager = FeatureManager.shared
 
         // Compter les médias qu'on va ajouter
         var mediaToAdd = 0
@@ -990,7 +990,7 @@ struct AddFlashcardView: View {
         if answerAudioFileName != nil || answerImageFileName != nil { mediaToAdd += 1 }
 
         // Vérifier si on peut ajouter ces médias
-        if mediaToAdd > 0, !premiumManager.canAddMedia(deck: deck, context: viewContext) {
+        if mediaToAdd > 0, !featureManager.canAddMedia(deck: deck, context: viewContext) {
             print("❌ Limite médias atteinte - Impossible d'ajouter la flashcard")
             HapticFeedbackManager.shared.notification(type: .warning)
             return
