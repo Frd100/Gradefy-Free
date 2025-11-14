@@ -5,23 +5,20 @@
 //  Created by  on 7/21/25.
 //
 
-
-
+import CoreData
+import Foundation
 import SwiftUI
 import UIKit
-import Foundation
-import CoreData
-
 
 extension FlashcardDeck {
     var flashcardCount: Int {
         (flashcards as? Set<Flashcard>)?.count ?? 0
     }
-    
+
     var hasFlashcards: Bool {
         flashcardCount > 0
     }
-    
+
     // ✅ Propriété calculée pour accéder aux flashcards comme un array
     var flashcardsArray: [Flashcard] {
         if let flashcardsSet = flashcards as? Set<Flashcard> {
@@ -33,11 +30,11 @@ extension FlashcardDeck {
 
 extension Subject {
     var flashcardCount: Int {
-        return 0  // Plus de relation avec les flashcards
+        return 0 // Plus de relation avec les flashcards
     }
-    
+
     var deckCount: Int {
-        return 0  // Plus de relation avec les decks
+        return 0 // Plus de relation avec les decks
     }
 }
 

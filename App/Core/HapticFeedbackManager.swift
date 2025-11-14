@@ -5,9 +5,8 @@
 //  Created by  on 7/9/25.
 //
 
-
-import SwiftUI
 import CoreData
+import SwiftUI
 import UIKit
 import WidgetKit
 
@@ -15,9 +14,9 @@ import WidgetKit
 
 final class HapticFeedbackManager {
     static let shared = HapticFeedbackManager()
-    
+
     @AppStorage("enableHaptics") private var isEnabled: Bool = true
-    
+
     // ✅ SOLUTION PARFAITE : Générateurs réutilisables pour éviter les erreurs
     private let softImpactGenerator = UIImpactFeedbackGenerator(style: .soft)
     private let lightImpactGenerator = UIImpactFeedbackGenerator(style: .light)
@@ -25,7 +24,7 @@ final class HapticFeedbackManager {
     private let heavyImpactGenerator = UIImpactFeedbackGenerator(style: .heavy)
     private let notificationGenerator = UINotificationFeedbackGenerator()
     private let selectionGenerator = UISelectionFeedbackGenerator()
-    
+
     private init() {
         // Préparer les générateurs une seule fois
         softImpactGenerator.prepare()
@@ -35,10 +34,10 @@ final class HapticFeedbackManager {
         notificationGenerator.prepare()
         selectionGenerator.prepare()
     }
-    
+
     func impact(style: UIImpactFeedbackGenerator.FeedbackStyle) {
         guard isEnabled else { return }
-        
+
         // ✅ SOLUTION : Utiliser les générateurs pré-préparés
         switch style {
         case .soft:
@@ -53,12 +52,12 @@ final class HapticFeedbackManager {
             softImpactGenerator.impactOccurred()
         }
     }
-    
+
     func notification(type: UINotificationFeedbackGenerator.FeedbackType) {
         guard isEnabled else { return }
         notificationGenerator.notificationOccurred(type)
     }
-    
+
     func selection() {
         guard isEnabled else { return }
         selectionGenerator.selectionChanged()

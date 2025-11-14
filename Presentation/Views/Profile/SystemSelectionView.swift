@@ -1,16 +1,16 @@
 //
-//  SystemModeSelectionView.swift
+//  SystemSelectionView.swift
 //  PARALLAX
 //
 
-import SwiftUI
-import CoreData
-import UIKit
-import WidgetKit
-import Lottie
-import UniformTypeIdentifiers
 import Combine
+import CoreData
 import Foundation
+import Lottie
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import WidgetKit
 
 struct SystemModeSelectionView: View {
     @Binding var refreshID: UUID
@@ -19,7 +19,7 @@ struct SystemModeSelectionView: View {
     @State private var showConfirmation = false
     @State private var pendingSystem: String?
     @State private var isChanging = false
-    
+
     private var availableSystems: [GradingSystemDisplayItem] {
         [
             GradingSystemDisplayItem(
@@ -41,10 +41,10 @@ struct SystemModeSelectionView: View {
             GradingSystemDisplayItem(
                 id: "spain",
                 displayName: String(localized: "country_spain")
-            )
+            ),
         ]
     }
-    
+
     var body: some View {
         List {
             animationSection
@@ -64,7 +64,7 @@ struct SystemModeSelectionView: View {
         }
         .disabled(isChanging)
     }
-    
+
     private var systemsSection: some View {
         Section(String(localized: "section_grading_systems")) {
             ForEach(availableSystems) { system in
@@ -78,14 +78,14 @@ struct SystemModeSelectionView: View {
             }
         }
     }
-    
+
     private var animationSection: some View {
         Section {
             VStack(spacing: 10) {
                 LottieView(animation: .named("globe"))
                     .playing()
                     .frame(width: AppConstants.Animation.lottieSize, height: AppConstants.Animation.lottieSize)
-                
+
                 Text(String(localized: "grading_system_description"))
                     .font(.caption.weight(.regular))
                     .foregroundColor(.secondary)
@@ -97,59 +97,60 @@ struct SystemModeSelectionView: View {
             .listRowBackground(Color.clear)
         }
     }
-    
+
     // MARK: - Private Methods
+
     private func handleSystemSelection(_ systemId: String) {
         guard systemId != selectedGradingSystem, !isChanging else { return }
-        
+
         HapticFeedbackManager.shared.impact(style: .light)
         pendingSystem = systemId
         showConfirmation = true
     }
-    
+
     private func confirmSystemChange() {
         guard let newSystem = pendingSystem, !isChanging else {
             print("❌ [SYSTEM_VIEW] Changement annulé - newSystem: '\(pendingSystem ?? "nil")' | isChanging: \(isChanging)")
             resetState()
             return
         }
-        
+
         print("🎯 [SYSTEM_VIEW] DÉBUT changement: '\(selectedGradingSystem)' → '\(newSystem)'")
         changeGradingSystemOptimized(to: newSystem)
     }
-    
+
     private func cancelSystemChange() {
         resetState()
     }
-    
+
     private func resetState() {
         pendingSystem = nil
         showConfirmation = false
     }
-    
+
     private func changeGradingSystemOptimized(to newSystemId: String) {
         print("🔄 [SYSTEM_CHANGE] Début optimisé: '\(newSystemId)'")
         print("🔄 [SYSTEM_CHANGE] selectedGradingSystem avant: '\(selectedGradingSystem)'")
-        
+
         guard !isChanging else { return }
         isChanging = true
         HapticFeedbackManager.shared.impact(style: .medium)
-        
+
         Task {
             do {
                 try await performSystemChangeSimple(to: newSystemId)
-                
+
                 await MainActor.run {
                     let beforeChange = selectedGradingSystem
                     selectedGradingSystem = newSystemId
-                    
+
                     print("✅ [SYSTEM_CHANGE] selectedGradingSystem changé: '\(beforeChange)' → '\(selectedGradingSystem)'")
                     print("✅ [SYSTEM_CHANGE] Vérification UserDefaults: '\(UserDefaults.standard.string(forKey: "GradingSystem") ?? "nil")'")
-                    
+
                     GradingSystemRegistry.invalidateCache()
                     refreshID = UUID()
                     isChanging = false
-                    
+
                     HapticFeedbackManager.shared.notification(type: .success)
                 }
             } catch {
@@ -166,10 +167,10 @@ struct SystemModeSelectionView: View {
         try await viewContext.perform {
             do {
                 print("🔍 Suppression ciblée des évaluations et matières...")
-                
+
                 let subjectsRequest: NSFetchRequest<Subject> = Subject.fetchRequest()
                 let subjects = try self.viewContext.fetch(subjectsRequest)
-                
+
                 for subject in subjects {
                     let evaluations = (subject.evaluations as? Set<Evaluation>) ?? []
                     for evaluation in evaluations {
@@ -177,12 +178,12 @@ struct SystemModeSelectionView: View {
                     }
                     self.viewContext.delete(subject)
                 }
-                
+
                 try self.viewContext.save()
                 self.viewContext.refreshAllObjects()
-                
+
                 print("✅ Suppression ciblée terminée pour système : \(newSystemId)")
-                
+
             } catch {
                 self.viewContext.rollback()
                 throw error
@@ -192,18 +193,20 @@ struct SystemModeSelectionView: View {
 }
 
 // MARK: - Grading System Display Item
+
 struct GradingSystemDisplayItem: Identifiable {
     let id: String
     let displayName: String
 }
 
 // MARK: - Grading System Row
+
 struct GradingSystemRow: View {
     let system: GradingSystemDisplayItem
     let isSelected: Bool
     let isChanging: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: {
             guard !isChanging else { return }
@@ -215,9 +218,9 @@ struct GradingSystemRow: View {
                     .font(.body)
                     .fontWeight(.regular)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 Group {
                     if isChanging {
                         ProgressView()

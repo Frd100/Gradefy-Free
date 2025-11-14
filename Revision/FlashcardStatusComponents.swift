@@ -5,8 +5,8 @@
 //  Composants pour afficher les statuts des flashcards
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 // ✅ Vue pour afficher le statut d'une carte
 struct FlashcardStatusView: View {
@@ -69,100 +69,99 @@ struct FlashcardSettingsSheet: View {
     @AppStorage("showCardStatus") private var showCardStatus = true
     @AppStorage("isFreeMode") private var isFreeMode = false
 
-    
     // ✅ NOUVEAU : Paramètre deck pour afficher les vraies statistiques
     let deck: FlashcardDeck?
-    
+
     // ✅ NOUVEAU : Initialiseur avec deck optionnel
     init(deck: FlashcardDeck? = nil) {
         self.deck = deck
     }
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 adaptiveBackground.ignoresSafeArea()
-                
+
                 Form {
                     // ✅ SECTION COMPACTE : Mode de révision (Style Sheet iOS)
                     Section {
-                                                 // Mode SM-2
-                         Button(action: {
-                             HapticFeedbackManager.shared.impact(style: .light)
-                             isFreeMode = false
-                         }) {
-                             HStack(spacing: 12) {
-                                 Image(systemName: "arrow.up.circle.badge.clock")
-                                     .font(.system(size: 16, weight: .medium))
-                                     .foregroundColor(isFreeMode ? .secondary : .blue)
-                                     .frame(width: 24)
-                                 
-                                 VStack(alignment: .leading, spacing: 2) {
-                                     HStack {
-                                         Text("Mode répétition espacée")
-                                             .font(.body.weight(.medium))
-                                             .foregroundColor(isFreeMode ? .secondary : .primary)
-                                     }
-                                     
-                                     Text("Algorithme de répétition espacée")
-                                         .font(.caption)
-                                         .foregroundColor(.secondary)
-                                 }
-                                 
-                                 Spacer()
-                                 
-                                 if !isFreeMode {
-                                     Image(systemName: "checkmark.circle.fill")
-                                         .font(.system(size: 16, weight: .medium))
-                                         .foregroundColor(.blue)
-                                 }
-                             }
-                             .contentShape(Rectangle())
-                         }
-                        
-                                                 // Mode libre
-                         Button(action: {
-                             HapticFeedbackManager.shared.impact(style: .light)
-                             isFreeMode = true
-                         }) {
-                             HStack(spacing: 12) {
-                                 Image(systemName: "leaf")
-                                     .font(.system(size: 16, weight: .medium))
-                                     .foregroundColor(isFreeMode ? .blue : .secondary)
-                                     .frame(width: 24)
-                                 
-                                 VStack(alignment: .leading, spacing: 2) {
-                                     HStack {
-                                         Text("Mode libre")
-                                             .font(.body.weight(.medium))
-                                             .foregroundColor(isFreeMode ? .primary : .secondary)
-                                     }
-                                     
-                                     Text("Révision sans contraintes")
-                                         .font(.caption)
-                                         .foregroundColor(.secondary)
-                                 }
-                                 
-                                 Spacer()
-                                 
-                                 if isFreeMode {
-                                     Image(systemName: "checkmark.circle.fill")
-                                         .font(.system(size: 16, weight: .medium))
-                                         .foregroundColor(.blue)
-                                 }
-                             }
-                             .contentShape(Rectangle())
-                         }
+                        // Mode SM-2
+                        Button(action: {
+                            HapticFeedbackManager.shared.impact(style: .light)
+                            isFreeMode = false
+                        }) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "arrow.up.circle.badge.clock")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(isFreeMode ? .secondary : .blue)
+                                    .frame(width: 24)
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    HStack {
+                                        Text("Mode répétition espacée")
+                                            .font(.body.weight(.medium))
+                                            .foregroundColor(isFreeMode ? .secondary : .primary)
+                                    }
+
+                                    Text("Algorithme de répétition espacée")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+
+                                Spacer()
+
+                                if !isFreeMode {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+
+                        // Mode libre
+                        Button(action: {
+                            HapticFeedbackManager.shared.impact(style: .light)
+                            isFreeMode = true
+                        }) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "leaf")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(isFreeMode ? .blue : .secondary)
+                                    .frame(width: 24)
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    HStack {
+                                        Text("Mode libre")
+                                            .font(.body.weight(.medium))
+                                            .foregroundColor(isFreeMode ? .primary : .secondary)
+                                    }
+
+                                    Text("Révision sans contraintes")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+
+                                Spacer()
+
+                                if isFreeMode {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
                     } header: {
                         Text("Mode de révision")
                     } footer: {
                         Text("La répétition espacée optimise vos révisions. Le mode libre permet de pratiquer sans contraintes.")
                     }
-                    
+
                     Section {
                         Toggle("Afficher les statuts des cartes", isOn: $showCardStatus)
                     } header: {
@@ -170,9 +169,7 @@ struct FlashcardSettingsSheet: View {
                     } footer: {
                         Text("Permet de voir le statut d'une carte")
                     }
-                    
 
-                    
                     // ✅ WIDGET LIMITES DU DECK - Maintenant avec vraies données
                     if let deck = deck {
                         Section {
@@ -183,7 +180,7 @@ struct FlashcardSettingsSheet: View {
                             Text("Limites de cette liste")
                         }
                     }
-                    
+
                     // ✅ STATUTS SRS : Structure améliorée et alignée
                     Section {
                         VStack(spacing: 0) {
@@ -217,8 +214,6 @@ struct FlashcardSettingsSheet: View {
                     } footer: {
                         Text("Les délais affichés sont approximatifs. Une carte à réviser aujourd'hui apparaît toujours en \"À réviser\".")
                     }
-
-
                 }
             }
             .navigationTitle("Paramètres")
@@ -238,7 +233,7 @@ struct FlashcardSettingsSheet: View {
 struct StatusExampleRow: View {
     let status: CardStatus
     let description: String
-    
+
     var body: some View {
         HStack(spacing: 16) {
             // ✅ Icône simple avec couleur
@@ -246,19 +241,19 @@ struct StatusExampleRow: View {
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(status.color)
                 .frame(width: 20, height: 20)
-            
+
             // ✅ Contenu textuel aligné
             VStack(alignment: .leading, spacing: 2) {
                 Text(status.message)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.primary)
-                
+
                 Text(description)
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
                     .lineLimit(2)
             }
-            
+
             Spacer()
         }
         .padding(.vertical, 8)
@@ -266,20 +261,18 @@ struct StatusExampleRow: View {
     }
 }
 
-
-
 // ✅ Bouton Settings à ajouter dans la toolbar
 struct FlashcardSettingsButton: View {
     @State private var showingSettings = false
-    
+
     // ✅ NOUVEAU : Paramètre deck optionnel
     let deck: FlashcardDeck?
-    
+
     // ✅ NOUVEAU : Initialiseur avec deck optionnel
     init(deck: FlashcardDeck? = nil) {
         self.deck = deck
     }
-    
+
     var body: some View {
         Button(action: {
             HapticFeedbackManager.shared.impact(style: .light)

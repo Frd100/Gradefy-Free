@@ -4,14 +4,14 @@
 //
 //  Created by  on 7/21/25.
 //
-import SwiftUI
-import CoreData
-import UIKit
-import WidgetKit
-import Lottie
-import UniformTypeIdentifiers
 import Combine
+import CoreData
 import Foundation
+import Lottie
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import WidgetKit
 
 enum AppConstants {
     enum Animation {
@@ -21,7 +21,7 @@ enum AppConstants {
         static let editProfileAvatarSize: CGFloat = 100
         static let gradientButtonSize: CGFloat = 30
     }
-    
+
     enum Limits {
         static let minimumPeriods = 1
         static let maxPeriodNameLength = 50
@@ -30,12 +30,11 @@ enum AppConstants {
     }
 }
 
-
 enum DataImportError: LocalizedError {
     case contextNotConfigured
     case invalidJSONFormat
     case exportFailed
-    
+
     var errorDescription: String? {
         switch self {
         case .contextNotConfigured:
@@ -49,6 +48,7 @@ enum DataImportError: LocalizedError {
 }
 
 // MARK: - Error Handling (Correction : Gestion d'erreurs spécifiques)
+
 enum PeriodError: LocalizedError {
     case invalidName
     case duplicateName(String)
@@ -58,12 +58,12 @@ enum PeriodError: LocalizedError {
     case overlappingDates
     case coreDataError(Error)
     case cannotDeleteLastPeriod
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidName:
             return "Le nom de la période n'est pas valide."
-        case .duplicateName(let name):
+        case let .duplicateName(name):
             return "Une période nommée \"\(name)\" existe déjà."
         case .invalidDateRange:
             return "La date de fin doit être postérieure à la date de début."
@@ -73,7 +73,7 @@ enum PeriodError: LocalizedError {
             return "La période ne peut pas dépasser 2 ans."
         case .overlappingDates:
             return "Cette période chevauche avec une période existante."
-        case .coreDataError(let error):
+        case let .coreDataError(error):
             return "Erreur de base de données : \(error.localizedDescription)"
         case .cannotDeleteLastPeriod:
             return "Impossible de supprimer la dernière période."
@@ -84,18 +84,18 @@ enum PeriodError: LocalizedError {
 struct JSONDocument: FileDocument {
     static var readableContentTypes = [UTType.json]
     static var writableContentTypes = [UTType.json]
-    
+
     let url: URL
-    
+
     init(url: URL) {
         self.url = url
     }
-    
-    init(configuration: ReadConfiguration) throws {
+
+    init(configuration _: ReadConfiguration) throws {
         throw CocoaError(.fileReadUnknown)
     }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+
+    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
         let data = try Data(contentsOf: url)
         return FileWrapper(regularFileWithContents: data)
     }
@@ -104,25 +104,25 @@ struct JSONDocument: FileDocument {
 struct ZIPDocument: FileDocument {
     static var readableContentTypes = [UTType.zip]
     static var writableContentTypes = [UTType.zip]
-    
+
     let url: URL
-    
+
     init(url: URL) {
         self.url = url
     }
-    
-    init(configuration: ReadConfiguration) throws {
+
+    init(configuration _: ReadConfiguration) throws {
         throw CocoaError(.fileReadUnknown)
     }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+
+    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
         let data = try Data(contentsOf: url)
         return FileWrapper(regularFileWithContents: data)
     }
 }
 
-
 // MARK: - Extension pour la notification
+
 extension Notification.Name {
     static let resetToOnboarding = Notification.Name("resetToOnboarding")
 }

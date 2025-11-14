@@ -5,9 +5,9 @@
 //  Created by Farid on 7/28/25.
 //
 
-import SwiftUI
-import PhotosUI
 import AVFoundation
+import PhotosUI
+import SwiftUI
 import UniformTypeIdentifiers
 
 struct CardFaceContentEditor: View {
@@ -16,40 +16,42 @@ struct CardFaceContentEditor: View {
     @Binding var imageData: Data?
     @Binding var fileName: String?
     @Binding var audioDuration: TimeInterval?
-    
+
     let isQuestion: Bool
     let onContentChange: () -> Void
-    
+
     // MARK: - États internes
+
     // ✅ CORRECTION 1 : Utilisation correcte du singleton
     @ObservedObject private var audioManager = AudioManager.shared
     @State private var isProcessingAction = false
     @State private var selectedPhotoItem: PhotosPickerItem?
-    
+
     // ✅ CORRECTION 2 : Gestion simplifiée des présentations
     @State private var showingImagePicker = false
     @State private var showingAudioMenu = false
     @State private var showingFilePicker = false
-    
+
     // ✅ NOUVEAU : États pour l'alerte audio
     @State private var showAudioDurationAlert = false
     @State private var audioDurationAlertMessage = ""
-    
+
     // MARK: - Variables calculées
+
     private var imageFileName: Binding<String?> {
         Binding(
             get: { contentType == .image ? fileName : nil },
             set: { fileName = $0 }
         )
     }
-    
+
     private var audioFileName: Binding<String?> {
         Binding(
             get: { contentType == .audio ? fileName : nil },
             set: { fileName = $0 }
         )
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // En-tête avec sélecteur de type
@@ -57,12 +59,12 @@ struct CardFaceContentEditor: View {
                 Text(isQuestion ? "Question" : "Réponse")
                     .font(.headline)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 contentTypeSelector
             }
-            
+
             // Contenu selon le type
             contentEditor
         }
@@ -80,7 +82,7 @@ struct CardFaceContentEditor: View {
         }
         // ✅ NOUVEAU : Alerte SwiftUI pour la durée audio
         .alert("Durée audio limitée", isPresented: $showAudioDurationAlert) {
-            Button("OK") { }
+            Button("OK") {}
         } message: {
             Text(audioDurationAlertMessage)
         }
@@ -95,14 +97,14 @@ struct CardFaceContentEditor: View {
                     startRecording()
                 }
             }
-            
+
             Button("Importer un fichier audio") {
                 showingAudioMenu = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     showingFilePicker = true
                 }
             }
-            
+
             Button("Annuler", role: .cancel) {
                 showingAudioMenu = false
             }
@@ -111,9 +113,9 @@ struct CardFaceContentEditor: View {
             handleImageSelection()
         }
     }
-    
+
     // MARK: - Sélecteur de type de contenu
-    
+
     private var contentTypeSelector: some View {
         HStack(spacing: 8) {
             ForEach([FlashcardContentType.text, .image, .audio], id: \.self) { type in
@@ -134,9 +136,9 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     // MARK: - Éditeur de contenu
-    
+
     private var contentEditor: some View {
         Group {
             switch contentType {
@@ -149,16 +151,16 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     private var textEditor: some View {
         TextField("Tapez votre \(isQuestion ? "question" : "réponse")...", text: $content, axis: .vertical)
             .textFieldStyle(RoundedBorderTextFieldStyle())
-            .lineLimit(3...6)
+            .lineLimit(3 ... 6)
             .onChange(of: content) {
                 onContentChange()
             }
     }
-    
+
     private var imageEditor: some View {
         VStack(spacing: 12) {
             if let imageData = imageData, let uiImage = UIImage(data: imageData) {
@@ -171,7 +173,7 @@ struct CardFaceContentEditor: View {
                         print("🖼️ Image tapped - showing picker")
                         showingImagePicker = true
                     }
-                
+
                 Button("Changer l'image") {
                     print("🔄 Change image button tapped")
                     showingImagePicker = true
@@ -179,7 +181,7 @@ struct CardFaceContentEditor: View {
                 .buttonStyle(.plain)
                 .foregroundColor(.blue)
                 .contentShape(Rectangle())
-                
+
             } else {
                 Button("Sélectionner une image") {
                     print("📷 Select image button tapped")
@@ -194,7 +196,7 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     private var audioEditor: some View {
         VStack(spacing: 12) {
             if let audioFile = audioFileName.wrappedValue, audioDuration ?? 0 > 0 {
@@ -203,7 +205,7 @@ struct CardFaceContentEditor: View {
                     fileName: audioFile,
                     duration: audioDuration ?? 0,
                     onPlayPause: {
-                        if audioManager.isPlaying && audioManager.playingFileName == audioFile {
+                        if audioManager.isPlaying, audioManager.playingFileName == audioFile {
                             audioManager.stopAudio()
                         } else {
                             audioManager.playAudio(fileName: audioFile)
@@ -220,7 +222,7 @@ struct CardFaceContentEditor: View {
                 // ✅ SIMPLIFIÉ : Bouton unique avec changement de couleur
                 Button(audioManager.isRecording ? "Arrêter l'enregistrement" : "Ajouter un audio") {
                     print("🎙️ Audio button tapped - recording: \(audioManager.isRecording)")
-                    
+
                     if audioManager.isRecording {
                         // Arrêter l'enregistrement
                         stopRecording()
@@ -241,14 +243,14 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     private func handleContentTypeChange(to newType: FlashcardContentType) {
         print("🔄 Content type change: \(contentType) -> \(newType)")
         guard newType != contentType else { return }
-        
+
         contentType = newType
         onContentChange()
-        
+
         switch newType {
         case .audio:
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -262,32 +264,31 @@ struct CardFaceContentEditor: View {
             }
         case .text:
             print("📝 Text type selected")
-            break
         }
     }
-    
+
     // MARK: - Gestion des images
-    
+
     private func handleImageSelection() {
         guard let selectedPhotoItem = selectedPhotoItem else { return }
-        
+
         print("🖼️ Processing selected image")
-        
+
         Task {
             do {
                 if let data = try await selectedPhotoItem.loadTransferable(type: Data.self),
                    let image = UIImage(data: data),
-                   let result = MediaStorageManager.shared.storeImage(image) {
-                    
+                   let result = MediaStorageManager.shared.storeImage(image)
+                {
                     await MainActor.run {
                         self.imageData = result.shouldStoreInFileManager ? nil : result.data
                         self.fileName = result.fileName
                         self.onContentChange()
-                        
+
                         // Reset
                         self.selectedPhotoItem = nil
                         self.showingImagePicker = false
-                        
+
                         print("✅ Image stored: \(result.fileName)")
                     }
                 }
@@ -300,20 +301,20 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     // MARK: - Gestion de l'audio
-    
+
     // ✅ CORRECTION 3 : Utilisation de la nouvelle API toggleRecording()
     private func startRecording() {
         print("🎙️ Starting recording")
-        
-        guard !isProcessingAction && !audioManager.isRecording else {
+
+        guard !isProcessingAction, !audioManager.isRecording else {
             print("❌ Recording blocked - processing: \(isProcessingAction), recording: \(audioManager.isRecording)")
             return
         }
-        
+
         isProcessingAction = true
-        
+
         Task {
             if let newFileName = await audioManager.toggleRecording() {
                 await MainActor.run {
@@ -329,18 +330,18 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     // ✅ CORRECTION 4 : Utilisation de la nouvelle API toggleRecording()
     private func stopRecording() {
         print("⏹️ Stopping recording")
-        
+
         guard audioManager.isRecording else {
             print("❌ No recording in progress")
             return
         }
-        
+
         isProcessingAction = true
-        
+
         Task {
             if let finalFileName = await audioManager.toggleRecording() {
                 await MainActor.run {
@@ -349,7 +350,7 @@ struct CardFaceContentEditor: View {
                     self.fileName = finalFileName
                     self.isProcessingAction = false
                     self.onContentChange()
-                    
+
                     print("✅ Recording stopped and saved: \(finalFileName)")
                 }
             } else {
@@ -360,55 +361,55 @@ struct CardFaceContentEditor: View {
             }
         }
     }
-    
+
     // ✅ CORRECTION 5 : Utilisation de forceStopRecording() pour l'annulation
     private func cancelRecording() {
         print("❌ Cancelling recording")
-        
+
         audioManager.forceStopRecording()
-        
+
         Task { @MainActor in
             if let currentFileName = fileName {
                 MediaStorageManager.shared.deleteAudio(fileName: currentFileName)
             }
-            
+
             self.fileName = nil
             self.audioDuration = nil
             self.isProcessingAction = false
         }
     }
-    
+
     private func deleteAudio() {
         print("🗑️ Deleting audio")
-        
+
         if let currentFileName = fileName {
             MediaStorageManager.shared.deleteAudio(fileName: currentFileName)
         }
-        
+
         fileName = nil
         audioDuration = nil
         onContentChange()
     }
-    
+
     // MARK: - Import audio
-    
+
     private func handleAudioImport(result: Result<[URL], Error>) {
         switch result {
-        case .success(let urls):
+        case let .success(urls):
             guard let sourceURL = urls.first else { return }
-            
+
             print("🔍 Importing audio from: \(sourceURL.path)")
-            
+
             Task {
                 let shouldStopAccessing = sourceURL.startAccessingSecurityScopedResource()
-                
+
                 defer {
                     if shouldStopAccessing {
                         sourceURL.stopAccessingSecurityScopedResource()
                         print("🔒 Security-scoped resource released")
                     }
                 }
-                
+
                 do {
                     let audioData: Data
                     do {
@@ -416,13 +417,13 @@ struct CardFaceContentEditor: View {
                         print("✅ Audio data read: \(audioData.count) bytes")
                     } catch {
                         print("❌ File read error: \(error)")
-                        
+
                         // Fallback avec NSFileCoordinator
                         var coordinatorError: NSError?
                         var success = false
                         var readData: Data?
-                        
-                        NSFileCoordinator().coordinate(readingItemAt: sourceURL, options: [], error: &coordinatorError) { (url) in
+
+                        NSFileCoordinator().coordinate(readingItemAt: sourceURL, options: [], error: &coordinatorError) { url in
                             do {
                                 readData = try Data(contentsOf: url)
                                 success = true
@@ -431,38 +432,38 @@ struct CardFaceContentEditor: View {
                                 print("❌ Coordinator error: \(error)")
                             }
                         }
-                        
+
                         if let coordinatorError = coordinatorError {
                             print("❌ Coordinator error: \(coordinatorError)")
                         }
-                        
+
                         guard success, let data = readData else {
                             await MainActor.run {
                                 print("❌ Unable to read audio file")
                             }
                             return
                         }
-                        
+
                         audioData = data
                     }
-                    
+
                     let newFileName = "\(UUID().uuidString).\(sourceURL.pathExtension)"
                     let destinationURL = MediaStorageManager.shared.getAudioURL(fileName: newFileName)
-                    
+
                     try audioData.write(to: destinationURL, options: .atomic)
                     print("✅ File copied to: \(destinationURL.path)")
-                    
+
                     let asset = AVAsset(url: destinationURL)
                     let duration = try await asset.load(.duration)
                     let seconds = CMTimeGetSeconds(duration)
-                    
+
                     // ✅ NOUVEAU : Vérification de la durée audio avec alerte SwiftUI
                     let premiumManager = PremiumManager.shared
                     if !premiumManager.isValidAudioDuration(seconds) {
                         await MainActor.run {
                             // Supprimer le fichier temporaire
                             try? FileManager.default.removeItem(at: destinationURL)
-                            
+
                             // Afficher l'alerte SwiftUI
                             HapticFeedbackManager.shared.notification(type: .warning)
                             audioDurationAlertMessage = "Les fichiers audio sont limités à 30 secondes maximum."
@@ -470,14 +471,14 @@ struct CardFaceContentEditor: View {
                         }
                         return
                     }
-                    
+
                     await MainActor.run {
                         self.fileName = newFileName
                         self.audioDuration = seconds
                         self.onContentChange()
                         print("✅ Audio imported: \(newFileName), duration: \(seconds)s")
                     }
-                    
+
                 } catch {
                     print("❌ Audio processing error: \(error)")
                     await MainActor.run {
@@ -485,14 +486,14 @@ struct CardFaceContentEditor: View {
                     }
                 }
             }
-            
-        case .failure(let error):
+
+        case let .failure(error):
             print("❌ File selection error: \(error)")
         }
     }
-    
+
     // MARK: - Utilitaires
-    
+
     private func formatDuration(_ duration: TimeInterval) -> String {
         let minutes = Int(duration) / 60
         let seconds = Int(duration) % 60

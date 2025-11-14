@@ -5,36 +5,36 @@
 //  Vue détaillée d'une flashcard avec support multimédia
 //
 
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 struct FlashcardDetailView: View {
     let flashcard: Flashcard
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var audioManager = AudioManager.shared
-    
+
     // États pour la gestion des médias
     @State private var isQuestionAudioPlaying = false
     @State private var isAnswerAudioPlaying = false
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 adaptiveBackground.ignoresSafeArea()
-                
+
                 ScrollView {
                     VStack(spacing: 24) {
                         // Section Question
                         questionSection
-                        
+
                         // Section Réponse
                         answerSection
-                        
+
                         // Section Métadonnées
                         metadataSection
                     }
@@ -53,8 +53,6 @@ struct FlashcardDetailView: View {
                     }
                     .foregroundColor(.blue)
                 }
-                
-
             }
         }
         .onDisappear {
@@ -62,8 +60,9 @@ struct FlashcardDetailView: View {
             audioManager.stopAudio()
         }
     }
-    
+
     // MARK: - Section Question
+
     private var questionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // En-tête de section simplifié
@@ -71,7 +70,7 @@ struct FlashcardDetailView: View {
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             // Contenu de la question
             switch flashcard.questionContentType {
             case .text:
@@ -89,7 +88,7 @@ struct FlashcardDetailView: View {
                 } else {
                     emptyContentPlaceholder("Aucune question textuelle")
                 }
-                
+
             case .image:
                 if let imageFileName = flashcard.questionImageFileName {
                     VStack(spacing: 12) {
@@ -105,7 +104,7 @@ struct FlashcardDetailView: View {
                         } else {
                             imageErrorPlaceholder
                         }
-                        
+
                         if let questionText = flashcard.question, !questionText.isEmpty {
                             Text(questionText)
                                 .font(.body)
@@ -122,7 +121,7 @@ struct FlashcardDetailView: View {
                 } else {
                     emptyContentPlaceholder("Aucune image de question")
                 }
-                
+
             case .audio:
                 if let audioFileName = flashcard.questionAudioFileName {
                     VStack(spacing: 12) {
@@ -130,7 +129,7 @@ struct FlashcardDetailView: View {
                             fileName: audioFileName,
                             isPlaying: $isQuestionAudioPlaying
                         )
-                        
+
                         if let questionText = flashcard.question, !questionText.isEmpty {
                             Text(questionText)
                                 .font(.body)
@@ -150,8 +149,9 @@ struct FlashcardDetailView: View {
             }
         }
     }
-    
+
     // MARK: - Section Réponse
+
     private var answerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // En-tête de section simplifié
@@ -159,7 +159,7 @@ struct FlashcardDetailView: View {
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             // Contenu de la réponse
             switch flashcard.answerContentType {
             case .text:
@@ -177,7 +177,7 @@ struct FlashcardDetailView: View {
                 } else {
                     emptyContentPlaceholder("Aucune réponse textuelle")
                 }
-                
+
             case .image:
                 if let imageFileName = flashcard.answerImageFileName {
                     VStack(spacing: 12) {
@@ -193,7 +193,7 @@ struct FlashcardDetailView: View {
                         } else {
                             imageErrorPlaceholder
                         }
-                        
+
                         if let answerText = flashcard.answer, !answerText.isEmpty {
                             Text(answerText)
                                 .font(.body)
@@ -210,7 +210,7 @@ struct FlashcardDetailView: View {
                 } else {
                     emptyContentPlaceholder("Aucune image de réponse")
                 }
-                
+
             case .audio:
                 if let audioFileName = flashcard.answerAudioFileName {
                     VStack(spacing: 12) {
@@ -218,7 +218,7 @@ struct FlashcardDetailView: View {
                             fileName: audioFileName,
                             isPlaying: $isAnswerAudioPlaying
                         )
-                        
+
                         if let answerText = flashcard.answer, !answerText.isEmpty {
                             Text(answerText)
                                 .font(.body)
@@ -238,8 +238,9 @@ struct FlashcardDetailView: View {
             }
         }
     }
-    
+
     // MARK: - Section Métadonnées
+
     private var metadataSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // En-tête de section simplifié
@@ -247,7 +248,7 @@ struct FlashcardDetailView: View {
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             // Liste d'informations verticale
             VStack(spacing: 8) {
                 metadataCard(
@@ -256,27 +257,26 @@ struct FlashcardDetailView: View {
                     icon: "",
                     color: .blue
                 )
-                
+
                 metadataCard(
                     title: "Dernière révision",
                     value: formatDate(flashcard.lastReviewDate),
                     icon: "",
                     color: .green
                 )
-                
+
                 metadataCard(
                     title: "Réponses correctes",
                     value: "\(flashcard.correctCount)",
                     icon: "",
                     color: .green
                 )
-                
             }
         }
     }
-    
+
     // MARK: - Composants utilitaires
-    
+
     private func emptyContentPlaceholder(_ message: String) -> some View {
         HStack {
             Image(systemName: "minus.circle")
@@ -294,13 +294,13 @@ struct FlashcardDetailView: View {
                 .fill(Color(.tertiarySystemGroupedBackground))
         )
     }
-    
+
     private var imageErrorPlaceholder: some View {
         VStack(spacing: 8) {
             Image(systemName: "photo")
                 .font(.system(size: 40))
                 .foregroundColor(.secondary)
-            
+
             Text("Image non disponible")
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -312,7 +312,7 @@ struct FlashcardDetailView: View {
                 .fill(Color(.tertiarySystemGroupedBackground))
         )
     }
-    
+
     private func audioPlayerView(fileName: String, isPlaying: Binding<Bool>) -> some View {
         HStack(spacing: 12) {
             Button(action: {
@@ -329,11 +329,11 @@ struct FlashcardDetailView: View {
                     .font(.system(size: 32))
                     .foregroundColor(.blue)
             }
-            
+
             Text("Audio")
                 .font(.headline)
                 .foregroundColor(.primary)
-            
+
             Spacer()
         }
         .padding(.horizontal, 16)
@@ -355,13 +355,13 @@ struct FlashcardDetailView: View {
             }
         }
     }
-    
-    private func metadataCard(title: String, value: String, icon: String, color: Color) -> some View {
+
+    private func metadataCard(title: String, value: String, icon _: String, color _: Color) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
-            
+
             Text(value)
                 .font(.body)
                 .fontWeight(.medium)
@@ -375,20 +375,21 @@ struct FlashcardDetailView: View {
                 .fill(Color(.secondarySystemGroupedBackground))
         )
     }
-    
+
     private func formatDate(_ date: Date?) -> String {
         guard let date = date else { return "Jamais" }
-        
+
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         formatter.locale = Locale.current // Utilise les paramètres système de l'utilisateur
-        
+
         return formatter.string(from: date)
     }
 }
 
 // MARK: - Sheet pour les images en plein écran
+
 struct ImageFullScreenView: View {
     let image: UIImage
     @Environment(\.dismiss) private var dismiss
@@ -396,12 +397,12 @@ struct ImageFullScreenView: View {
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.black.ignoresSafeArea()
-                
+
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -462,11 +463,12 @@ struct ImageFullScreenView: View {
 }
 
 // MARK: - Preview
+
 struct FlashcardDetailView_Previews: PreviewProvider {
     static var previews: some View {
         FlashcardDetailView(flashcard: sampleFlashcard)
     }
-    
+
     static var sampleFlashcard: Flashcard {
         let card = Flashcard()
         card.question = "Qu'est-ce que la photosynthèse ?"

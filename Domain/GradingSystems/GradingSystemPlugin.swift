@@ -5,9 +5,9 @@
 //  Created by  on 7/21/25.
 //
 
+import CoreData
 import Foundation
 import SwiftUI
-import CoreData
 
 // Protocole principal
 protocol GradingSystemPlugin {
@@ -26,7 +26,7 @@ protocol GradingSystemPlugin {
     var decimalPlaces: Int { get }
     var usesLetterGrades: Bool { get }
     var isInverted: Bool { get }
-    
+
     func format(_ grade: Double) -> String
     func weightedAverage(_ evaluations: [DummyEvaluation]) -> Double
     func validate(_ grade: Double) -> Bool
@@ -44,32 +44,32 @@ extension GradingSystemPlugin {
     func isGradeBetter(_ grade1: Double, than grade2: Double) -> Bool {
         guard grade1 != NO_GRADE && grade2 != NO_GRADE else { return false }
         guard validate(grade1) && validate(grade2) else { return false }
-        
-        if self.isInverted {
+
+        if isInverted {
             return grade1 < grade2 // Plus petit = meilleur (Allemagne)
         } else {
             return grade1 > grade2 // Plus grand = meilleur (France, USA, etc.)
         }
     }
-    
+
     /// Tri intelligent des matières par performance
     func sortSubjectsByPerformance(_ subjects: [Subject]) -> [Subject] {
         let validSubjects = subjects.filter { $0.grade != NO_GRADE && validate($0.grade) }
         let invalidSubjects = subjects.filter { $0.grade == NO_GRADE || !validate($0.grade) }
-        
+
         let sortedValid = validSubjects.sorted { subject1, subject2 in
             isGradeBetter(subject1.grade, than: subject2.grade)
         }
-        
+
         return sortedValid + invalidSubjects
     }
-    
+
     /// Pourcentage de performance unifié pour les anneaux
     func performancePercentage(for grade: Double) -> Double {
         guard grade != NO_GRADE && validate(grade) else { return 0 }
-        
+
         let normalizedGrade = Swift.max(self.min, Swift.min(grade, self.max))
-        
+
         if isInverted {
             return (self.max - normalizedGrade) / (self.max - self.min)
         } else {
@@ -80,7 +80,7 @@ extension GradingSystemPlugin {
     func findBestGrade(in grades: [Double]) -> Double {
         let validGrades = grades.filter { validate($0) }
         guard !validGrades.isEmpty else { return NO_GRADE }
-        
+
         if isInverted {
             return validGrades.min() ?? NO_GRADE // Plus petit = meilleur
         } else {
@@ -88,4 +88,3 @@ extension GradingSystemPlugin {
         }
     }
 }
-

@@ -5,9 +5,9 @@
 //  Created by  on 6/29/25.
 //
 
-import UIKit
 import Foundation
 import SwiftUI
+import UIKit
 
 struct AssociationView: View {
     @ObservedObject var deck: FlashcardDeck
@@ -15,7 +15,7 @@ struct AssociationView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
     @AppStorage("isFreeMode") private var isFreeMode = false
-    
+
     @State private var allCards: [AssociationCard] = []
     @State private var selectedCards: Set<UUID> = []
     @State private var matchedPairs: Set<UUID> = []
@@ -27,7 +27,7 @@ struct AssociationView: View {
     @State private var showCompletionElements = false
     @State private var showStatsElements = false
     @State private var showIntroduction = true // ✅ NOUVEAU : Écran d'introduction
-    
+
     // ✅ NOUVEAU : Système de sessions multiples
     @State private var currentBatch = 1
     @State private var usedCards: [Flashcard] = []
@@ -35,7 +35,7 @@ struct AssociationView: View {
     @State private var showResetConfirmation = false // ✅ NOUVEAU : Confirmation reset
     @State private var totalBatches = 1
     @ObservedObject private var activityManager = RevisionActivityManager.shared
-    
+
     // ✅ STATISTIQUES TOTALES POUR TOUTES LES SÉRIES
     @State private var totalCorrectMatches = 0
     @State private var totalAttempts = 0
@@ -44,42 +44,42 @@ struct AssociationView: View {
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     private var flashcards: [Flashcard] {
         (deck.flashcards as? Set<Flashcard>)?.compactMap { $0 } ?? []
     }
-    
+
     private var totalPairs: Int {
         allCards.count / 2 // Nombre réel de paires générées
     }
-    
+
     private var debugInfo: String {
         "Flashcards: \(flashcards.count), Cartes: \(allCards.count), Paires: \(totalPairs)"
     }
-    
-    
+
     private func generateAssociationCards() {
         // 1️⃣ Filtrer les cartes valides
         let allValidCards = flashcards.filter { card in
             guard let question = card.question, !question.isEmpty,
-                  let answer = card.answer, !answer.isEmpty else {
+                  let answer = card.answer, !answer.isEmpty
+            else {
                 return false
             }
             return true
         }
-        
+
         // 2️⃣ Calculer le nombre total de batches possibles (avec minimum 3 cartes par série)
-        let fullBatches = allValidCards.count / 6  // Batches complets de 6 cartes
+        let fullBatches = allValidCards.count / 6 // Batches complets de 6 cartes
         let remainingCards = allValidCards.count % 6
-        let hasPartialBatch = remainingCards >= 3  // Batch partiel si au moins 3 cartes restantes
+        let hasPartialBatch = remainingCards >= 3 // Batch partiel si au moins 3 cartes restantes
         totalBatches = max(1, fullBatches + (hasPartialBatch ? 1 : 0))
-        
+
         // 3️⃣ INTÉGRATION SM-2 vs MODE LIBRE : Sélection intelligente pour ce batch
         // Calculer combien de cartes on peut encore utiliser
         let remainingValidCards = allValidCards.filter { !usedCards.contains($0) }
         let targetCardsForBatch = min(remainingValidCards.count, 6)
-        let minCardsForBatch = min(targetCardsForBatch, 3)  // Minimum 3 cartes
-        
+        let minCardsForBatch = min(targetCardsForBatch, 3) // Minimum 3 cartes
+
         let selectedCards: [Flashcard]
         if isFreeMode {
             // Mode libre : cartes aléatoires parmi les non utilisées
@@ -88,31 +88,31 @@ struct AssociationView: View {
         } else {
             // Mode SM-2 : sélection intelligente
             selectedCards = SimpleSRSManager.shared.getSmartCards(
-                deck: deck, 
-                minCards: minCardsForBatch, 
+                deck: deck,
+                minCards: minCardsForBatch,
                 excludeCards: usedCards
             ).filter { card in
                 allValidCards.contains(card)
             }
             print("🎯 [Association] Mode SM-2: \(selectedCards.count) cartes sélectionnées intelligemment")
         }
-        
+
         print("🔍 [Association] Batch \(currentBatch)/\(totalBatches) - Cartes trouvées: \(selectedCards.count), Target: \(targetCardsForBatch)")
-        
+
         // 4️⃣ Prendre jusqu'à 6 cartes (ou moins si c'est le dernier batch)
         let numberOfPairs = min(selectedCards.count, targetCardsForBatch)
         let cardsToUse = Array(selectedCards.prefix(numberOfPairs))
-        
+
         // 5️⃣ Ajouter les cartes utilisées pour éviter les doublons
         usedCards += cardsToUse
-        
+
         // 5️⃣ Générer les cartes d'association
         var cards: [AssociationCard] = []
-        
+
         for flashcard in cardsToUse {
             let uniquePairId = UUID()
             let flashcardId = flashcard.id ?? UUID()
-            
+
             cards.append(AssociationCard(
                 id: UUID(),
                 text: flashcard.question ?? "",
@@ -125,7 +125,7 @@ struct AssociationView: View {
                 audioFileName: flashcard.questionAudioFileName,
                 audioDuration: flashcard.questionAudioDuration
             ))
-            
+
             cards.append(AssociationCard(
                 id: UUID(),
                 text: flashcard.answer ?? "",
@@ -139,23 +139,24 @@ struct AssociationView: View {
                 audioDuration: flashcard.answerAudioDuration
             ))
         }
-        
+
         allCards = cards.shuffled()
         print("✅ \(numberOfPairs) paires générées (\(allCards.count) cartes total)")
     }
-    
+
     private var progress: Double {
         guard totalPairs > 0 else { return 0 }
         return Double(correctMatches) / Double(totalPairs)
     }
-    
+
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
-    
+
     // MARK: - Introduction View
+
     private var introductionView: some View {
         ZStack {
             adaptiveBackground.ignoresSafeArea()
-            
+
             VStack(spacing: 32) {
                 // Bouton X en haut à droite
                 HStack {
@@ -173,35 +174,35 @@ struct AssociationView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
-                
+
                 Spacer()
-                
+
                 // Titre du mode
                 Text("Association")
                     .font(.largeTitle.weight(.bold))
                     .foregroundColor(.primary)
-                
+
                 // Icône du mode
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .font(.system(size: 80, weight: .light))
                     .foregroundColor(.purple)
-                
+
                 // Texte explicatif
                 VStack(spacing: 16) {
                     Text("Associez les questions avec leurs réponses")
                         .font(.title3)
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
-                    
+
                     Text("Touchez deux cartes pour les associer. Trouvez toutes les paires pour gagner !")
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
-                
+
                 Spacer()
-                
+
                 // Bouton commencer
                 Button(action: {
                     HapticFeedbackManager.shared.impact(style: .soft)
@@ -226,11 +227,11 @@ struct AssociationView: View {
             }
         }
     }
-    
+
     var body: some View {
         ZStack {
             adaptiveBackground.ignoresSafeArea()
-            
+
             if showIntroduction {
                 introductionView
             } else {
@@ -239,7 +240,7 @@ struct AssociationView: View {
                     if !showResult {
                         headerSection
                     }
-                    
+
                     // ✅ CONTENU PRINCIPAL (pas de vue d'erreur)
                     if showResult {
                         associationCompletionView
@@ -259,7 +260,7 @@ struct AssociationView: View {
         }
         .onDisappear {
             activityManager.endWeeklyTracking()
-            
+
             if let deckId = deck.id?.uuidString {
                 let cache = SM2OptimizationCache.shared
                 cache.invalidateDeckStats(forDeckId: deckId)
@@ -267,7 +268,7 @@ struct AssociationView: View {
             }
         }
         .alert("Recommencer l'association", isPresented: $showResetConfirmation) {
-            Button("Annuler", role: .cancel) { }
+            Button("Annuler", role: .cancel) {}
             Button("Recommencer", role: .destructive) {
                 resetAssociation()
             }
@@ -275,8 +276,9 @@ struct AssociationView: View {
             Text("Voulez-vous recommencer l'association depuis le début ? Votre progression actuelle sera perdue.")
         }
     }
-    
+
     // MARK: - Reset Functions
+
     private func resetAssociation() {
         // Réinitialiser tous les états
         correctMatches = 0
@@ -288,19 +290,19 @@ struct AssociationView: View {
         showContinueOption = false
         currentBatch = 1
         usedCards = []
-        
+
         // Nettoyer la progression sauvegardée
         SimpleSRSManager.shared.clearAssociationProgress(for: deck)
-        
+
         // Régénérer les cartes
         generateAssociationCards()
-        
+
         print("🔄 Association réinitialisée")
     }
-    
+
     private var headerSection: some View {
         let isSmallScreen = UIScreen.main.bounds.height < 700
-        
+
         return VStack(spacing: isSmallScreen ? 4 : 8) {
             HStack {
                 Button(action: {
@@ -313,17 +315,17 @@ struct AssociationView: View {
                         .frame(width: 30, height: 30)
                         .background(Circle().fill(Color(.systemGray5)))
                 }
-                
+
                 Spacer()
-                
+
                 VStack(spacing: 2) {
                     Text(deck.name ?? String(localized: "association_game"))
                         .font(.headline.weight(.semibold))
                         .foregroundColor(.primary)
                 }
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     HapticFeedbackManager.shared.impact(style: .soft)
                     showResetConfirmation = true
@@ -337,16 +339,16 @@ struct AssociationView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, isSmallScreen ? 0 : 8)
-            
+
             ProgressBar2(progress: progress)
                 .padding(.horizontal, 20)
-            
+
             ZStack {
                 // ✅ Compteur centré
                 Text("\(correctMatches)/\(totalPairs)")
                     .font(.subheadline.weight(.medium))
                     .foregroundColor(.secondary)
-                
+
                 // ✅ Indicateur de série positionné à droite
                 if totalBatches > 1 {
                     HStack {
@@ -368,19 +370,19 @@ struct AssociationView: View {
         .padding(.bottom, isSmallScreen ? 8 : 20)
         .frame(height: isSmallScreen ? 70 : 100) // Hauteur réduite pour petits écrans
     }
-    
+
     // MARK: - Game Logic (à ajouter à la fin de la struct)
 
     private func selectCard(_ card: AssociationCard) {
         guard !matchedPairs.contains(card.matchId) else { return }
-        
+
         if selectedCards.contains(card.id) {
             selectedCards.remove(card.id)
             // Haptique supprimé : sera déclenché uniquement au résultat du match
         } else if selectedCards.count < 2 {
             selectedCards.insert(card.id)
             // Haptique supprimé : sera déclenché uniquement au résultat du match
-            
+
             if selectedCards.count == 2 {
                 checkMatch()
             }
@@ -389,26 +391,26 @@ struct AssociationView: View {
 
     private func checkMatch() {
         attempts += 1
-        totalAttempts += 1  // ✅ Tracker les tentatives totales
-        
+        totalAttempts += 1 // ✅ Tracker les tentatives totales
+
         let selectedCardsList = allCards.filter { selectedCards.contains($0.id) }
         guard selectedCardsList.count == 2 else { return }
-        
+
         let card1 = selectedCardsList[0]
         let card2 = selectedCardsList[1]
-        
-        if card1.matchId == card2.matchId && card1.cardType != card2.cardType {
+
+        if card1.matchId == card2.matchId, card1.cardType != card2.cardType {
             HapticFeedbackManager.shared.impact(style: .soft)
-            
+
             matchedPairs.insert(card1.matchId)
             correctMatches += 1
-            totalCorrectMatches += 1  // ✅ Tracker les matches corrects totaux
+            totalCorrectMatches += 1 // ✅ Tracker les matches corrects totaux
             selectedCards.removeAll()
-            
+
             // ✅ INTÉGRATION SM-2 vs MODE LIBRE pour Association (match correct)
             let flashcard1 = flashcards.first(where: { $0.id == card1.originalFlashcardId })
             let flashcard2 = flashcards.first(where: { $0.id == card2.originalFlashcardId })
-            
+
             if !isFreeMode, let f1 = flashcard1, let f2 = flashcard2 {
                 // Mode SM-2 : traiter le résultat (Quality 2 pour les 2 cartes)
                 let operationId = UUID().uuidString
@@ -438,7 +440,7 @@ struct AssociationView: View {
                     )
                 }
             }
-            
+
             if correctMatches == totalPairs {
                 // ✅ Ne montrer l'écran de complétion que si c'est le dernier batch
                 if canContinueToNextBatch {
@@ -455,14 +457,14 @@ struct AssociationView: View {
             }
         } else {
             HapticFeedbackManager.shared.impact(style: .soft)
-            
+
             wrongSelectionCards = selectedCards
-            
+
             // ✅ INTÉGRATION SM-2 vs MODE LIBRE pour Association (match incorrect)
             // Pénaliser les 2 cartes concernées par l'erreur
             let flashcard1 = flashcards.first(where: { $0.id == card1.originalFlashcardId })
             let flashcard2 = flashcards.first(where: { $0.id == card2.originalFlashcardId })
-            
+
             if !isFreeMode, let f1 = flashcard1, let f2 = flashcard2 {
                 // Mode SM-2 : traiter le résultat (Quality 1 pour les 2 cartes)
                 let operationId = UUID().uuidString
@@ -492,7 +494,7 @@ struct AssociationView: View {
                     )
                 }
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     wrongSelectionCards.removeAll()
@@ -520,29 +522,30 @@ struct AssociationView: View {
         totalAttempts = 0
         generateAssociationCards()
     }
-    
+
     // ✅ NOUVELLES MÉTHODES : Gestion des sessions multiples
     private var canContinueToNextBatch: Bool {
         // Vérifier s'il reste des cartes non utilisées ET si on n'a pas atteint le dernier batch
         let allValidCards = flashcards.filter { card in
             guard let question = card.question, !question.isEmpty,
-                  let answer = card.answer, !answer.isEmpty else {
+                  let answer = card.answer, !answer.isEmpty
+            else {
                 return false
             }
             return true
         }
-        
+
         let remainingCards = allValidCards.filter { card in
             !usedCards.contains(card)
         }
-        
+
         // On peut continuer si on n'est pas au dernier batch ET qu'il reste au moins 3 cartes
         return currentBatch < totalBatches && remainingCards.count >= 3
     }
-    
+
     private func continueToNextBatch() {
         currentBatch += 1
-        
+
         // Reset pour le nouveau batch
         correctMatches = 0
         attempts = 0
@@ -553,21 +556,20 @@ struct AssociationView: View {
         showCompletionElements = false
         showStatsElements = false
         startTime = Date()
-        
+
         // Générer le nouveau batch
         generateAssociationCards()
     }
 
-    
     // ✅ CONTENU PRINCIPAL CENTRÉ DANS L'ESPACE DISPONIBLE
     private var associationContentView: some View {
         let isSmallScreen = UIScreen.main.bounds.height < 700
-        
+
         return GeometryReader { geometry in
             VStack {
                 Spacer()
                     .frame(height: isSmallScreen ? 10 : 20)
-                
+
                 LazyVGrid(columns: columns, spacing: isSmallScreen ? 10 : 14) {
                     ForEach(allCards) { card in
                         AssociationCardView(
@@ -581,38 +583,38 @@ struct AssociationView: View {
                     }
                 }
                 .padding(.horizontal, isSmallScreen ? 16 : 20)
-                
+
                 Spacer()
                     .frame(height: isSmallScreen ? 10 : 20)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
-    
+
     // ✅ ÉCRAN DE COMPLÉTION (inchangé)
     private var associationCompletionView: some View {
         let isSmallScreen = UIScreen.main.bounds.height < 700
-        
+
         return VStack(spacing: isSmallScreen ? 20 : 32) {
             Spacer()
                 .frame(height: isSmallScreen ? 10 : 20)
-            
+
             completionHeader
             completionStats
-            
+
             Spacer()
                 .frame(height: isSmallScreen ? 10 : 20)
-            
+
             completionButtons
         }
         .padding(.horizontal, isSmallScreen ? 20 : 24)
         .onAppear {
             HapticFeedbackManager.shared.impact(style: .soft)
-            
+
             withAnimation(.easeOut(duration: 0.6)) {
                 showCompletionElements = true
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 withAnimation(.easeOut(duration: 0.4)) {
                     showStatsElements = true
@@ -620,7 +622,7 @@ struct AssociationView: View {
             }
         }
     }
-    
+
     private var completionHeader: some View {
         VStack(spacing: 16) {
             Image(systemName: "checkmark.circle")
@@ -629,7 +631,7 @@ struct AssociationView: View {
                 .opacity(showCompletionElements ? 1 : 0)
                 .scaleEffect(showCompletionElements ? 1.0 : 0.9)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: showCompletionElements)
-            
+
             Text(String(localized: "association_completed"))
                 .font(.title.weight(.medium))
                 .foregroundColor(.primary)
@@ -638,7 +640,7 @@ struct AssociationView: View {
                 .animation(.easeOut(duration: 0.6).delay(0.2), value: showCompletionElements)
         }
     }
-    
+
     private var completionStats: some View {
         VStack(spacing: 20) {
             VStack(spacing: 16) {
@@ -653,12 +655,12 @@ struct AssociationView: View {
                     }
                     Spacer()
                 }
-                
+
                 Rectangle()
                     .fill(Color(.separator))
                     .frame(height: 1)
                     .opacity(0.3)
-                
+
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("\(totalAttempts)")
@@ -668,9 +670,9 @@ struct AssociationView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .trailing, spacing: 4) {
                         Text("\(totalCorrectMatches)")
                             .font(.title2.weight(.medium))
@@ -695,7 +697,7 @@ struct AssociationView: View {
             .animation(.easeOut(duration: 0.5), value: showStatsElements)
         }
     }
-    
+
     private var completionButtons: some View {
         VStack(spacing: 16) {
             // ✅ NOUVEAU : Bouton Continuer si plus de cartes disponibles
@@ -720,7 +722,7 @@ struct AssociationView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
             }
-            
+
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .soft)
                 restartAssociation()
@@ -740,7 +742,7 @@ struct AssociationView: View {
                     )
             }
             .buttonStyle(.plain)
-            
+
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .soft)
                 activityManager.endWeeklyTracking()
@@ -769,15 +771,13 @@ struct AssociationView: View {
     }
 }
 
-
-
 // ✅ MODÈLES DE DONNÉES RÉVISÉS
 struct AssociationCard: Identifiable {
     let id: UUID
     let text: String
     let matchId: UUID
     let cardType: CardType
-    let originalFlashcardId: UUID  // ✅ ID de la flashcard originale
+    let originalFlashcardId: UUID // ✅ ID de la flashcard originale
     let contentType: FlashcardContentType
     let imageFileName: String?
     let imageData: Data?
@@ -788,15 +788,16 @@ struct AssociationCard: Identifiable {
 enum CardType {
     case question, answer
 }
+
 struct AssociationCardView: View {
     let card: AssociationCard
     let isSelected: Bool
     let isMatched: Bool
     let showWrongIndicator: Bool
     let onTap: () -> Void
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     private var cardBackground: Color {
         if isMatched {
             return .green.opacity(0.1)
@@ -808,7 +809,7 @@ struct AssociationCardView: View {
             return Color(.secondarySystemGroupedBackground)
         }
     }
-    
+
     private var borderColor: Color {
         if isMatched {
             return .green
@@ -820,11 +821,11 @@ struct AssociationCardView: View {
             return Color(.separator).opacity(0.3)
         }
     }
-    
+
     private var borderWidth: CGFloat {
         (isSelected || isMatched || showWrongIndicator) ? 2 : 1
     }
-    
+
     var body: some View {
         Button(action: {
             guard !isMatched else { return }
@@ -838,7 +839,7 @@ struct AssociationCardView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(borderColor, lineWidth: borderWidth)
                     )
-                
+
                 VStack(spacing: 4) {
                     // ✅ ZONE INDICATEUR AVEC HAUTEUR FIXE
                     ZStack {
@@ -846,7 +847,7 @@ struct AssociationCardView: View {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 14))
                             .opacity(0) // ✅ INVISIBLE mais prend l'espace
-                        
+
                         // ✅ Indicateur visible uniquement si nécessaire
                         if showWrongIndicator {
                             Image(systemName: "xmark.circle.fill")
@@ -857,7 +858,7 @@ struct AssociationCardView: View {
                     }
                     .frame(height: 20) // ✅ HAUTEUR FIXE pour la zone indicateur
                     .padding(.top, 8)
-                    
+
                     // ✅ TEXTE EN HAUT (si présent)
                     if !card.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         Text(card.text)
@@ -869,7 +870,7 @@ struct AssociationCardView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal, 4)
                     }
-                    
+
                     // ✅ MÉDIA EN BAS
                     switch card.contentType {
                     case .text:
@@ -883,10 +884,11 @@ struct AssociationCardView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.horizontal, 4)
                         }
-                        
+
                     case .image:
                         if let fileName = card.imageFileName,
-                           let image = MediaStorageManager.shared.loadImage(fileName: fileName, data: card.imageData) {
+                           let image = MediaStorageManager.shared.loadImage(fileName: fileName, data: card.imageData)
+                        {
                             Image(uiImage: image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -894,11 +896,11 @@ struct AssociationCardView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 6))
                                 .clipped()
                         }
-                        
+
                     case .audio:
                         if let fileName = card.audioFileName {
                             Button(action: {
-                                if AudioManager.shared.isPlaying && AudioManager.shared.playingFileName == fileName {
+                                if AudioManager.shared.isPlaying, AudioManager.shared.playingFileName == fileName {
                                     AudioManager.shared.stopAudio()
                                 } else {
                                     AudioManager.shared.playAudio(fileName: fileName)
@@ -916,7 +918,7 @@ struct AssociationCardView: View {
                             .buttonStyle(PlainButtonStyle())
                         }
                     }
-                    
+
                     Spacer()
                 }
             }

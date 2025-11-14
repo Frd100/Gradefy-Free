@@ -7,36 +7,18 @@
 
 import SwiftUI
 
+// ✅ MODIFIÉ : Ce fichier n'est plus utilisé - Application entièrement gratuite
+// Les widgets sont toujours accessibles maintenant
 struct WidgetLockedView: View {
     let widgetTitle: String
-    
+
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "lock.fill")
-                .font(.system(size: 20, weight: .medium))
-                .foregroundColor(.blue)
-            
-            Text("Gradefy Pro")
-                .font(.headline.weight(.semibold))
-                .foregroundColor(.primary)
-        }
-        .padding()
-        .containerBackground(.thinMaterial, for: .widget)
-        .widgetURL(URL(string: "parallax://premium"))
+        EmptyView() // Plus utilisé - Application entièrement gratuite
     }
 }
 
 struct WidgetLockedAccessoryView: View {
     var body: some View {
-        VStack(spacing: 2) {
-            Image(systemName: "lock.fill")
-                .font(.system(size: 8, weight: .medium))
-                .foregroundColor(.blue)
-            
-            Text("Pro")
-                .font(.system(size: 6, weight: .medium))
-                .foregroundColor(.secondary)
-        }
-        .containerBackground(.clear, for: .widget)  // ✅ CORRECTION
+        EmptyView() // Plus utilisé - Application entièrement gratuite
     }
 }

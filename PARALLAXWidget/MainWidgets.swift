@@ -1,19 +1,21 @@
-import WidgetKit
-import SwiftUI
 import Foundation
+import SwiftUI
+import WidgetKit
 
 // MARK: - Widget Data Manager pour Semaines Consécutives
+
 class WidgetDataManager {
     static let shared = WidgetDataManager()
     private let defaults = UserDefaults(suiteName: "group.com.Coefficient.PARALLAX2")
     private let consecutiveWeeksKey = "consecutiveWeeks"
     private let lastActiveWeekKey = "lastActiveWeekIdentifier"
-    
+
     func getConsecutiveWeeks() -> Int {
         let storedStreak = defaults?.integer(forKey: consecutiveWeeksKey) ?? 0
         guard storedStreak > 0 else { return 0 }
         guard let lastIdentifier = defaults?.string(forKey: lastActiveWeekKey),
-              let lastDate = Self.date(fromWeekIdentifier: lastIdentifier) else {
+              let lastDate = Self.date(fromWeekIdentifier: lastIdentifier)
+        else {
             return storedStreak
         }
 
@@ -49,17 +51,19 @@ class WidgetDataManager {
 }
 
 // MARK: - Entry Structure pour Semaines
+
 struct WeeklyStreakEntry: TimelineEntry {
     let date: Date
     let consecutiveWeeks: Int
 }
 
 // MARK: - Extension pour le formatage
+
 extension WeeklyStreakEntry {
     var formattedStreak: String {
         return "\(consecutiveWeeks)"
     }
-    
+
     var streakLabel: String {
         if consecutiveWeeks <= 1 {
             return String(localized: "widget_week_singular") // "semaine"
@@ -70,19 +74,20 @@ extension WeeklyStreakEntry {
 }
 
 // MARK: - Provider pour Semaines
+
 struct WeeklyStreakProvider: TimelineProvider {
-    func placeholder(in context: Context) -> WeeklyStreakEntry {
+    func placeholder(in _: Context) -> WeeklyStreakEntry {
         WeeklyStreakEntry(date: Date(), consecutiveWeeks: 3)
     }
-    
-    func getSnapshot(in context: Context, completion: @escaping (WeeklyStreakEntry) -> Void) {
+
+    func getSnapshot(in _: Context, completion: @escaping (WeeklyStreakEntry) -> Void) {
         completion(WeeklyStreakEntry(date: Date(), consecutiveWeeks: 3))
     }
-    
-    func getTimeline(in context: Context, completion: @escaping (Timeline<WeeklyStreakEntry>) -> Void) {
+
+    func getTimeline(in _: Context, completion: @escaping (Timeline<WeeklyStreakEntry>) -> Void) {
         let consecutiveWeeks = WidgetDataManager.shared.getConsecutiveWeeks()
         let entry = WeeklyStreakEntry(date: Date(), consecutiveWeeks: consecutiveWeeks)
-        
+
         // Mise à jour quotidienne
         let nextUpdate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
@@ -91,22 +96,20 @@ struct WeeklyStreakProvider: TimelineProvider {
 }
 
 // MARK: - Vue Widget Simplifiée
+
+// ✅ MODIFIÉ : Toujours afficher le widget - Application entièrement gratuite
 struct WeeklyStreakWidgetView: View {
     var entry: WeeklyStreakEntry
-    
+
     var body: some View {
-        if WidgetPremiumHelper.isPremiumUser() {
-            SmallStreakWidgetView(entry: entry)
-        } else {
-            WidgetLockedView(widgetTitle: String(localized: "widget_streak_locked"))
-        }
+        SmallStreakWidgetView(entry: entry) // Toujours accessible
     }
 }
 
 struct SmallStreakWidgetView: View {
     let entry: WeeklyStreakEntry
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         ZStack {
             // ✅ Gros cercle blanc à gauche qui contient le contenu
@@ -122,7 +125,7 @@ struct SmallStreakWidgetView: View {
                                     .system(size: 45, weight: .black, design: .default)
                                 )
                                 .foregroundStyle(Color(.label)) // ✅ CORRIGÉ : Adaptatif (noir/blanc)
-                            
+
                             Text(entry.streakLabel)
                                 .font(.footnote.weight(.regular))
                                 .foregroundColor(Color(.secondaryLabel)) // ✅ CORRIGÉ : Adaptatif avec opacité
@@ -130,7 +133,7 @@ struct SmallStreakWidgetView: View {
                         .offset(x: 35) // ✅ Décalage vers la droite
                     )
                     .offset(x: -55) // ✅ Légèrement décalé vers la gauche
-                
+
                 Spacer()
             }
         }
@@ -142,12 +145,11 @@ struct SmallStreakWidgetView: View {
     }
 }
 
-
-
 // MARK: - Widget Configuration (Seulement systemSmall)
+
 struct WeeklyStreakWidget: Widget {
     let kind: String = "WeeklyStreakWidget"
-    
+
     var body: some WidgetConfiguration {
         StaticConfiguration(
             kind: kind,
@@ -164,6 +166,7 @@ struct WeeklyStreakWidget: Widget {
 }
 
 // MARK: - Bundle Principal
+
 struct MainWidgets: WidgetBundle {
     var body: some Widget {
         WeeklyStreakWidget()
@@ -171,6 +174,7 @@ struct MainWidgets: WidgetBundle {
 }
 
 // MARK: - Previews
+
 struct WeeklyStreakWidget_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -178,27 +182,27 @@ struct WeeklyStreakWidget_Previews: PreviewProvider {
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 0))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .previewDisplayName("0 semaine")
-            
+
             // Preview avec 1 semaine
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 1))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .previewDisplayName("1 semaine")
-            
+
             // Preview avec 3 semaines
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 3))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .previewDisplayName("3 semaines")
-            
+
             // Preview avec 7 semaines
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 7))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .previewDisplayName("7 semaines")
-            
+
             // Preview avec 15 semaines
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 15))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .previewDisplayName("15 semaines")
-            
+
             // Preview avec 25 semaines
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 25))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
@@ -208,6 +212,7 @@ struct WeeklyStreakWidget_Previews: PreviewProvider {
 }
 
 // MARK: - Calendar Helpers
+
 private extension Calendar {
     func startOfWeek(for date: Date) -> Date {
         let components = dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
@@ -227,7 +232,7 @@ struct WeeklyStreakWidgetDark_Previews: PreviewProvider {
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .preferredColorScheme(.dark)
                 .previewDisplayName("Mode sombre - 5 semaines")
-            
+
             SmallStreakWidgetView(entry: WeeklyStreakEntry(date: Date(), consecutiveWeeks: 12))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
                 .preferredColorScheme(.dark)

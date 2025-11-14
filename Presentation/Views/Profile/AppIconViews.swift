@@ -4,24 +4,24 @@
 //
 //  Created by  on 7/21/25.
 //
-import SwiftUI
-import CoreData
-import UIKit
-import WidgetKit
-import Lottie
-import UniformTypeIdentifiers
 import Combine
+import CoreData
 import Foundation
+import Lottie
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import WidgetKit
 
 struct AppIconSelectionView: View {
     @StateObject private var iconManager = AppIconManager.shared
     @State private var premiumManager = PremiumManager.shared
     @State private var showingPremiumView = false
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // ✅ PARAMÈTRES D'APPARENCE intégrés
     @AppStorage("darkModeEnabled") private var darkModeEnabled: Bool = false
-    
+
     // ✅ COMPUTED PROPERTY au lieu de let statique
     private var availableIcons: [AppIconDisplayItem] {
         [
@@ -52,18 +52,18 @@ struct AppIconSelectionView: View {
                 color: .gray,
                 previewImageName: "iconMinimalPreview",
                 isPremium: true
-            )
+            ),
         ]
     }
-    
+
     var body: some View {
         List {
             // ✅ SECTION ANIMATION LOTTIE
             animationSection
-            
+
             // ✅ SECTION APPARENCE
             appearanceSection
-            
+
             // ✅ SECTION ICÔNES
             iconSection
         }
@@ -72,11 +72,9 @@ struct AppIconSelectionView: View {
         .onAppear {
             iconManager.syncCurrentIcon()
         }
-        .sheet(isPresented: $showingPremiumView) {
-            PremiumView(highlightedFeature: .customThemes)
-        }
+        // ✅ MODIFIÉ : Supprimé - Application entièrement gratuite
     }
-    
+
     private var animationSection: some View {
         Section {
             VStack(spacing: 10) {
@@ -85,7 +83,7 @@ struct AppIconSelectionView: View {
                     isAnimated: true
                 )
                 .frame(width: AppConstants.Animation.lottieSize, height: AppConstants.Animation.lottieSize)
-                
+
                 Text(String(localized: "appearance_description"))
                     .font(.caption.weight(.regular))
                     .foregroundColor(.secondary)
@@ -99,22 +97,23 @@ struct AppIconSelectionView: View {
     }
 
     // MARK: - Section Apparence
+
     private var appearanceSection: some View {
         Section(String(localized: "section_display")) {
             // Mode sombre
             HStack(spacing: 16) {
-                
                 Toggle(String(localized: "setting_dark_mode"), isOn: $darkModeEnabled)
                     .toggleStyle(SwitchToggleStyle(tint: .blue))
-                    .onChange(of: darkModeEnabled) { _, newValue in
+                    .onChange(of: darkModeEnabled) { _, _ in
                         HapticFeedbackManager.shared.selection()
                     }
             }
             .padding(.vertical, 2)
         }
     }
-    
+
     // MARK: - Section Icônes
+
     private var iconSection: some View {
         Section(String(localized: "section_app_icon")) {
             ForEach(availableIcons) { icon in
@@ -122,28 +121,16 @@ struct AppIconSelectionView: View {
                     icon: icon,
                     isSelected: iconManager.currentIcon == icon.name,
                     isChanging: iconManager.isChanging && iconManager.currentIcon == icon.name,
-                    isPremium: premiumManager.isPremium
+                    isPremium: true // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
                 ) {
                     selectIcon(icon)
                 }
             }
         }
     }
-    
+
     private func selectIcon(_ icon: AppIconDisplayItem) {
-        // ✅ NOUVEAU : Toujours permettre la sélection de l'icône par défaut
-        if icon.name == "AppIcon" {
-            iconManager.changeIcon(to: icon.name)
-            return
-        }
-        
-        // ✅ NOUVEAU : Vérifier d'abord si l'icône est premium et l'utilisateur gratuit
-        if icon.isPremium && !premiumManager.isPremium {
-            showingPremiumView = true
-            return
-        }
-        
-        // ✅ NOUVEAU : Permettre le changement si l'icône est différente
+        // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
         if icon.name != iconManager.currentIcon {
             iconManager.changeIcon(to: icon.name)
         }
@@ -158,7 +145,7 @@ struct AppIconRow: View {
     let isChanging: Bool
     let isPremium: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: {
             guard !isChanging else { return }
@@ -186,14 +173,14 @@ struct AppIconRow: View {
                                 .stroke(Color.gray, lineWidth: 1)
                         )
                 }
-                
+
                 // 📝 TITRE AU MILIEU
                 Text(icon.displayName)
                     .font(.body)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 // ✅ INDICATEUR À DROITE
                 Group {
                     if isChanging {
@@ -207,7 +194,7 @@ struct AppIconRow: View {
                     } else if icon.isPremium && !isPremium {
                         // 🔒 CADENAS DORÉ aligné
                         Image(systemName: "lock.fill")
-                            .font(.title3)  // ✅ MÊME TAILLE QUE LE CHECKMARK
+                            .font(.title3) // ✅ MÊME TAILLE QUE LE CHECKMARK
                             .foregroundColor(.secondary)
                     } else {
                         Image(systemName: "circle")
@@ -215,9 +202,8 @@ struct AppIconRow: View {
                             .foregroundColor(.secondary.opacity(0.6))
                     }
                 }
-                .frame(width: 24, height: 24)  // ✅ FRAME FIXE POUR ALIGNEMENT
-                .frame(maxWidth: 24, alignment: .center)  // ✅ CENTRAGE PARFAIT
-
+                .frame(width: 24, height: 24) // ✅ FRAME FIXE POUR ALIGNEMENT
+                .frame(maxWidth: 24, alignment: .center) // ✅ CENTRAGE PARFAIT
             }
             .padding(.vertical, 2)
             .contentShape(Rectangle())
@@ -245,26 +231,26 @@ struct AppIconDisplayItem: Identifiable {
 final class AppIconManager: ObservableObject {
     static let shared = AppIconManager()
     private init() {}
-    
+
     @Published private(set) var currentIcon: String = "AppIcon"
     @Published private(set) var isChanging: Bool = false
-    
+
     func syncCurrentIcon() {
         currentIcon = UIApplication.shared.alternateIconName ?? "AppIcon"
     }
-    
+
     func changeIcon(to iconName: String) {
         guard !isChanging else { return }
         guard UIApplication.shared.supportsAlternateIcons else {
             print("Icônes alternatives non supportées")
             return
         }
-        
+
         isChanging = true
         let newIconName = iconName == "AppIcon" ? nil : iconName
-        
+
         HapticFeedbackManager.shared.impact(style: .medium)
-        
+
         UIApplication.shared.setAlternateIconName(newIconName) { [weak self] error in
             DispatchQueue.main.async {
                 self?.isChanging = false

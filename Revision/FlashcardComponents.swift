@@ -1,26 +1,25 @@
 //
-//  ProgressBar.swift
+//  FlashcardComponents.swift
 //  PARALLAX
 //
 //  Created by  on 7/21/25.
 //
 
-
+import CoreData
+import Foundation
 import SwiftUI
 import UIKit
-import Foundation
-import CoreData
 
 // MARK: - Progress Bar Component
 
 struct ProgressBar: View {
     let progress: Double
     let height: CGFloat = 10
-    
+
     private var progressWidth: CGFloat {
         return min(CGFloat(progress), 1.0)
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
@@ -28,7 +27,7 @@ struct ProgressBar: View {
                     .fill(Color.gray.opacity(0.3))
                     .frame(height: height)
                     .cornerRadius(height / 2)
-                
+
                 Rectangle()
                     .fill(Color.primary)
                     .frame(width: progressWidth * geometry.size.width, height: height)
@@ -46,7 +45,7 @@ struct StatColumn: View {
     let value: String
     let label: String
     let color: Color
-    
+
     var body: some View {
         VStack(spacing: 8) {
             Text(value)
@@ -76,4 +75,3 @@ struct PrimaryButtonStyle: ButtonStyle {
             )
     }
 }
-

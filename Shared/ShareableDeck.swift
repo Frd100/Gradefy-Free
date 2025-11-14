@@ -3,10 +3,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 // MARK: - Shareable Deck Models
+
 struct ShareableDeck: Codable {
     let metadata: DeckMetadata
     let flashcards: [ShareableFlashcard]
-    
+
     struct DeckMetadata: Codable {
         let id: String
         let name: String
@@ -15,7 +16,7 @@ struct ShareableDeck: Codable {
         let creatorName: String?
         let appVersion: String
         let shareVersion: String
-        
+
         init(id: String, name: String, totalCards: Int, createdAt: Date, creatorName: String?, appVersion: String, shareVersion: String = "1.0") {
             self.id = id
             self.name = name
@@ -26,7 +27,7 @@ struct ShareableDeck: Codable {
             self.shareVersion = shareVersion
         }
     }
-    
+
     struct ShareableFlashcard: Codable {
         let question: String
         let answer: String
@@ -35,27 +36,28 @@ struct ShareableDeck: Codable {
 }
 
 // MARK: - Gradefy Deck Document for File Export
+
 struct GradefyDeckDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.json] }
-    
+
     var data: Data
-    
+
     init(data: Data) {
         self.data = data
     }
-    
+
     init(url: URL) throws {
-        self.data = try Data(contentsOf: url)
+        data = try Data(contentsOf: url)
     }
-    
+
     init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents else {
             throw CocoaError(.fileReadCorruptFile)
         }
         self.data = data
     }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+
+    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
         FileWrapper(regularFileWithContents: data)
     }
 }

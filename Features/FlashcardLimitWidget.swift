@@ -5,7 +5,6 @@
 //  Created by Farid on 8/12/25.
 //
 
-
 //
 //  FlashcardLimitWidget.swift
 //  PARALLAX
@@ -13,14 +12,14 @@
 //  Widget d'affichage des limites de flashcards
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct UnifiedLimitWidget: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var premiumManager = PremiumManager.shared
     @State private var refreshTrigger = UUID() // ✅ NOUVEAU : Trigger pour forcer les mises à jour
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // En-tête unifié
@@ -32,11 +31,11 @@ struct UnifiedLimitWidget: View {
                     .fontWeight(.medium)
                 Spacer()
             }
-            
+
             // Section Flashcards
             VStack(alignment: .leading, spacing: 6) {
                 let flashcardInfo = premiumManager.getTotalFlashcardInfo(context: viewContext)
-                
+
                 HStack {
                     Image(systemName: "rectangle.stack")
                         .foregroundColor(.blue)
@@ -50,16 +49,16 @@ struct UnifiedLimitWidget: View {
                         .fontWeight(.semibold)
                         .foregroundColor(flashcardInfo.remaining > 10 ? .primary : .orange)
                 }
-                
+
                 ProgressView(value: Double(flashcardInfo.current), total: Double(flashcardInfo.max))
                     .tint(flashcardInfo.remaining > 10 ? .blue : .orange)
                     .scaleEffect(y: 0.6, anchor: .center)
             }
-            
+
             // Section Médias
             VStack(alignment: .leading, spacing: 6) {
                 let mediaInfo = premiumManager.getTotalMediaInfo(context: viewContext)
-                
+
                 HStack {
                     Image(systemName: "photo.on.rectangle.angled")
                         .foregroundColor(.purple)
@@ -73,12 +72,12 @@ struct UnifiedLimitWidget: View {
                         .fontWeight(.semibold)
                         .foregroundColor(mediaInfo.remaining > 5 ? .primary : .orange)
                 }
-                
+
                 ProgressView(value: Double(mediaInfo.current), total: Double(mediaInfo.max))
                     .tint(mediaInfo.remaining > 5 ? .purple : .orange)
                     .scaleEffect(y: 0.6, anchor: .center)
             }
-            
+
             // Avertissement si limites proches
             if shouldShowWarning {
                 HStack {
@@ -108,18 +107,18 @@ struct UnifiedLimitWidget: View {
                 let changedObjects = [
                     NSInsertedObjectsKey,
                     NSUpdatedObjectsKey,
-                    NSDeletedObjectsKey
+                    NSDeletedObjectsKey,
                 ].compactMap { key in
                     userInfo[key] as? Set<NSManagedObject>
                 }.flatMap { $0 }
-                
+
                 let hasRelevantChanges = changedObjects.contains { object in
                     if object is Flashcard {
                         return true
                     }
                     return false
                 }
-                
+
                 if hasRelevantChanges {
                     DispatchQueue.main.async {
                         refreshTrigger = UUID()
@@ -128,28 +127,14 @@ struct UnifiedLimitWidget: View {
             }
         }
     }
-    
+
+    // ✅ MODIFIÉ : Plus d'avertissement - Application entièrement gratuite
     private var shouldShowWarning: Bool {
-        let flashcardInfo = premiumManager.getTotalFlashcardInfo(context: viewContext)
-        let mediaInfo = premiumManager.getTotalMediaInfo(context: viewContext)
-        
-        return (!premiumManager.isPremium && 
-                (flashcardInfo.remaining <= 10 || mediaInfo.remaining <= 5))
+        false // Plus de limites, plus d'avertissement
     }
-    
+
     private var warningMessage: String {
-        let flashcardInfo = premiumManager.getTotalFlashcardInfo(context: viewContext)
-        let mediaInfo = premiumManager.getTotalMediaInfo(context: viewContext)
-        
-        if flashcardInfo.remaining <= 10 && mediaInfo.remaining <= 5 {
-            return "Limites proches - Passer Pro pour plus"
-        } else if flashcardInfo.remaining <= 10 {
-            return "Plus que \(flashcardInfo.remaining) flashcards restantes"
-        } else if mediaInfo.remaining <= 5 {
-            return "Plus que \(mediaInfo.remaining) médias restants"
-        }
-        
-        return ""
+        "" // Plus de message d'avertissement
     }
 }
 
@@ -159,11 +144,11 @@ typealias FlashcardLimitWidget = UnifiedLimitWidget
 struct DeckLimitWidget: View {
     let currentDeckCount: Int
     @State private var premiumManager = PremiumManager.shared
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             let deckInfo = premiumManager.getDeckFlashcardInfo(currentDeckCount: currentDeckCount)
-            
+
             HStack {
                 Image(systemName: "folder.fill")
                     .foregroundColor(.green)
@@ -176,7 +161,7 @@ struct DeckLimitWidget: View {
                     .fontWeight(.semibold)
                     .foregroundColor(deckInfo.remaining > 20 ? .primary : .orange)
             }
-            
+
             ProgressView(value: Double(deckInfo.current), total: Double(deckInfo.max))
                 .tint(deckInfo.remaining > 20 ? .green : .orange)
                 .scaleEffect(y: 0.8, anchor: .center)

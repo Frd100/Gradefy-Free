@@ -5,8 +5,8 @@
 //  Created by  on 7/9/25.
 //
 
-import SwiftUI
 import StoreKit
+import SwiftUI
 
 struct PremiumView: View {
     @StateObject private var storeKit = StoreKitHelper.shared
@@ -27,7 +27,7 @@ struct PremiumView: View {
 
     // ✅ MODIFIÉ : Navigation interne au lieu de sheets
     @State private var navigationPath = NavigationPath()
-    
+
     let highlightedFeature: PremiumFeature?
 
     init(highlightedFeature: PremiumFeature? = nil) {
@@ -45,7 +45,7 @@ struct PremiumView: View {
                         GeometryReader { geometry in
                             Color.clear
                                 .preference(key: ScrollOffsetPreferenceKey.self,
-                                          value: geometry.frame(in: .named("scroll")).minY)
+                                            value: geometry.frame(in: .named("scroll")).minY)
                         }
                         .frame(height: 0)
 
@@ -92,7 +92,7 @@ struct PremiumView: View {
         .presentationDragIndicator(.visible)
         .onAppear {
             startGlareAnimation()
-            
+
             Task {
                 await loadInitialData()
             }
@@ -112,19 +112,19 @@ struct PremiumView: View {
                 }
         }
         .alert(String(localized: "premium_error"), isPresented: $showingError) {
-            Button(String(localized: "premium_ok")) { }
+            Button(String(localized: "premium_ok")) {}
         } message: {
             Text(errorMessage)
         }
     }
-    
+
     private func restorePurchases() async {
         guard !isProcessing else { return }
         isProcessing = true
-        
+
         do {
             try await storeKit.restorePurchases()
-            
+
             // Vérifier si des achats ont été restaurés
             if premiumManager.isPremium {
                 HapticFeedbackManager.shared.notification(type: .success)
@@ -132,17 +132,18 @@ struct PremiumView: View {
             } else {
                 showError(String(localized: "premium_error_no_restore"))
             }
-            
+
         } catch StoreKitHelper.StoreKitHelperError.noActiveAccount {
             showError(String(localized: "premium_error_no_account"))
         } catch {
             showError(String(localized: "premium_error_restore_failed").replacingOccurrences(of: "%@", with: error.localizedDescription))
         }
-        
+
         isProcessing = false
     }
 
     // MARK: - Legal Links
+
     private func openTermsOfService() {
         navigationPath.append("terms")
     }
@@ -154,7 +155,7 @@ struct PremiumView: View {
     private var heroSection: some View {
         VStack(spacing: 24) {
             Spacer().frame(height: 20)
-            
+
             Text("Gradefy Pro")
                 .font(.system(size: 40, weight: .bold, design: .default))
                 .foregroundColor(.blue)
@@ -174,14 +175,14 @@ struct PremiumView: View {
         }
     }
 
-
     // MARK: - Native Bottom Bar
+
     private var nativeBottomBar: some View {
         VStack(spacing: 0) {
             Rectangle()
                 .fill(Color(UIColor.separator))
                 .frame(height: 0.5)
-            
+
             VStack(spacing: 12) {
                 // ✅ Bouton principal d'abonnement (existant)
                 Button(action: {
@@ -201,10 +202,10 @@ struct PremiumView: View {
                                 .scaleEffect(0.8)
                                 .tint(.white)
                         }
-                        
+
                         Text(selectedPlan == ProductIDs.yearly ?
-                             String(localized: "premium_subscribe_yearly").replacingOccurrences(of: "%@", with: yearlyDisplayPrice) :
-                             String(localized: "premium_subscribe_monthly").replacingOccurrences(of: "%@", with: monthlyDisplayPrice))
+                            String(localized: "premium_subscribe_yearly").replacingOccurrences(of: "%@", with: yearlyDisplayPrice) :
+                            String(localized: "premium_subscribe_monthly").replacingOccurrences(of: "%@", with: monthlyDisplayPrice))
                             .font(.headline.weight(.semibold))
                             .foregroundColor(.white)
                     }
@@ -217,13 +218,13 @@ struct PremiumView: View {
                                     LinearGradient(
                                         gradient: Gradient(colors: [
                                             Color.blue.opacity(0.9),
-                                            Color.blue.opacity(0.7)
+                                            Color.blue.opacity(0.7),
                                         ]),
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
                                 )
-                            
+
                             Rectangle()
                                 .fill(
                                     LinearGradient(
@@ -232,7 +233,7 @@ struct PremiumView: View {
                                             Color.white.opacity(0.0),
                                             Color.white.opacity(0.3),
                                             Color.white.opacity(0.0),
-                                            Color.white.opacity(0.0)
+                                            Color.white.opacity(0.0),
                                         ]),
                                         startPoint: .leading,
                                         endPoint: .trailing
@@ -246,7 +247,7 @@ struct PremiumView: View {
                     )
                 }
                 .disabled(isProcessing)
-                
+
                 Button(String(localized: "premium_restore_purchases")) {
                     Task {
                         await restorePurchases()
@@ -263,11 +264,11 @@ struct PremiumView: View {
                     }
                     .font(.caption)
                     .foregroundColor(.secondary)
-                    
+
                     Text("•")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     Button(String(localized: "premium_privacy")) {
                         openPrivacyPolicy()
                     }
@@ -282,7 +283,9 @@ struct PremiumView: View {
     }
 
     // MARK: - Pricing Section
+
     // MARK: - Pricing Section (SIMPLIFIÉ)
+
     private var pricingSection: some View {
         VStack(spacing: 16) {
             VStack(spacing: 0) {
@@ -305,15 +308,15 @@ struct PremiumView: View {
                                     .foregroundColor(.white)
                             }
                         }
-                        
+
                         VStack(alignment: .leading, spacing: 4) {
                             Text(String(localized: "premium_plan_yearly"))
                                 .font(.system(size: 17, weight: .medium))
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
-                        
+
                         Spacer()
-                        
+
                         Text(yearlyDisplayPrice)
                             .font(.system(size: 17, weight: .medium))
                             .foregroundColor(.secondary)
@@ -348,13 +351,13 @@ struct PremiumView: View {
                                     .foregroundColor(.white)
                             }
                         }
-                        
+
                         Text(String(localized: "premium_plan_monthly"))
                             .font(.system(size: 17, weight: .medium))
                             .foregroundColor(colorScheme == .dark ? .white : .black)
-                        
+
                         Spacer()
-                        
+
                         Text(monthlyDisplayPrice)
                             .font(.system(size: 17, weight: .medium))
                             .foregroundColor(.secondary)
@@ -375,6 +378,7 @@ struct PremiumView: View {
     }
 
     // MARK: - Features Section
+
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(String(localized: "premium_features_title"))
@@ -403,11 +407,11 @@ struct PremiumView: View {
                     title: String(localized: "premium_feature_widgets_title"),
                     subtitle: String(localized: "premium_feature_widgets_subtitle")
                 )
-                
+
                 Divider()
                     .background(Color(UIColor.separator))
                     .padding(.leading, 65)
-                
+
                 featureRow(
                     icon: "icloud.and.arrow.up.fill",
                     iconColor: .green,
@@ -428,8 +432,8 @@ struct PremiumView: View {
             }
             .background(
                 colorScheme == .dark
-                ? Color(.systemGray5)
-                : Color(.systemBackground)
+                    ? Color(.systemGray5)
+                    : Color(.systemBackground)
             )
             .cornerRadius(12)
             .padding(.horizontal, 20)
@@ -504,7 +508,7 @@ struct PremiumView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal, 25)
             .padding(.top, 8)
-            
+
             Spacer(minLength: 0)
         }
         .frame(maxHeight: .infinity, alignment: .top)
@@ -512,12 +516,13 @@ struct PremiumView: View {
             RoundedRectangle(cornerRadius: 25)
                 .fill(
                     colorScheme == .dark
-                    ? Color(.systemBackground)
-                    : Color.white
+                        ? Color(.systemBackground)
+                        : Color.white
                 )
                 .ignoresSafeArea()
         )
     }
+
     private var yearlyProduct: Product? {
         storeKit.products.first { $0.id == ProductIDs.yearly }
     }
@@ -535,6 +540,7 @@ struct PremiumView: View {
     }
 
     // MARK: - Methods
+
     private func startGlareAnimation() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
@@ -574,7 +580,6 @@ struct PremiumView: View {
                     break
                 case .cloudServiceNetworkConnectionFailed:
                     showError(String(localized: "premium_error_connection"))
-                    break
                 default:
                     showError(String(localized: "premium_error_purchase").replacingOccurrences(of: "%@", with: nsError.localizedDescription))
                 }
@@ -598,52 +603,52 @@ struct PremiumView: View {
 // ✅ NOUVELLES VUES : Sans NavigationView pour éviter les conflits
 struct TermsOfServiceSimpleView: View {
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(String(localized: "terms_title"))
                         .font(.title.bold())
-                    
+
                     Text(String(localized: "terms_last_updated"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 8)
-                
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text(String(localized: "terms_intro"))
                         .font(.body)
                         .padding(.bottom, 8)
-                    
+
                     Text(String(localized: "terms_subscription_title"))
                         .font(.headline)
-                    
+
                     Text(String(localized: "terms_subscription_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "terms_usage_title"))
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "terms_usage_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "terms_modifications_title"))
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "terms_modifications_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "terms_contact_title"))
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "terms_contact_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "terms_effective_date"))
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -659,52 +664,52 @@ struct TermsOfServiceSimpleView: View {
 
 struct PrivacyPolicySimpleView: View {
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(String(localized: "privacy_title"))
                         .font(.title.bold())
-                    
-                    Text(String(localized: "terms_last_updated"))  // Réutilise la même date
+
+                    Text(String(localized: "terms_last_updated")) // Réutilise la même date
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 8)
-                
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text(String(localized: "privacy_intro"))
                         .font(.body)
                         .padding(.bottom, 8)
-                    
+
                     Text(String(localized: "privacy_data_collection_title"))
                         .font(.headline)
-                    
+
                     Text(String(localized: "privacy_data_collection_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "privacy_storage_title"))
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "privacy_storage_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "privacy_rights_title"))
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "privacy_rights_text"))
                         .font(.body)
-                    
-                    Text(String(localized: "terms_contact_title"))  // Réutilise
+
+                    Text(String(localized: "terms_contact_title")) // Réutilise
                         .font(.headline)
                         .padding(.top, 8)
-                    
+
                     Text(String(localized: "privacy_contact_text"))
                         .font(.body)
-                    
+
                     Text(String(localized: "privacy_effective_date"))
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -719,6 +724,7 @@ struct PrivacyPolicySimpleView: View {
 }
 
 // MARK: - ScrollOffsetPreferenceKey
+
 struct ScrollOffsetPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
@@ -727,6 +733,7 @@ struct ScrollOffsetPreferenceKey: PreferenceKey {
 }
 
 // MARK: - Preview
+
 #Preview {
     PremiumView()
 }

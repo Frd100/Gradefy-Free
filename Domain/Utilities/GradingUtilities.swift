@@ -4,10 +4,9 @@
 //
 //  Created by  on 7/21/25.
 //
+import CoreData
 import Foundation
 import SwiftUI
-import CoreData
-
 
 // Extensions utilitaires
 extension Double {
@@ -31,7 +30,7 @@ func formatNumber(_ value: Double, places: Int) -> String {
 /// Parsing unifié des entrées décimales avec conversion virgule → point
 func parseDecimalInput(_ input: String) -> Double? {
     Double(input.replacingOccurrences(of: ",", with: ".")
-                .trimmingCharacters(in: .whitespacesAndNewlines))
+        .trimmingCharacters(in: .whitespacesAndNewlines))
 }
 
 /// Type de clavier adaptatif selon le système
@@ -41,7 +40,7 @@ func keyboardType(for system: GradingSystemPlugin) -> UIKeyboardType {
 
 func calculateFraction(grade: Double, system: GradingSystemPlugin) -> Double {
     guard grade != NO_GRADE && system.validate(grade) else { return 0 }
-    
+
     if system.isInverted {
         let normalizedGrade = max(system.min, min(grade, system.max))
         return (system.max - normalizedGrade) / (system.max - system.min)

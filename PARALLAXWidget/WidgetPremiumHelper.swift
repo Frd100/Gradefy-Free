@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct WidgetPremiumHelper {
+enum WidgetPremiumHelper {
     private static let appGroupIdentifier = "group.com.Coefficient.PARALLAX2"
-    
+
+    // ✅ MODIFIÉ : Toujours retourner true - Application entièrement gratuite
     static func isPremiumUser() -> Bool {
-        let defaults = UserDefaults(suiteName: appGroupIdentifier)
-        return defaults?.bool(forKey: "isPremium") ?? false
+        return true // Toujours gratuit
     }
 }

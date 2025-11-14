@@ -1,19 +1,20 @@
 //
-// FlashcardRevisionSystem.swift
+//  FlashcardRevisionSystem.swift
 // PARALLAX
 //
 // Created by on 6/25/25.
 //
 
+import AVFoundation
+import CoreData
+import Foundation
+import PhotosUI
 import SwiftUI
 import UIKit
-import Foundation
-import CoreData
 import WidgetKit
-import PhotosUI
-import AVFoundation
 
 // MARK: - Gestionnaire d'état centralisé
+
 @MainActor
 class FlashcardStateManager: ObservableObject {
     @Published var isFlipping = false
@@ -21,57 +22,59 @@ class FlashcardStateManager: ObservableObject {
     @Published var isSwipeInProgress = false
     @Published var autoplayActive = false
     @Published var isAnimating = false
-    
-    @Published private(set) var operationLock = false  // ✅ Changé : private(set) au lieu de private
-    
+
+    @Published private(set) var operationLock = false // ✅ Changé : private(set) au lieu de private
+
     // ✅ AJOUT : Propriété publique pour vérifier le verrou
     var isOperationLocked: Bool {
         return operationLock
     }
-    
-    func lockOperation(_ operation: String) -> Bool {
+
+    func lockOperation(_: String) -> Bool {
         guard !operationLock else {
             return false
         }
         operationLock = true
         return true
     }
-    
-    func unlockOperation(_ operation: String) {
+
+    func unlockOperation(_: String) {
         operationLock = false
     }
-    
+
     func canFlip() -> Bool {
         return !isFlipping && !isUndoing && !isSwipeInProgress && !operationLock && !isAnimating
     }
-    
+
     func canUndo() -> Bool {
         return !isFlipping && !isUndoing && !isSwipeInProgress && !operationLock && !isAnimating
     }
-    
+
     func canSwipe() -> Bool {
         return !isFlipping && !isUndoing && !operationLock && !isAnimating
     }
-    
+
     func canTap() -> Bool {
         return !isAnimating && !isFlipping && !isUndoing && !isSwipeInProgress && !operationLock
     }
 }
+
 // MARK: - Autoplay Manager
+
 @MainActor
 class AutoplayManager: ObservableObject {
     @Published var isActive = false
     @Published var autoplayPhase: AutoplayPhase = .showingFront
-    
+
     private var timer: Timer?
     private var currentIndex = 0
-    
+
     enum AutoplayPhase {
         case showingFront
         case showingBack
         case transitioning
     }
-    
+
     func toggle() {
         if isActive {
             stop()
@@ -79,25 +82,25 @@ class AutoplayManager: ObservableObject {
             start()
         }
     }
-    
+
     func start() {
         guard !isActive else { return }
         isActive = true
-        autoplayPhase = .showingFront  // ✅ Commence par montrer la face avant
-        scheduleTimer(after: 3.0)      // ✅ Premier timer de 3s
+        autoplayPhase = .showingFront // ✅ Commence par montrer la face avant
+        scheduleTimer(after: 3.0) // ✅ Premier timer de 3s
         print("🎬 Autoplay started - showing FRONT for 3s")
     }
-    
+
     func stop() {
         timer?.invalidate()
         timer = nil
         isActive = false
     }
-    
+
     func scheduleTimer(after seconds: TimeInterval) {
         timer?.invalidate()
         print("🎬 Scheduling timer for \(seconds) seconds, phase: \(autoplayPhase)")
-        
+
         timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { [weak self] _ in
             print("🎬 Timer fired!")
             Task { @MainActor in
@@ -105,28 +108,28 @@ class AutoplayManager: ObservableObject {
             }
         }
     }
-    
+
     func advancePhase() {
         print("🎬 Advancing phase from \(autoplayPhase)")
-        
+
         switch autoplayPhase {
         case .showingFront:
             autoplayPhase = .showingBack
             scheduleTimer(after: 3.0)
             print("🎬 → Now showing BACK, next timer in 3s")
-            
+
         case .showingBack:
             autoplayPhase = .transitioning
             scheduleTimer(after: 0.5)
             print("🎬 → Now transitioning, next timer in 0.5s")
-            
+
         case .transitioning:
             autoplayPhase = .showingFront
-            scheduleTimer(after: 3.0)  // ✅ Au lieu de 0.5s
+            scheduleTimer(after: 3.0) // ✅ Au lieu de 0.5s
             print("🎬 → Back to showing FRONT, next timer in 1.5s")
         }
     }
-    
+
     func currentSwipeDirection() -> SwipeDirection {
         return currentIndex % 2 == 0 ? .left : .right
     }
@@ -142,6 +145,7 @@ class AutoplayManager: ObservableObject {
 }
 
 // MARK: - Revision Activity Manager
+
 @MainActor
 class RevisionActivityManager: ObservableObject {
     static let shared = RevisionActivityManager()
@@ -153,17 +157,17 @@ class RevisionActivityManager: ObservableObject {
     private let sharedDefaults = UserDefaults(suiteName: "group.com.Coefficient.PARALLAX2")
     private let consecutiveWeeksKey = "consecutiveWeeks"
     private let lastActiveWeekKey = "lastActiveWeekIdentifier"
-    
+
     func startWeeklyTracking() {
         // Marquer que cette semaine a une session
         markWeekAsActive()
         isActivityActive = true
     }
-    
+
     func endWeeklyTracking() {
         // La semaine reste marquée comme active
         isActivityActive = false
-        
+
         // Mettre à jour le widget
         let currentStreak = getConsecutiveWeeks()
         sharedDefaults?.set(currentStreak, forKey: consecutiveWeeksKey)
@@ -197,18 +201,18 @@ class RevisionActivityManager: ObservableObject {
         let week = calendar.component(.weekOfYear, from: Date())
         return "\(year)-\(week)"
     }
-    
+
     func getConsecutiveWeeks() -> Int {
         let calendar = Calendar.current
         var currentDate = Date()
         var consecutiveCount = 0
-        
+
         // Vérifier les semaines en remontant dans le temps
         while true {
             let year = calendar.component(.yearForWeekOfYear, from: currentDate)
             let week = calendar.component(.weekOfYear, from: currentDate)
             let weekKey = "weekActive_\(year)_\(week)"
-            
+
             if UserDefaults.standard.bool(forKey: weekKey) {
                 consecutiveCount += 1
                 // Passer à la semaine précédente
@@ -217,30 +221,30 @@ class RevisionActivityManager: ObservableObject {
                 break
             }
         }
-        
+
         // Mettre à jour la variable publiée
         Task { @MainActor in
             self.consecutiveWeeks = consecutiveCount
         }
-        
+
         return consecutiveCount
     }
 }
 
-
 extension Color {
-    static let flashcardBackground = Color(red: 0xF2/255, green: 0xF2/255, blue: 0xF2/255)
+    static let flashcardBackground = Color(red: 0xF2 / 255, green: 0xF2 / 255, blue: 0xF2 / 255)
 }
 
 // MARK: - Progress Bar Component
+
 struct ProgressBar2: View {
     let progress: Double
     let height: CGFloat = 10
-    
+
     private var progressWidth: CGFloat {
         return min(CGFloat(progress), 1.0)
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
@@ -248,7 +252,7 @@ struct ProgressBar2: View {
                     .fill(Color.gray.opacity(0.3))
                     .frame(height: height)
                     .cornerRadius(height / 2)
-                
+
                 Rectangle()
                     .fill(Color.primary)
                     .frame(width: progressWidth * geometry.size.width, height: height)
@@ -275,9 +279,10 @@ struct UndoAction {
 }
 
 // MARK: - Enums
+
 enum FlipDirection {
     case left, right
-    
+
     var degrees: Double {
         switch self {
         case .right: return 180
@@ -291,8 +296,10 @@ enum SwipeDirection {
 }
 
 // MARK: - FlashcardStackRevisionView
+
 struct FlashcardStackRevisionView: View {
     // MARK: - Environment & ObservedObjects
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
@@ -301,11 +308,12 @@ struct FlashcardStackRevisionView: View {
     @StateObject private var audioManager = AudioManager.shared
     @StateObject private var autoplayManager = AutoplayManager()
     @StateObject private var stateManager = FlashcardStateManager()
-    
+
     // MARK: - State Properties ✅ SYSTÈME DE FLIP UNIFIÉ
+
     @State private var cards: [Flashcard]
     @State private var isDragCancellingSimilarTaps = false
-    @State private var lastTapTime: Date = Date()
+    @State private var lastTapTime: Date = .init()
     @State private var deck: FlashcardDeck
     @State private var showCompletionElements = false
     @State private var showSessionComplete = false
@@ -336,8 +344,9 @@ struct FlashcardStackRevisionView: View {
 
     // ✅ ANIMATION CONSTANTS
     private let animationDuration: Double = 0.3
-    
+
     // MARK: - Initializer
+
     init(deck: FlashcardDeck) {
         self.deck = deck
 
@@ -396,7 +405,7 @@ struct FlashcardStackRevisionView: View {
                 }
                 canUndoFlag = !undoItems.isEmpty
 
-                if snapshot.currentIndex == 0 && undoItems.isEmpty {
+                if snapshot.currentIndex == 0, undoItems.isEmpty {
                     introductionVisible = true
                     restoredFlag = false
                 } else {
@@ -429,12 +438,13 @@ struct FlashcardStackRevisionView: View {
         _showIntroduction = State(initialValue: introductionVisible)
         _restoredFreeModeSession = State(initialValue: restoredFlag)
     }
-    
+
     // MARK: - Body
+
     var body: some View {
         ZStack {
             adaptiveBackground.ignoresSafeArea()
-            
+
             if showIntroduction {
                 introductionView
             } else if cards.isEmpty {
@@ -451,7 +461,7 @@ struct FlashcardStackRevisionView: View {
             cleanupSession()
         }
         .alert("Recommencer la session", isPresented: $showResetConfirmation) {
-            Button("Annuler", role: .cancel) { }
+            Button("Annuler", role: .cancel) {}
             Button("Recommencer", role: .destructive) {
                 resetSession()
             }
@@ -459,45 +469,46 @@ struct FlashcardStackRevisionView: View {
             Text("Voulez-vous recommencer la session et parcourir toutes les cartes à nouveau ?")
         }
     }
-    
+
     // MARK: - Computed Properties
+
     private var isFlipping: Bool {
         stateManager.isFlipping
     }
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     private var totalCardsReviewed: Int {
         currentCardIndex
     }
-    
+
     private var progressPercentage: Double {
         guard initialCardCount > 0 else { return 0 }
         return Double(currentCardIndex) / Double(initialCardCount)
     }
-    
+
     private var backgroundColor: Color {
         switch colorScheme {
         case .dark: return .black
         default: return .white
         }
     }
-    
+
     private var cardBackgroundColor: Color {
         switch colorScheme {
         case .dark: return Color(UIColor.secondarySystemBackground)
         default: return Color.white
         }
     }
-    
-    
+
     // MARK: - Introduction View
+
     private var introductionView: some View {
         ZStack {
             adaptiveBackground.ignoresSafeArea()
-            
+
             VStack(spacing: 32) {
                 // Bouton X en haut à droite
                 HStack {
@@ -515,35 +526,35 @@ struct FlashcardStackRevisionView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
-                
+
                 Spacer()
-                
+
                 // Titre du mode
                 Text("Flashcards")
                     .font(.largeTitle.weight(.bold))
                     .foregroundColor(.primary)
-                
+
                 // Icône du mode
                 Image(systemName: "rectangle.on.rectangle.angled.fill")
                     .font(.system(size: 80, weight: .light))
                     .foregroundColor(.blue)
-                
+
                 // Texte explicatif
                 VStack(spacing: 16) {
                     Text("Révisez vos cartes de manière interactive")
                         .font(.title3)
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
-                    
+
                     Text("Swipez à droite si vous connaissez la réponse, à gauche si vous l'oubliez")
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
-                
+
                 Spacer()
-                
+
                 // Bouton commencer
                 Button(action: {
                     HapticFeedbackManager.shared.impact(style: .soft)
@@ -568,11 +579,12 @@ struct FlashcardStackRevisionView: View {
             }
         }
     }
-    
+
     // MARK: - Main Views
+
     private var mainContentView: some View {
         let isSmallScreen = UIScreen.main.bounds.height < 700
-        
+
         return ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
                 headerSection
@@ -582,7 +594,7 @@ struct FlashcardStackRevisionView: View {
                 Spacer()
                     .frame(height: isSmallScreen ? 60 : 100)
             }
-            
+
             VStack {
                 HStack {
                     undoButton
@@ -599,7 +611,7 @@ struct FlashcardStackRevisionView: View {
             handleAutoplayPhase(phase)
         }
     }
-    
+
     private var sessionCompletedView: some View {
         VStack(spacing: 32) {
             Spacer()
@@ -622,11 +634,12 @@ struct FlashcardStackRevisionView: View {
             }
         }
     }
-    
+
     // MARK: - UI Components
+
     private var headerSection: some View {
         let isSmallScreen = UIScreen.main.bounds.height < 700
-        
+
         return VStack(spacing: isSmallScreen ? 4 : 8) {
             HStack {
                 Button(action: {
@@ -639,19 +652,17 @@ struct FlashcardStackRevisionView: View {
                         .frame(width: 30, height: 30)
                         .background(Circle().fill(Color(.systemGray5)))
                 }
-                
+
                 Spacer()
-                
+
                 VStack(spacing: 2) {
                     Text(deck.name ?? String(localized: "flashcard_revision"))
                         .font(.headline.weight(.semibold))
                         .foregroundColor(.primary)
-                    
-
                 }
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     HapticFeedbackManager.shared.impact(style: .soft)
                     showResetConfirmation = true
@@ -665,10 +676,10 @@ struct FlashcardStackRevisionView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, isSmallScreen ? 0 : 8)
-            
+
             ProgressBar2(progress: progressPercentage)
                 .padding(.horizontal, 20)
-            
+
             HStack {
                 Spacer()
                 Text("\(currentCardIndex)/\(initialCardCount)")
@@ -681,7 +692,7 @@ struct FlashcardStackRevisionView: View {
         .padding(.bottom, isSmallScreen ? 8 : 20)
         .frame(height: isSmallScreen ? 70 : 100) // Hauteur réduite pour petits écrans
     }
-    
+
     private var cardStack: some View {
         ZStack {
             ForEach(Array(cards.prefix(3).enumerated()), id: \.element) { idx, card in
@@ -690,7 +701,7 @@ struct FlashcardStackRevisionView: View {
         }
         .frame(height: 500)
     }
-    
+
     private var autoplayButton: some View {
         Button(action: {
             HapticFeedbackManager.shared.impact(style: .soft)
@@ -700,15 +711,14 @@ struct FlashcardStackRevisionView: View {
                 .font(.system(size: 30))
                 .foregroundColor(isFreeMode ? .primary : .secondary)
         }
-        .id(autoplayManager.isActive ? "pause" : "play")  // ✅ Supprime les transitions
-        .buttonStyle(.plain)  // ✅ Supprime l'effet de pression
+        .id(autoplayManager.isActive ? "pause" : "play") // ✅ Supprime les transitions
+        .buttonStyle(.plain) // ✅ Supprime l'effet de pression
         .opacity(cards.isEmpty ? 0.3 : (isFreeMode ? 1.0 : 0.5))
         .disabled(cards.isEmpty || !isFreeMode)
     }
-    
 
-    
     // MARK: - Completion Views
+
     private var completionHeader: some View {
         VStack(spacing: 16) {
             Image(systemName: "checkmark.circle")
@@ -717,7 +727,7 @@ struct FlashcardStackRevisionView: View {
                 .opacity(showCompletionElements ? 1 : 0)
                 .scaleEffect(showCompletionElements ? 1.0 : 0.9)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: showCompletionElements)
-            
+
             Text(String(localized: "session_completed"))
                 .font(.title.weight(.medium))
                 .foregroundColor(.primary)
@@ -726,7 +736,7 @@ struct FlashcardStackRevisionView: View {
                 .animation(.easeOut(duration: 0.6).delay(0.2), value: showCompletionElements)
         }
     }
-    
+
     private var completionStats: some View {
         VStack(spacing: 20) {
             VStack(spacing: 16) {
@@ -741,12 +751,12 @@ struct FlashcardStackRevisionView: View {
                     }
                     Spacer()
                 }
-                
+
                 Rectangle()
                     .fill(Color(.separator))
                     .frame(height: 1)
                     .opacity(0.3)
-                
+
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("\(cardsKnown)")
@@ -756,9 +766,9 @@ struct FlashcardStackRevisionView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .trailing, spacing: 4) {
                         Text("\(cardsToReview)")
                             .font(.title2.weight(.medium))
@@ -783,7 +793,7 @@ struct FlashcardStackRevisionView: View {
             .animation(.easeOut(duration: 0.5), value: showStatsElements)
         }
     }
-    
+
     private var completionButtons: some View {
         VStack(spacing: 16) {
             // ✅ BOUTON RECOMMENCER SEULEMENT EN MODE LIBRE
@@ -808,7 +818,7 @@ struct FlashcardStackRevisionView: View {
                 }
                 .buttonStyle(.plain)
             }
-            
+
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .soft)
                 dismiss()
@@ -834,15 +844,11 @@ struct FlashcardStackRevisionView: View {
         .animation(.easeOut(duration: 0.6).delay(0.8), value: showCompletionElements)
         .padding(.bottom, 24)
     }
-    
+
     private var canShowUndoAsEnabled: Bool {
         return !undoStack.isEmpty && !stateManager.isUndoing
     }
-    
 
-    
-
-    
     // Modifiez votre undoButton
     private var undoButton: some View {
         Button(action: {
@@ -855,15 +861,16 @@ struct FlashcardStackRevisionView: View {
         }
         .disabled(!canShowUndoAsEnabled || stateManager.isOperationLocked)
     }
-    
+
     // MARK: - Card View ✅ VERSION AVEC FLIP DIRECTIONNEL
+
     private func cardView(for card: Flashcard, at index: Int) -> some View {
         let cardColor = cardBackgroundColor
-        
+
         return FastFlipCardView<AnyView, AnyView>(
             front: { AnyView(conditionalFrontContent(for: card, at: index)) },
             back: { AnyView(conditionalBackContent(for: card, at: index)) },
-            cardRotation: index == 0 && !cardRotations.isEmpty ? cardRotations[0] : 0,  // ✅ SEULEMENT la carte active flip
+            cardRotation: index == 0 && !cardRotations.isEmpty ? cardRotations[0] : 0, // ✅ SEULEMENT la carte active flip
             backgroundColor: cardColor,
             animationDuration: animationDuration,
             swipeDirection: cardSwipeDirection(for: index),
@@ -872,28 +879,29 @@ struct FlashcardStackRevisionView: View {
         .frame(width: 350, height: 500)
         .offset(index == 0 ? dragOffset : .zero)
         .rotationEffect(.degrees(index == 0 ? Double(dragOffset.width / 20) : 0))
-        .zIndex(index == 0 ? 999 : Double(cards.count - index))  // ✅ zIndex élevé pour carte active
+        .zIndex(index == 0 ? 999 : Double(cards.count - index)) // ✅ zIndex élevé pour carte active
         .opacity(shouldShowCard(at: index) ? 1 : 0)
         .allowsHitTesting(index == 0 && !stateManager.isAnimating)
         .gesture(
             index == 0 && !stateManager.isAnimating && !isUndoing ?
-            createUnifiedGesture() : nil
+                createUnifiedGesture() : nil
         )
     }
-    
+
     // MARK: - Card Helper Functions
+
     private func shouldShowCard(at index: Int) -> Bool {
         if index == 0 {
             return true
         }
-        
+
         if isUndoing {
             return !isPreviousCardHidden
         }
-        
+
         return index < 3
     }
-    
+
     private func cardFrontContent(for card: Flashcard) -> some View {
         FlashcardContentView(
             contentType: card.questionContentType,
@@ -905,7 +913,7 @@ struct FlashcardStackRevisionView: View {
             autoplayManager: autoplayManager
         )
     }
-    
+
     private func cardBackContent(for card: Flashcard) -> some View {
         FlashcardContentView(
             contentType: card.answerContentType,
@@ -917,21 +925,21 @@ struct FlashcardStackRevisionView: View {
             autoplayManager: autoplayManager
         )
     }
-    
+
     private func cardSwipeDirection(for index: Int) -> SwipeDirection {
         if index == 0 {
             return finalSwipeDirection != .none ? finalSwipeDirection : swipeDirection
         }
         return .none
     }
-    
+
     private func cardSwipeProgress(for index: Int) -> CGFloat {
         if autoplayManager.isActive {
             return 0
         }
         return index == 0 ? min(abs(dragOffset.width) / 80, 1) : 0
     }
-    
+
     private func conditionalFrontContent(for card: Flashcard, at index: Int) -> some View {
         Group {
             if index == 0 {
@@ -944,7 +952,7 @@ struct FlashcardStackRevisionView: View {
         }
         .transaction { $0.animation = nil }
     }
-    
+
     private func conditionalBackContent(for card: Flashcard, at index: Int) -> some View {
         Group {
             if index == 0 {
@@ -957,14 +965,14 @@ struct FlashcardStackRevisionView: View {
         }
         .transaction { $0.animation = nil }
     }
-    
+
     private func handleCardTap(at direction: FlipDirection, stopAutoplay: Bool = true) {
         guard !stateManager.isAnimating else { return }
         guard dragOffset == .zero else { return }
         guard !cardRotations.isEmpty else { return }
-        
+
         stateManager.isAnimating = true
-        
+
         // Stop toutes les autres animations
         if stopAutoplay, autoplayManager.isActive {
             autoplayManager.stop()
@@ -973,21 +981,21 @@ struct FlashcardStackRevisionView: View {
         if let manager = audioManager as AudioManager?, manager.isPlaying {
             manager.stopAudioSilently()
         }
-        
+
         // Accumule 180° dans la direction choisie
         let rotationIncrement: Double = direction == .left ? -180 : 180
-        
+
         withAnimation(.easeInOut(duration: animationDuration)) {
             cardRotations[0] += rotationIncrement
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
             self.stateManager.isAnimating = false
         }
-        
+
         HapticFeedbackManager.shared.impact(style: .soft)
     }
-    
+
     private func handleDragEnd(_ value: DragGesture.Value) {
         if let manager = audioManager as AudioManager?, manager.isPlaying {
             manager.stopAudioSilently()
@@ -1000,7 +1008,7 @@ struct FlashcardStackRevisionView: View {
         let tx = value.translation.width
         let ty = value.translation.height
         let px = value.predictedEndTranslation.width
-        
+
         let absX = abs(tx)
         let absPX = abs(px)
 
@@ -1010,17 +1018,17 @@ struct FlashcardStackRevisionView: View {
         // ✅ RETOUR AU SYSTÈME BINAIRE : Seulement horizontal
         let shouldDismiss: Bool
         let direction: SwipeDirection
-        
+
         shouldDismiss = absX > distanceThreshold || absPX > predictedThreshold
         direction = tx > 0 ? .right : .left
-        
+
         if shouldDismiss {
             finalSwipeDirection = direction
-            
+
             // ✅ RETOUR AU SYSTÈME BINAIRE : Animation de sortie simple
             let exitX: CGFloat
             let exitY: CGFloat
-            
+
             switch direction {
             case .right:
                 exitX = 600
@@ -1032,7 +1040,7 @@ struct FlashcardStackRevisionView: View {
                 exitX = 0
                 exitY = 0
             }
-            
+
             withAnimation(.easeOut(duration: 0.4)) {
                 dragOffset = CGSize(width: exitX, height: exitY)
                 isRemovingCard = true
@@ -1051,71 +1059,70 @@ struct FlashcardStackRevisionView: View {
 
     private func handleAutoplayPhase(_ phase: AutoplayManager.AutoplayPhase) {
         print("🎬 Phase reçue: \(phase)")
-        
-        guard autoplayManager.isActive && !cards.isEmpty else {
+
+        guard autoplayManager.isActive, !cards.isEmpty else {
             print("🎬 ❌ Stopping autoplay: inactive or no cards")
             autoplayManager.stop()
             return
         }
-        
+
         switch phase {
         case .showingFront:
             // ✅ NE RIEN FAIRE - juste laisser la face avant visible
             print("🎬 👁️ Showing FRONT for 3 seconds...")
             // Le timer va se déclencher automatiquement après 3s et passer à .showingBack
-            
+
         case .showingBack:
             // ✅ MAINTENANT on peut flipper car les 3s de la face avant sont écoulées
-            if !cardRotations.isEmpty && cardRotations[0].truncatingRemainder(dividingBy: 360) < 90 {
+            if !cardRotations.isEmpty, cardRotations[0].truncatingRemainder(dividingBy: 360) < 90 {
                 print("🎬 🔄 Flipping to BACK (after 3s front)")
                 handleCardTap(at: .right, stopAutoplay: false)
             }
-            
+
         case .transitioning:
             print("🎬 ➡️ Performing auto swipe (after 3s back)")
             performAutoSwipe()
             // Le timer va se déclencher après 0.5s et revenir à .showingFront
         }
     }
-    
+
     private func performAutoSwipe() {
         guard !cards.isEmpty else { return }
-        
+
         let direction = autoplayManager.currentSwipeDirection()
         print("🎬 🚀 Auto swipe direction: \(direction)")
-        
+
         finalSwipeDirection = direction
-        
+
         let exitDistance: CGFloat = direction == .right ? 600 : -600
-        
-        withAnimation(.easeInOut(duration: 0.4)) {  // Animation 1s
+
+        withAnimation(.easeInOut(duration: 0.4)) { // Animation 1s
             dragOffset = CGSize(width: exitDistance, height: 0)
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.autoplayManager.recordSwipe()
             self.nextCard()
         }
     }
 
-    
     private func undoLastSwipe() {
         guard !undoStack.isEmpty else { return }
         guard stateManager.canUndo() else { return }
         guard stateManager.lockOperation("undo") else { return }
-        
+
         stateManager.isAnimating = false
         stateManager.isFlipping = false
-        
+
         autoplayManager.stop()
         if let manager = audioManager as AudioManager?, manager.isPlaying {
             manager.stopAudioSilently()
         }
-        
+
         stateManager.isUndoing = true
-        
+
         let lastAction = undoStack.removeLast()
-        
+
         // ✅ ROLLBACK selon le mode
         if !isFreeMode {
             // Mode répétition espacée : Rollback SM-2
@@ -1130,38 +1137,38 @@ struct FlashcardStackRevisionView: View {
                 SimpleSRSManager.shared.rollbackFreeModeCard(cardId: cardId)
             }
         }
-        
+
         cards.insert(lastAction.card, at: 0)
-        
+
         // ✅ CHANGEMENT : Toujours revenir en face principale
         cardRotations.insert(0.0, at: 0)
-        
+
         switch lastAction.swipeDirection {
         case .right: cardsKnown = max(0, cardsKnown - 1)
         case .left: cardsToReview = max(0, cardsToReview - 1)
         default: break
         }
         currentCardIndex = max(0, currentCardIndex - 1)
-        
+
         let distance = UIScreen.main.bounds.width * 1.2
         dragOffset = CGSize(
             width: lastAction.swipeDirection == .right ? distance : -distance,
             height: 0
         )
-        
+
         withAnimation(.spring(response: 0.15, dampingFraction: 1.0)) {
             dragOffset = .zero
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.synchronizeCardStates()
             self.stateManager.isUndoing = false
             self.stateManager.unlockOperation("undo")
-            
+
             self.stateManager.isAnimating = false
             self.stateManager.isFlipping = false
         }
-        
+
         HapticFeedbackManager.shared.impact(style: .soft)
     }
 
@@ -1169,26 +1176,26 @@ struct FlashcardStackRevisionView: View {
         // ✅ RÉINITIALISATION COMPLÈTE si désynchronisé
         if cardRotations.count != cards.count {
             cardRotations = Array(repeating: 0.0, count: cards.count)
-            
+
             // ✅ RESET des animations en cours
             stateManager.isAnimating = false
             stateManager.isFlipping = false
         }
-        
+
         // ✅ ASSURER cohérence des indices
         activeCardIndex = 0
-        
+
         // ✅ NE PAS forcer la rotation si on est en train de faire un undo
-        if !cardRotations.isEmpty && !stateManager.isUndoing {
+        if !cardRotations.isEmpty, !stateManager.isUndoing {
             cardRotations[0] = 0.0
         }
     }
-    
+
     private func createUnifiedGesture() -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
                 guard !stateManager.isAnimating, !stateManager.isFlipping else { return }
-                
+
                 // ✅ ARRÊTER L'AUDIO PENDANT LE DRAG
                 if let manager = audioManager as AudioManager?, manager.isPlaying {
                     manager.stopAudioSilently()
@@ -1197,50 +1204,50 @@ struct FlashcardStackRevisionView: View {
                     autoplayManager.stop()
                     autoplayManager.reset()
                 }
-                
+
                 // ✅ Mise à jour immédiate de dragOffset (zéro deadzone)
                 dragOffset = value.translation
-                
+
                 // ✅ RETOUR AU SYSTÈME BINAIRE : Seulement gauche/droite
                 let dx = value.translation.width
                 swipeDirection = dx >= 0 ? .right : .left
-                
+
                 // Marquer comme swipe seulement après mouvement significatif
                 let dragDistance = hypot(value.translation.width, value.translation.height)
                 stateManager.isSwipeInProgress = dragDistance > 8
             }
             .onEnded { value in
                 defer { stateManager.isSwipeInProgress = false }
-                
+
                 if stateManager.isAnimating {
                     dragOffset = .zero
                     return
                 }
-                
+
                 let dragDistance = hypot(value.translation.width, value.translation.height)
                 let startLocation = value.startLocation
-                
+
                 // ✅ Si mouvement minimal = c'est un TAP
                 if dragDistance < 8 {
                     handleTapAtLocation(startLocation)
                     dragOffset = .zero
                     return
                 }
-                
+
                 // ✅ Sinon = c'est un DRAG
                 handleDragEnd(value)
             }
     }
-    
+
     private func handleTapAtLocation(_ location: CGPoint) {
         // Dimensions de la carte (ajustez selon vos besoins)
         let cardWidth: CGFloat = 350
         let tapZoneWidth: CGFloat = 120
-        
+
         let now = Date()
         guard now.timeIntervalSince(lastTapTime) > 0.3 else { return }
         lastTapTime = now
-        
+
         // ✅ Déterminer si tap gauche ou droite
         if location.x < tapZoneWidth {
             handleCardTap(at: .left)
@@ -1255,23 +1262,22 @@ struct FlashcardStackRevisionView: View {
         swipeDirection = .none
         finalSwipeDirection = .none
     }
-    
 
     private func nextCard() {
         print("🔍 [DEBUG] nextCard() - cards.count: \(cards.count)")
         print("🔍 [DEBUG] nextCard() - currentCardIndex: \(currentCardIndex)")
         print("🔍 [DEBUG] nextCard() - cards IDs: \(cards.map { $0.id?.uuidString.prefix(8) ?? "nil" })")
         guard !cards.isEmpty else { return }
-        
+
         // ✅ CAPTURER LA DIRECTION DU SWIPE AVANT TOUT
         let swipeWas = finalSwipeDirection
-        
+
         isPreviousCardHidden = false
-        
+
         if finalSwipeDirection != .none {
             let currentRotation = cardRotations.isEmpty ? 0.0 : cardRotations[0]
             let currentCard = cards[0]
-            
+
             // ✅ CAPTURER L'ÉTAT SM-2 AVANT MODIFICATION
             let action = UndoAction(
                 card: currentCard,
@@ -1286,55 +1292,55 @@ struct FlashcardStackRevisionView: View {
                 previousCorrectCount: currentCard.correctCount,
                 previousLastReviewDate: currentCard.lastReviewDate
             )
-            
+
             undoStack.append(action)
-            
+
             if undoStack.count > 50 {
                 undoStack.removeFirst()
             }
-            
+
             switch finalSwipeDirection {
-            case .right: 
+            case .right:
                 cardsKnown += 1
                 print("🔍 [DEBUG] Carte correcte - cardsKnown: \(cardsKnown)")
-            case .left: 
+            case .left:
                 cardsToReview += 1
                 print("🔍 [DEBUG] Carte incorrecte - cardsToReview: \(cardsToReview)")
             default: break
             }
-            
+
             // ✅ HAPTIC UNIFIÉ : Feedback minimal
             HapticFeedbackManager.shared.impact(style: .soft)
-            
+
             // ✅ GENERATION UNIQUE : operationId côté UI pour tous les modes
             let operationId = UUID().uuidString
-            
+
             // ✅ NOUVEAU : Mise à jour immédiate du statut
             updateCardStatusImmediately(card: cards[0], isCorrect: finalSwipeDirection == .right)
-            
+
             // ✅ SM-2 Integration avec LapseBuffer
             if !isFreeMode {
                 // ✅ RETOUR AU SYSTÈME BINAIRE : Mapping simple
                 let quality: Int
                 switch finalSwipeDirection {
-                case .right: quality = 2  // Bon
-                case .left: quality = 1   // Faux
-                default: quality = 2      // Par défaut bon
+                case .right: quality = 2 // Bon
+                case .left: quality = 1 // Faux
+                default: quality = 2 // Par défaut bon
                 }
-                
+
                 // ✅ RETOUR AU SYSTÈME BINAIRE : Réinjection pour faux
                 let shouldReinject = quality == 1 && SimpleSRSManager.shared.shouldReinjectCard(
-                    card: cards[0], 
+                    card: cards[0],
                     quality: quality
                 )
-                
+
                 SimpleSRSManager.shared.processSwipeResult(
-                    card: cards[0], 
-                    swipeDirection: finalSwipeDirection, 
+                    card: cards[0],
+                    swipeDirection: finalSwipeDirection,
                     context: viewContext,
                     operationId: operationId
                 )
-                
+
                 // ✅ LAPSEBUFFER : Réinjection immédiate si nécessaire
                 if shouldReinject {
                     print("🔄 [LAPSEBUFFER] Carte incorrecte réinjectée immédiatement")
@@ -1344,7 +1350,7 @@ struct FlashcardStackRevisionView: View {
                     cards.append(cards[0])
                     print("🔍 [DEBUG] LAPSEBUFFER - Après réinjection: cards.count = \(cards.count)")
                 }
-                
+
                 // ✅ CAPTURER shouldReinject pour l'utiliser plus tard
                 wasReinjected = shouldReinject
             } else {
@@ -1359,16 +1365,16 @@ struct FlashcardStackRevisionView: View {
                 wasReinjected = false
             }
         }
-        
+
         cards.removeFirst()
         if !cardRotations.isEmpty {
             cardRotations.removeFirst()
         }
-        
+
         isRemovingCard = false
-        
+
         // ✅ CORRECTION : Ne pas incrémenter si la carte a été réinjectée
-        if !isFreeMode && swipeWas == .left {
+        if !isFreeMode, swipeWas == .left {
             // Utiliser la variable capturée avant la réinjection
             if !wasReinjected {
                 currentCardIndex += 1
@@ -1380,16 +1386,16 @@ struct FlashcardStackRevisionView: View {
             currentCardIndex += 1
             print("🔍 [DEBUG] currentCardIndex incrémenté (mode libre ou carte correcte): \(currentCardIndex)")
         }
-        
+
         // ✅ RÉINITIALISER L'ÉTAT DU DRAG APRÈS L'INCRÉMENT
         resetDragState()
-        
+
         // ✅ RESET COMPLET des états d'animation
         stateManager.isAnimating = false
         stateManager.isFlipping = false
-        
+
         synchronizeCardStates()
-        
+
         if cards.isEmpty {
             // ✅ Délai pour laisser la barre de progression terminer son animation
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1397,7 +1403,7 @@ struct FlashcardStackRevisionView: View {
             }
         }
     }
-    
+
     // ✅ NOUVELLE MÉTHODE : Mise à jour immédiate du statut
     private func updateCardStatusImmediately(card: Flashcard, isCorrect: Bool) {
         // ✅ LOGIQUE : Erreur = perte immédiate de la maîtrise
@@ -1413,8 +1419,9 @@ struct FlashcardStackRevisionView: View {
             }
         }
     }
-    
+
     // MARK: - Session Management
+
     private func initializeSession() {
         if !restoredFreeModeSession {
             initialCardCount = cards.count
@@ -1438,7 +1445,7 @@ struct FlashcardStackRevisionView: View {
 
         restoredFreeModeSession = false
     }
-    
+
     private func cleanupSession() {
         activityManager.endWeeklyTracking()
         // Plus besoin de weeklyMinutes, le système de semaines se gère automatiquement
@@ -1451,7 +1458,8 @@ struct FlashcardStackRevisionView: View {
             let remainingCards = cards
             let undoRecords = undoStack.compactMap { action -> SimpleSRSManager.FreeModeProgressSnapshot.UndoRecord? in
                 guard let id = action.card.id?.uuidString,
-                      let storedDirection = storedValue(for: action.swipeDirection) else {
+                      let storedDirection = storedValue(for: action.swipeDirection)
+                else {
                     return nil
                 }
                 return SimpleSRSManager.FreeModeProgressSnapshot.UndoRecord(
@@ -1460,7 +1468,7 @@ struct FlashcardStackRevisionView: View {
                 )
             }
 
-            if remainingCards.isEmpty && undoRecords.isEmpty && currentCardIndex == 0 {
+            if remainingCards.isEmpty, undoRecords.isEmpty, currentCardIndex == 0 {
                 SimpleSRSManager.shared.clearFreeModeSession(for: deck)
                 SimpleSRSManager.shared.clearFreeModeProgress(for: deck)
             } else {
@@ -1534,50 +1542,53 @@ struct FlashcardStackRevisionView: View {
 
         print("🔄 Session redémarrée (mode libre: \(isFreeMode ? "activé" : "désactivé"))")
     }
-    
+
     // MARK: - Utility Functions
+
     // MARK: - Session Management
+
     private func resetSession() {
         // ✅ ROLLBACK SM-2 : Restaurer toutes les données SM-2 avant reset
-        if !isFreeMode && !undoStack.isEmpty {
+        if !isFreeMode, !undoStack.isEmpty {
             print("🔄 [SM2] Rollback de session avant reset...")
             SimpleSRSManager.shared.rollbackSessionSM2Data(
                 undoActions: undoStack,
                 context: viewContext
             )
         }
-        
+
         // Réinitialiser tous les états
         currentCardIndex = 0
         cardsKnown = 0
         cardsToReview = 0
         undoStack.removeAll()
         canUndo = false
-        
+
         // Réinitialiser les états des cartes
         cardRotations = Array(repeating: 0.0, count: cards.count)
-        
+
         // Réinitialiser les managers
         stateManager.unlockOperation("reset")
         autoplayManager.reset()
-        
+
         if isFreeMode {
             SimpleSRSManager.shared.clearFreeModeSession(for: deck)
             SimpleSRSManager.shared.clearFreeModeProgress(for: deck)
-            SimpleSRSManager.shared.clearFreeModeStates()  // ✅ NETTOYER les états temporaires
+            SimpleSRSManager.shared.clearFreeModeStates() // ✅ NETTOYER les états temporaires
         }
-        
+
         // Le mode libre reste inchangé lors de la réinitialisation
         print("🔄 Session réinitialisée (mode libre: \(isFreeMode ? "activé" : "désactivé"))")
     }
 }
 
 // MARK: - Supporting Components
+
 struct StatItem: View {
     let value: String
     let label: String
     let color: Color
-    
+
     var body: some View {
         VStack(spacing: 4) {
             Text(value)
@@ -1595,22 +1606,22 @@ struct FastFlipCardView<Front: View, Back: View>: View {
     let front: () -> Front
     let back: () -> Back
     var cardRotation: Double = 0
-    var backgroundColor: Color = Color(.systemBackground)
+    var backgroundColor: Color = .init(.systemBackground)
     var animationDuration: Double = 0.3
     var swipeDirection: SwipeDirection = .none
     var swipeProgress: CGFloat = 0
-    
+
     private var isFlipped: Bool {
         let normalizedRotation = cardRotation.truncatingRemainder(dividingBy: 360)
         let absRotation = abs(normalizedRotation)
         return absRotation >= 90 && absRotation <= 270
     }
-    
+
     private var isNearEdge: Bool {
         // Masque le contenu quand l'angle est proche de 90° ou 270° pour éviter une ligne visible
         var angle = cardRotation.truncatingRemainder(dividingBy: 360)
         if angle < 0 { angle += 360 }
-        let epsilon: Double = 1.0
+        let epsilon = 1.0
         return abs(angle - 90) < epsilon || abs(angle - 270) < epsilon
     }
 
@@ -1626,17 +1637,17 @@ struct FastFlipCardView<Front: View, Back: View>: View {
             perspective: 0.6
         )
     }
-    
+
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 15)
             .fill(backgroundColor)
     }
-    
+
     private var cardBorder: some View {
         RoundedRectangle(cornerRadius: 15)
             .strokeBorder(borderColor.opacity(Double(max(0, min(swipeProgress, 1)))), lineWidth: 3)
     }
-    
+
     private var borderColor: Color {
         switch swipeDirection {
         case .right: return .green
@@ -1644,7 +1655,7 @@ struct FastFlipCardView<Front: View, Back: View>: View {
         default: return .clear
         }
     }
-    
+
     // ✅ SYSTÈME AMÉLIORÉ pour éviter les artefacts visuels
     private var cardContent: some View {
         ZStack {
@@ -1653,7 +1664,7 @@ struct FastFlipCardView<Front: View, Back: View>: View {
                 .modifier(FlipOpacity(percentage: isFlipped ? 0 : 1))
                 .allowsHitTesting(!isFlipped)
                 .clipped()
-            
+
             // Face arrière
             back()
                 .modifier(FlipOpacity(percentage: isFlipped ? 1 : 0))
@@ -1670,16 +1681,15 @@ struct FastFlipCardView<Front: View, Back: View>: View {
 // ✅ MODIFICATEUR AMÉLIORÉ pour éviter les artefacts visuels
 private struct FlipOpacity: AnimatableModifier {
     var percentage: CGFloat = 0
-    
+
     var animatableData: CGFloat {
         get { percentage }
         set { percentage = newValue }
     }
-    
+
     func body(content: Content) -> some View {
         content
-            .opacity(Double(percentage.rounded()))  // ✅ Changement binaire instantané
-            .allowsHitTesting(percentage > 0.5)  // ✅ Masquer les interactions
+            .opacity(Double(percentage.rounded())) // ✅ Changement binaire instantané
+            .allowsHitTesting(percentage > 0.5) // ✅ Masquer les interactions
     }
 }
-

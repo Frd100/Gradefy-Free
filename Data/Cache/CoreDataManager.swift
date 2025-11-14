@@ -4,11 +4,11 @@ import Foundation
 // ✅ SOLUTION SIMPLIFIÉE : Core Data adapté aux limites
 class CoreDataManager {
     static let shared = CoreDataManager()
-    
+
     enum SortOption {
         case createdAt
         case name
-        
+
         var sortDescriptors: [NSSortDescriptor] {
             switch self {
             case .createdAt:
@@ -18,14 +18,14 @@ class CoreDataManager {
             }
         }
     }
-    
+
     // ✅ SIMPLIFICATION : Fetch simple sans pagination
     func fetchDecks(sort: SortOption, context: NSManagedObjectContext) -> [FlashcardDeck] {
         let request: NSFetchRequest<FlashcardDeck> = FlashcardDeck.fetchRequest()
-        
+
         request.sortDescriptors = sort.sortDescriptors
-        request.fetchBatchSize = 50  // ✅ ADAPTATION : Batch size adapté
-        
+        request.fetchBatchSize = 50 // ✅ ADAPTATION : Batch size adapté
+
         do {
             return try context.fetch(request)
         } catch {
@@ -33,14 +33,14 @@ class CoreDataManager {
             return []
         }
     }
-    
+
     // ✅ SIMPLIFICATION : Fetch flashcards simple
     func fetchFlashcards(for deck: FlashcardDeck, context: NSManagedObjectContext) -> [Flashcard] {
         let request: NSFetchRequest<Flashcard> = Flashcard.fetchRequest()
         request.predicate = NSPredicate(format: "deck == %@", deck)
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Flashcard.createdAt, ascending: true)]
-        request.fetchBatchSize = 50  // ✅ ADAPTATION : Batch size adapté
-        
+        request.fetchBatchSize = 50 // ✅ ADAPTATION : Batch size adapté
+
         do {
             return try context.fetch(request)
         } catch {
@@ -48,10 +48,10 @@ class CoreDataManager {
             return []
         }
     }
-    
+
     func countDecks(context: NSManagedObjectContext) -> Int {
         let request: NSFetchRequest<FlashcardDeck> = FlashcardDeck.fetchRequest()
-        
+
         do {
             return try context.count(for: request)
         } catch {
@@ -59,11 +59,11 @@ class CoreDataManager {
             return 0
         }
     }
-    
+
     func countFlashcards(for deck: FlashcardDeck, context: NSManagedObjectContext) -> Int {
         let request: NSFetchRequest<Flashcard> = Flashcard.fetchRequest()
         request.predicate = NSPredicate(format: "deck == %@", deck)
-        
+
         do {
             return try context.count(for: request)
         } catch {

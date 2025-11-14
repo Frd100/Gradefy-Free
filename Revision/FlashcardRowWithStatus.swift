@@ -5,18 +5,18 @@
 //  Exemple d'intégration des statuts dans une row de flashcard
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 // ✅ Exemple de row de flashcard avec statut
 struct FlashcardRowWithStatus: View {
     let flashcard: Flashcard
     @Environment(\.colorScheme) private var colorScheme
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // Contenu principal de la carte
@@ -32,7 +32,7 @@ struct FlashcardRowWithStatus: View {
                         .foregroundColor(.secondary)
                         .italic()
                 }
-                
+
                 // Réponse
                 if let answer = flashcard.answer, !answer.isEmpty {
                     Text(answer)
@@ -46,9 +46,9 @@ struct FlashcardRowWithStatus: View {
                         .italic()
                 }
             }
-            
+
             Spacer()
-            
+
             // ✅ Statut de la carte (nouveau)
             FlashcardStatusView(card: flashcard)
         }
@@ -65,22 +65,22 @@ struct FlashcardRowWithStatus: View {
 struct FlashcardListExample: View {
     let deck: FlashcardDeck
     @Environment(\.colorScheme) private var colorScheme
-    
+
     private var flashcards: [Flashcard] {
-        (deck.flashcards as? Set<Flashcard>)?.sorted { 
+        (deck.flashcards as? Set<Flashcard>)?.sorted {
             ($0.question ?? "") < ($1.question ?? "")
         } ?? []
     }
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .light ? Color.appBackground : Color(.systemBackground)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 adaptiveBackground.ignoresSafeArea()
-                
+
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(flashcards, id: \.objectID) { flashcard in
@@ -102,7 +102,7 @@ struct FlashcardListExample: View {
                         Image(systemName: "square.and.arrow.up")
                             .font(.system(size: 16, weight: .medium))
                     }
-                    
+
                     // ✅ NOUVEAU : Bouton Settings
                     FlashcardSettingsButton()
                 }
@@ -117,7 +117,7 @@ struct FlashcardStatusPreviews: PreviewProvider {
         // Preview du composant statut seul
         VStack(spacing: 16) {
             FlashcardStatusView(card: sampleFlashcard)
-            
+
             StatusExampleRow(
                 status: CardStatus(message: "À réviser", color: Color.orange, icon: "clock"),
                 description: "Carte prête à être révisée"
@@ -125,12 +125,12 @@ struct FlashcardStatusPreviews: PreviewProvider {
         }
         .padding()
         .previewDisplayName("Statuts")
-        
+
         // Preview de la sheet settings
         FlashcardSettingsSheet()
             .previewDisplayName("Settings Sheet")
     }
-    
+
     static var sampleFlashcard: Flashcard {
         // Création d'un sample flashcard pour preview
         let card = Flashcard()

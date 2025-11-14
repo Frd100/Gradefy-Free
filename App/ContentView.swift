@@ -1,11 +1,11 @@
+import Combine
+import CoreData
+import Foundation
+import Lottie
+import StoreKit
 import SwiftUI
 import UIKit
-import Foundation
-import CoreData
-import Combine
-import Lottie
 import WidgetKit
-import StoreKit
 
 extension NSNotification.Name {
     static let saveActivePeriod = NSNotification.Name("saveActivePeriod")
@@ -21,37 +21,39 @@ enum DeckSortOption {
     case cardCount
 }
 
-
-
 // MARK: - Adaptive Lottie Animation Component
+
 struct AdaptiveLottieView: UIViewRepresentable {
     // MARK: - Properties
+
     let animationName: String
     let isAnimated: Bool
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - Initialization
+
     init(animationName: String, isAnimated: Bool = true) {
         self.animationName = animationName
         self.isAnimated = isAnimated
     }
-    
+
     // MARK: - UIViewRepresentable
-    func makeUIView(context: Context) -> UIView {
+
+    func makeUIView(context _: Context) -> UIView {
         let containerView = UIView()
         let animationView = LottieAnimationView(name: animationName)
-        
+
         // Configuration de base
         animationView.loopMode = .playOnce
         animationView.contentMode = .scaleAspectFit
-        
+
         // Adapter les couleurs selon le thème
         updateColors(animationView: animationView)
-        
+
         // Layout setup
         setupLayout(containerView: containerView, animationView: animationView)
-        
+
         // Gestion de l'animation
         if isAnimated {
             animationView.play()
@@ -59,50 +61,51 @@ struct AdaptiveLottieView: UIViewRepresentable {
             // Afficher la première frame sans animation
             animationView.currentFrame = 0
         }
-        
+
         return containerView
     }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
+
+    func updateUIView(_ uiView: UIView, context _: Context) {
         guard let animationView = uiView.subviews.first as? LottieAnimationView else {
             return
         }
-        
+
         // Mettre à jour les couleurs si le thème a changé
         updateColors(animationView: animationView)
     }
-    
+
     // MARK: - Private Methods
+
     private func setupLayout(containerView: UIView, animationView: LottieAnimationView) {
         animationView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(animationView)
-        
+
         NSLayoutConstraint.activate([
             animationView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             animationView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             animationView.widthAnchor.constraint(equalTo: containerView.widthAnchor),
-            animationView.heightAnchor.constraint(equalTo: containerView.heightAnchor)
+            animationView.heightAnchor.constraint(equalTo: containerView.heightAnchor),
         ])
     }
-    
+
     private func updateColors(animationView: LottieAnimationView) {
         // Exception : laisser les couleurs originales pour confetti ET palette
-        guard animationName != "confetti" && animationName != "palette" else { return }
-        
+        guard animationName != "confetti", animationName != "palette" else { return }
+
         // Votre logique existante pour les autres animations
         let primaryColor = colorScheme == .dark ?
-            LottieColor(r: 0.6, g: 0.6, b: 0.6, a: 1) :    // Gris en mode sombre
-            LottieColor(r: 0, g: 0, b: 0, a: 1)           // Noir en mode clair
-        
+            LottieColor(r: 0.6, g: 0.6, b: 0.6, a: 1) : // Gris en mode sombre
+            LottieColor(r: 0, g: 0, b: 0, a: 1) // Noir en mode clair
+
         let colorProvider = ColorValueProvider(primaryColor)
-        
+
         let strokeKeyPaths = [
             "**.primary.Color",
             "**.Stroke *.Color",
-            "**.Group *.**.Stroke *.Color"
+            "**.Group *.**.Stroke *.Color",
         ]
-        
-        strokeKeyPaths.forEach { keyPath in
+
+        for keyPath in strokeKeyPaths {
             let animationKeypath = AnimationKeypath(keypath: keyPath)
             animationView.setValueProvider(colorProvider, keypath: animationKeypath)
         }
@@ -121,14 +124,15 @@ struct ContentView: View {
         entity: FlashcardDeck.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \FlashcardDeck.name, ascending: true)]
     ) private var allDecks: FetchedResults<FlashcardDeck>
-    
+
     @FetchRequest(sortDescriptors: [SortDescriptor(\Period.startDate)])
     private var periods: FetchedResults<Period>
-    
+
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - AppStorage Variables
+
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("username") private var username: String = ""
     @AppStorage("profileSubtitle") private var profileSubtitle: String = ""
@@ -140,7 +144,7 @@ struct ContentView: View {
     @AppStorage("activePeriodID") var activePeriodIDString: String = "" {
         didSet {
             print("🔄 [PERIOD_PERSISTENCE] activePeriodIDString changé: '\(oldValue)' → '\(activePeriodIDString)'")
-            
+
             // S'assurer que le cache ne va pas interférer
             if !activePeriodIDString.isEmpty {
                 // Nettoyer tout cache qui pourrait interférer
@@ -154,24 +158,24 @@ struct ContentView: View {
     @State private var selectedPeriod: Period? {
         didSet {
             print("🎯 [PERIOD_PERSISTENCE] selectedPeriod changé: \(oldValue?.name ?? "nil") → \(selectedPeriod?.name ?? "nil")")
-            
+
             if let period = selectedPeriod {
                 let periodID = period.id?.uuidString ?? ""
                 print("💾 [PERIOD_PERSISTENCE] Sauvegarde période: \(period.name ?? "") - \(periodID)")
-                
+
                 // SAUVEGARDE MULTIPLE pour éviter les conflits
                 // 1. @AppStorage (principal)
                 activePeriodIDString = periodID
-                
+
                 // 2. UserDefaults direct (backup)
                 UserDefaults.standard.set(periodID, forKey: "activePeriodID_backup")
-                
+
                 // 3. Dans votre cache système (integration avec votre architecture)
                 GradefyCacheManager.shared.cacheObject(periodID as NSString, forKey: "active_period_id")
-                
+
                 // 4. Synchronisation forcée
                 UserDefaults.standard.synchronize()
-                
+
                 print("✅ [PERIOD_PERSISTENCE] Triple sauvegarde terminée")
             }
         }
@@ -179,11 +183,7 @@ struct ContentView: View {
 
     @State private var selectedDetent: PresentationDetent = .fraction(0.60)
     @Environment(\.scenePhase) private var scenePhase
-    @State private var showImportLimitPopover = false
-    @State private var showFlashcardGlobalFreePopover = false
-    @State private var showFlashcardGlobalPremiumPopover = false
-    @State private var showFlashcardLimitPopover = false
-    @State private var showPremiumFlashcardLimitPopover = false
+    // ✅ MODIFIÉ : Supprimé - Plus de popovers de limite - Application entièrement gratuite
     @State private var deckSortOption: DeckSortOption = .alphabetical
     @State private var deckSortOrder: SortOrder = .ascending
     @State private var showDeleteAlert = false
@@ -206,10 +206,10 @@ struct ContentView: View {
     @State private var navigationPath = NavigationPath()
     @State private var selectedDeckToEdit: FlashcardDeck?
     @State private var deckName: String = ""
-    @State private var showPremiumView = false
+    // ✅ MODIFIÉ : Supprimé - Application entièrement gratuite
     @State private var sortOption: SortOption = .alphabetical
     @State private var sortOrder: SortOrder = .descending
-    @State private var lastWidgetSync: Date = Date.distantPast
+    @State private var lastWidgetSync: Date = .distantPast
     @State private var showingEditProfile = false
     @State private var tempUsername: String = ""
     @State private var tempSubtitle: String = ""
@@ -222,10 +222,10 @@ struct ContentView: View {
         [Color(hex: "B0F4B6"), Color(hex: "78E089")],
         [Color(hex: "FBB3C7"), Color(hex: "F68EB2")],
         [Color(hex: "DBC7F9"), Color(hex: "C6A8EF")],
-        [Color(hex: "F8C79B"), Color(hex: "F5A26A")]
+        [Color(hex: "F8C79B"), Color(hex: "F5A26A")],
     ]
     @State private var premiumManager = PremiumManager.shared
-    @State private var showDeckLimitPopover = false
+    // ✅ MODIFIÉ : Supprimé - Plus de popover de limite - Application entièrement gratuite
     @State private var navigationUpdateTimer: Timer?
     @State private var cachedRelevantDecks: [FlashcardDeck] = []
     @State private var lastDecksUpdate = Date.distantPast
@@ -235,23 +235,24 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State private var symbolAnimations: [Bool] = [false, false, false]
     @State private var lastTapTime = Date.distantPast
-    
+
     private var activePeriod: Period? {
         if let selected = selectedPeriod {
             return selected
         }
-        
+
         if !activePeriodIDString.isEmpty,
            let uuid = UUID(uuidString: activePeriodIDString),
-           let foundPeriod = periods.first(where: { $0.id == uuid }) {
+           let foundPeriod = periods.first(where: { $0.id == uuid })
+        {
             return foundPeriod
         }
-        
+
         // NOUVEAU : Seulement si on n'est pas en train de restaurer
         if !isRestoringPeriod {
             return periods.first
         }
-        
+
         return nil
     }
 
@@ -260,7 +261,8 @@ struct ContentView: View {
         if selectedPeriod == nil {
             if !activePeriodIDString.isEmpty,
                let uuid = UUID(uuidString: activePeriodIDString),
-               let foundPeriod = periods.first(where: { $0.id == uuid }) {
+               let foundPeriod = periods.first(where: { $0.id == uuid })
+            {
                 selectedPeriod = foundPeriod
             } else if let firstPeriod = periods.first {
                 selectedPeriod = firstPeriod
@@ -268,10 +270,10 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func restoreActivePeriodWithCache() {
         print("🔄 [PERIOD_PERSISTENCE] === RESTAURATION INTELLIGENTE DÉBUT ===")
-        
+
         // ATTENDRE que PersistenceController soit prêt
         guard PersistenceController.shared.isReady else {
             print("⏳ [PERIOD_PERSISTENCE] PersistenceController pas prêt, retry dans 0.5s")
@@ -280,57 +282,61 @@ struct ContentView: View {
             }
             return
         }
-        
+
         print("✅ [PERIOD_PERSISTENCE] PersistenceController prêt, début restauration")
         print("📊 [PERIOD_PERSISTENCE] Périodes disponibles: \(periods.count)")
-        
+
         // Ne pas restaurer si une période est déjà sélectionnée
         if selectedPeriod != nil {
             print("✅ [PERIOD_PERSISTENCE] Période déjà sélectionnée: \(selectedPeriod?.name ?? "")")
             return
         }
-        
+
         // Méthode 1: @AppStorage
         if !activePeriodIDString.isEmpty,
            let uuid = UUID(uuidString: activePeriodIDString),
-           let foundPeriod = periods.first(where: { $0.id == uuid }) {
+           let foundPeriod = periods.first(where: { $0.id == uuid })
+        {
             print("✅ [PERIOD_PERSISTENCE] SUCCÈS @AppStorage: \(foundPeriod.name ?? "")")
             selectedPeriod = foundPeriod
             return
         }
-        
+
         // Méthode 2: UserDefaults backup
         if let backupID = UserDefaults.standard.string(forKey: "activePeriodID_backup"),
            !backupID.isEmpty,
            let uuid = UUID(uuidString: backupID),
-           let foundPeriod = periods.first(where: { $0.id == uuid }) {
+           let foundPeriod = periods.first(where: { $0.id == uuid })
+        {
             print("✅ [PERIOD_PERSISTENCE] SUCCÈS Backup: \(foundPeriod.name ?? "")")
             activePeriodIDString = backupID // Resynchroniser @AppStorage
             selectedPeriod = foundPeriod
             return
         }
-        
+
         // Méthode 3: Votre cache système
         if let cachedID = GradefyCacheManager.shared.getCachedObject(forKey: "active_period_id") as? String,
            !cachedID.isEmpty,
            let uuid = UUID(uuidString: cachedID),
-           let foundPeriod = periods.first(where: { $0.id == uuid }) {
+           let foundPeriod = periods.first(where: { $0.id == uuid })
+        {
             print("✅ [PERIOD_PERSISTENCE] SUCCÈS Cache: \(foundPeriod.name ?? "")")
             activePeriodIDString = cachedID // Resynchroniser @AppStorage
             selectedPeriod = foundPeriod
             return
         }
-        
+
         // Fallback: première période
         if let firstPeriod = periods.first {
             print("⚠️ [PERIOD_PERSISTENCE] FALLBACK première période: \(firstPeriod.name ?? "")")
             selectedPeriod = firstPeriod
         }
-        
+
         print("✅ [PERIOD_PERSISTENCE] === RESTAURATION INTELLIGENTE TERMINÉE ===")
     }
-    
+
     // MARK: - Subject Delete Functions
+
     private func requestDeleteSubject(_ subject: Subject) {
         subjectToDelete = subject
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -341,7 +347,7 @@ struct ContentView: View {
     private func confirmDeleteSubject(_ subject: Subject) {
         showDeleteSubjectAlert = false
         subjectToDelete = nil
-        
+
         Task {
             do {
                 await MainActor.run {
@@ -349,14 +355,14 @@ struct ContentView: View {
                         viewContext.delete(subject)
                     }
                 }
-                
+
                 try await Task.sleep(nanoseconds: 200_000_000)
                 try viewContext.save()
-                
+
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .success)
                 }
-                
+
             } catch {
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .error)
@@ -365,7 +371,6 @@ struct ContentView: View {
         }
     }
 
-    
     private func requestDeleteDeck(_ deck: FlashcardDeck) {
         deckToDelete = deck
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -373,11 +378,10 @@ struct ContentView: View {
         }
     }
 
-
     private func confirmDeleteDeck(_ deck: FlashcardDeck) {
         showDeleteAlert = false
         deckToDelete = nil
-        
+
         Task {
             do {
                 await MainActor.run {
@@ -385,14 +389,14 @@ struct ContentView: View {
                         viewContext.delete(deck)
                     }
                 }
-                
+
                 try await Task.sleep(nanoseconds: 200_000_000)
                 try viewContext.save()
-                
+
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .success)
                 }
-                
+
             } catch {
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .error)
@@ -401,16 +405,10 @@ struct ContentView: View {
         }
     }
 
-
-    
     private var simpleDeckButton: some View {
         Button {
-            let canCreate = premiumManager.canCreateDeck(currentDeckCount: allDecks.count)
-            if canCreate {
-                showAddFlashcardSheet = true
-            } else {
-                showDeckLimitPopover = true
-            }
+            // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
+            showAddFlashcardSheet = true
         } label: {
             Image(systemName: "plus")
                 .foregroundStyle(.blue)
@@ -446,7 +444,7 @@ struct ContentView: View {
                         Label(String(localized: "action_modify"), systemImage: "pencil")
                     }
                     .tint(.blue)
-                    
+
                     Button(role: .none) {
                         print("🟠 [DEBUG] TAP sur bouton trash pour : \(deck.name ?? "sans nom")")
                         print("🟠 [DEBUG] withAnimation(.none) appliqué")
@@ -468,7 +466,7 @@ struct ContentView: View {
         .scrollIndicators(.hidden)
         .scrollDisabled(false)
     }
-    
+
     private var deckSortMenuContent: some View {
         Group {
             Section(String(localized: "sort_section_by")) {
@@ -485,7 +483,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
                 Button {
                     deckSortOption = .cardCount
                     HapticFeedbackManager.shared.selection()
@@ -500,7 +498,7 @@ struct ContentView: View {
                     }
                 }
             }
-            
+
             Section(String(localized: "sort_section_order")) {
                 Button {
                     deckSortOrder = .ascending
@@ -515,7 +513,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
                 Button {
                     deckSortOrder = .descending
                     HapticFeedbackManager.shared.selection()
@@ -533,22 +531,21 @@ struct ContentView: View {
         }
     }
 
-    
     private var sortedDecks: [FlashcardDeck] {
         switch (deckSortOption, deckSortOrder) {
         case (.alphabetical, .ascending):
             return allDecks.sorted { ($0.name ?? "") < ($1.name ?? "") }
-            
+
         case (.alphabetical, .descending):
             return allDecks.sorted { ($0.name ?? "") > ($1.name ?? "") }
-            
+
         case (.cardCount, .ascending):
             return allDecks.sorted { deck1, deck2 in
                 let count1 = (deck1.flashcards as? Set<Flashcard>)?.count ?? 0
                 let count2 = (deck2.flashcards as? Set<Flashcard>)?.count ?? 0
                 return count1 < count2
             }
-            
+
         case (.cardCount, .descending):
             return allDecks.sorted { deck1, deck2 in
                 let count1 = (deck1.flashcards as? Set<Flashcard>)?.count ?? 0
@@ -557,7 +554,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var addDeckSheet: some View {
         AddDeckSheet(
             deckName: $deckName,
@@ -575,7 +572,6 @@ struct ContentView: View {
             .presentationCornerRadius(16)
     }
 
-    
     private var revisionTabContentSimplified: some View {
         NavigationStack {
             revisionMainContent
@@ -631,7 +627,7 @@ struct ContentView: View {
                 selectedDetent = .fraction(0.60)
             }
         }
-        .onChange(of: scenePhase) { oldPhase, newPhase in
+        .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active && pendingImportDeck != nil {
                 selectedDetent = .fraction(0.60)
             }
@@ -641,20 +637,9 @@ struct ContentView: View {
             allowedContentTypes: [.init(filenameExtension: "gradefy") ?? .data, .json],
             onCompletion: handleFileImport
         )
-        .onAppear {
-            showDeckLimitPopover = false
-            showImportLimitPopover = false
-            showFlashcardGlobalFreePopover = false
-            showFlashcardGlobalPremiumPopover = false
-        }
-        .onDisappear {
-            showDeckLimitPopover = false
-            showImportLimitPopover = false
-            showFlashcardGlobalFreePopover = false
-            showFlashcardGlobalPremiumPopover = false
-        }
+        // ✅ MODIFIÉ : Supprimé - Plus de gestion de popovers de limite
     }
-    
+
     private var revisionMainContent: some View {
         Group {
             if sortedDecks.isEmpty {
@@ -668,13 +653,7 @@ struct ContentView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(for: FlashcardDeck.self) { deck in
             DeckDetailView(deck: deck)
-                .onAppear {
-                    showDeckLimitPopover = false
-                    showImportLimitPopover = false
-                    showFlashcardGlobalFreePopover = false
-                    showFlashcardGlobalPremiumPopover = false
-                    print("🔧 [FIX] État popover nettoyé à la navigation")
-                }
+            // ✅ MODIFIÉ : Supprimé - Plus de gestion de popovers de limite
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -685,7 +664,7 @@ struct ContentView: View {
                         .foregroundStyle(.blue)
                 }
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     handleImportButtonTap()
@@ -693,45 +672,23 @@ struct ContentView: View {
                     Image(systemName: "arrow.down.circle")
                         .foregroundStyle(hasReachedImportLimit ? .gray : .blue)
                 }
-                .popover(isPresented: $showImportLimitPopover, arrowEdge: .bottom) {
-                    importLimitPopoverContent
-                        .presentationCompactAdaptation(.popover)
-                }
-                .popover(isPresented: $showFlashcardGlobalFreePopover, arrowEdge: .bottom) {
-                    flashcardGlobalFreePopoverContent
-                        .presentationCompactAdaptation(.popover)
-                }
-                .popover(isPresented: $showFlashcardGlobalPremiumPopover, arrowEdge: .bottom) {
-                    flashcardGlobalPremiumPopoverContent
-                        .presentationCompactAdaptation(.popover)
-                }
+                // ✅ MODIFIÉ : Supprimé - Plus de popovers de limite - Application entièrement gratuite
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    let canCreate = premiumManager.canCreateDeck(currentDeckCount: allDecks.count)
-                    print("🔍 [DEBUG] Bouton plus tappé - canCreate: \(canCreate), allDecks.count: \(allDecks.count)")
-                    if canCreate {
-                        print("🔍 [DEBUG] Ouverture de la sheet addDeckSheet")
-                        showAddFlashcardSheet = true
-                    } else {
-                        print("🔍 [DEBUG] Affichage de la popover limite")
-                        print("🔍 [DEBUG] showDeckLimitPopover avant: \(showDeckLimitPopover)")
-                        showDeckLimitPopover = true
-                        print("🔍 [DEBUG] showDeckLimitPopover après: \(showDeckLimitPopover)")
-                    }
+                    // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
+                    print("🔍 [DEBUG] Bouton plus tappé - allDecks.count: \(allDecks.count)")
+                    print("🔍 [DEBUG] Ouverture de la sheet addDeckSheet")
+                    showAddFlashcardSheet = true
                 } label: {
                     Image(systemName: "plus")
-                        .foregroundStyle(hasReachedDeckLimit ? .gray : .blue)
-                }
-                .popover(isPresented: $showDeckLimitPopover, arrowEdge: .bottom) {
-                    deckLimitPopoverContent
-                        .presentationCompactAdaptation(.popover)
+                        .foregroundStyle(.blue)
                 }
             }
         }
     }
-    
+
     private var revisionDeckList: some View {
         List {
             Section {
@@ -740,7 +697,7 @@ struct ContentView: View {
             .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
-            
+
             Section {
                 HStack {
                     Menu { deckSortMenuContent } label: {
@@ -754,7 +711,7 @@ struct ContentView: View {
             .listRowSeparator(.hidden)
             .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             .listSectionSpacing(0)
-            
+
             Section {
                 ForEach(sortedDecks, id: \.objectID) { deck in
                     revisionDeckRow(deck: deck)
@@ -769,7 +726,7 @@ struct ContentView: View {
         .contentMargins(.bottom, 80)
         .scrollDisabled(false)
     }
-    
+
     private func revisionDeckRow(deck: FlashcardDeck) -> some View {
         NavigationLink(value: deck) {
             HStack(spacing: 15) {
@@ -797,7 +754,7 @@ struct ContentView: View {
                 Label(String(localized: "action_modify"), systemImage: "pencil")
             }
             .tint(.blue)
-            
+
             Button(role: .none) {
                 print("🟠 [DEBUG] TAP sur bouton trash pour : \(deck.name ?? "sans nom")")
                 print("🟠 [DEBUG] withAnimation(.none) appliqué")
@@ -812,55 +769,42 @@ struct ContentView: View {
             .tint(.red)
         }
     }
-    
+
+    // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
     private var hasReachedDeckLimit: Bool {
-        !premiumManager.canCreateDeck(currentDeckCount: allDecks.count)
+        false // Toujours autorisé
     }
-    
+
     private var hasReachedImportLimit: Bool {
-        hasReachedDeckLimit || allFlashcards.count >= (premiumManager.isPremium ? 2000 : 300)
+        false // Toujours autorisé
     }
-    
+
     private var allFlashcards: [Flashcard] {
         allDecks.flatMap { deck in
             (deck.flashcards as? Set<Flashcard>) ?? []
         }
     }
-    
+
     private func handleImportButtonTap() {
-        let canCreateDeck = premiumManager.canCreateDeck(currentDeckCount: allDecks.count)
-        let currentFlashcardCount = allFlashcards.count
-        let maxGlobalFlashcards = premiumManager.isPremium ? 2000 : 300
-        let hasReachedGlobalLimit = currentFlashcardCount >= maxGlobalFlashcards
-        
-        if !canCreateDeck {
-            showImportLimitPopover = true
-        } else if hasReachedGlobalLimit {
-            if premiumManager.isPremium {
-                showFlashcardGlobalPremiumPopover = true
-            } else {
-                showFlashcardGlobalFreePopover = true
-            }
-        } else {
-            showFileImporter = true
-        }
+        // ✅ MODIFIÉ : Toujours autoriser - Application entièrement gratuite
+        showFileImporter = true
     }
-    
+
     private func importDeck(_ shareableDeck: ShareableDeck, importAll: Bool) {
         Task {
             do {
-                let _ = try await DeckSharingManager.shared.importDeckDirect(
+                _ = try await DeckSharingManager.shared.importDeckDirect(
                     shareableDeck: shareableDeck,
                     context: viewContext,
                     limitToFreeQuota: !importAll
                 )
-                
+
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .success)
                     pendingImportDeck = nil
                     print("✅ Deck importé avec succès depuis la sheet de prévisualisation")
                 }
-                
+
             } catch {
                 await MainActor.run {
                     HapticFeedbackManager.shared.notification(type: .error)
@@ -871,65 +815,52 @@ struct ContentView: View {
         }
     }
 
+    // ✅ MODIFIÉ : Supprimé - Plus de popover de limite - Application entièrement gratuite
     private var deckLimitPopoverContent: some View {
-        (Text(String(localized: "premium_add_unlimited")) +
-         Text(" Gradefy Pro").foregroundColor(.blue) +
-         Text("."))
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
-            .frame(maxWidth: 300)
-            .onTapGesture {
-                showPremiumView = true
-                showDeckLimitPopover = false
-            }
+        EmptyView()
     }
 
-
-    
     private var currentPeriodId: String {
         let periodName = activePeriod?.name ?? "all"
         let periodUUID = activePeriod?.id?.uuidString ?? "all"
         return "\(periodName)-\(periodUUID)-\(refreshID.uuidString)"
     }
+
     private func handleFileImport(_ result: Result<URL, Error>) {
         switch result {
-        case .success(let url):
+        case let .success(url):
             print("📥 Fichier sélectionné : \(url.lastPathComponent)")
-            
+
             // Vérifier l'accès sécurisé au fichier
             guard url.startAccessingSecurityScopedResource() else {
                 print("❌ Impossible d'accéder au fichier sélectionné")
                 return
             }
-            
+
             defer {
                 url.stopAccessingSecurityScopedResource()
             }
-            
+
             do {
                 // Parser le fichier avec DeckSharingManager
                 let shareableDeck = try DeckSharingManager.shared.parseSharedFile(url: url)
-                
+
                 // ✅ NOUVEAU : Stocker le deck et afficher la sheet de prévisualisation
                 DispatchQueue.main.async {
                     self.pendingImportDeck = shareableDeck
                 }
-                
+
             } catch {
                 print("❌ Erreur parsing fichier : \(error)")
                 HapticFeedbackManager.shared.notification(type: .error)
             }
-            
-        case .failure(let error):
+
+        case let .failure(error):
             print("❌ Erreur sélection fichier : \(error)")
             HapticFeedbackManager.shared.notification(type: .error)
         }
     }
 
-
-    
     private var allSubjects: [Subject] {
         periods.flatMap { ($0.subjects as? Set<Subject>) ?? [] }
     }
@@ -944,31 +875,32 @@ struct ContentView: View {
             break
         }
     }
+
     private var allEvaluations: [Evaluation] {
         allSubjects.flatMap { ($0.evaluations as? Set<Evaluation>) ?? [] }
     }
-    
+
     private var displayedSubjects: [Subject] {
         let allSubjectsArray = Array(allSubjects)
-        
+
         // ✅ FILTRAGE par période seulement
         let filteredByPeriod = allSubjectsArray.filter { subject in
             guard let period = activePeriod else { return true }
             if period.name == "Année" { return true }
             return subject.period == period
         }
-        
+
         // ✅ APPLIQUER le tri avec sortOrder
         switch (sortOption, sortOrder) {
         case (.alphabetical, .ascending):
             return filteredByPeriod.sorted { ($0.name ?? "") < ($1.name ?? "") }
-            
+
         case (.alphabetical, .descending):
             return filteredByPeriod.sorted { ($0.name ?? "") > ($1.name ?? "") }
-            
+
         case (.grade, .ascending):
             return filteredByPeriod.sorted { subject1, subject2 in
-                if subject1.grade == NO_GRADE && subject2.grade == NO_GRADE {
+                if subject1.grade == NO_GRADE, subject2.grade == NO_GRADE {
                     return false
                 }
                 if subject1.grade == NO_GRADE {
@@ -979,10 +911,10 @@ struct ContentView: View {
                 }
                 return subject1.grade < subject2.grade
             }
-            
+
         case (.grade, .descending):
             return filteredByPeriod.sorted { subject1, subject2 in
-                if subject1.grade == NO_GRADE && subject2.grade == NO_GRADE {
+                if subject1.grade == NO_GRADE, subject2.grade == NO_GRADE {
                     return false
                 }
                 if subject1.grade == NO_GRADE {
@@ -995,7 +927,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var filteredEvaluations: [Evaluation] {
         allEvaluations.filter { eval in
             guard let subj = eval.subject else { return false }
@@ -1004,39 +936,39 @@ struct ContentView: View {
             return subj.period == period
         }
     }
-    
+
     private var nextEvaluation: Evaluation? {
         let now = Date()
         let futureEvals = filteredEvaluations.filter { eval in
             guard let evaluationDate = eval.date else { return false }
             return evaluationDate > now
         }
-        
+
         return futureEvals.min { first, second in
             guard let date1 = first.date, let date2 = second.date else { return false }
             return date1 < date2
         }
     }
-    
+
     private var timeUntilNextEvaluation: String {
         guard let evaluation = nextEvaluation,
               let date = evaluation.date else { return "" }
-        
+
         let now = Date()
         guard date > now else { return "" }
-        
+
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.day, .hour]
         formatter.unitsStyle = .abbreviated
         formatter.maximumUnitCount = 2
-        
+
         return formatter.string(from: now, to: date) ?? ""
     }
-    
+
     private var hasNextEvaluation: Bool {
         nextEvaluation != nil
     }
-    
+
     private var relevantDecks: [FlashcardDeck] {
         let now = Date()
         if now.timeIntervalSince(lastDecksUpdate) > 2.0 {
@@ -1044,7 +976,7 @@ struct ContentView: View {
         }
         return cachedRelevantDecks
     }
-    
+
     private var relevantCardsToReview: Int {
         return relevantDecks.reduce(0) { count, deck in
             let cards = (deck.flashcards as? Set<Flashcard>) ?? []
@@ -1055,20 +987,20 @@ struct ContentView: View {
             }.count
         }
     }
-    
+
     private var weeklyEvaluationAdditions: Int {
         let oneWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date()) ?? Date()
         return filteredEvaluations.filter { eval in
             (eval.date ?? Date.distantPast) >= oneWeekAgo
         }.count
     }
-    
+
     private var gradingSystem: GradingSystemPlugin {
         GradingSystemRegistry.active
     }
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         buildMainView()
     }
@@ -1086,7 +1018,7 @@ struct ContentView: View {
             onApply: handleEditProfileApply,
             mainTabView: AnyView(customTabBarView)
         )
-        
+
         return mainContentView
             .onReceive(NotificationCenter.default.publisher(for: .activePeriodChanged)) { notification in
                 handleActivePeriodChanged(notification)
@@ -1101,30 +1033,7 @@ struct ContentView: View {
                 isViewActive = false
                 cleanupTimers()
             }
-            .onChange(of: showDeckLimitPopover) { oldValue, newValue in
-                // ✅ GARDE : Protection contre l'affichage dans d'autres onglets
-                if newValue && selectedTab != 1 {  // Revision tab = 1, pas 2
-                    showDeckLimitPopover = false
-                }
-            }
-            .onChange(of: showImportLimitPopover) { oldValue, newValue in
-                // ✅ GARDE : Protection contre l'affichage dans d'autres onglets
-                if newValue && selectedTab != 1 {  // Revision tab = 1, pas 2
-                    showImportLimitPopover = false
-                }
-            }
-            .onChange(of: showFlashcardGlobalFreePopover) { oldValue, newValue in
-                // ✅ GARDE : Protection contre l'affichage dans d'autres onglets
-                if newValue && selectedTab != 1 {  // Revision tab = 1, pas 2
-                    showFlashcardGlobalFreePopover = false
-                }
-            }
-            .onChange(of: showFlashcardGlobalPremiumPopover) { oldValue, newValue in
-                // ✅ GARDE : Protection contre l'affichage dans d'autres onglets
-                if newValue && selectedTab != 1 {  // Revision tab = 1, pas 2
-                    showFlashcardGlobalPremiumPopover = false
-                }
-            }
+            // ✅ MODIFIÉ : Supprimé - Plus de gestion de popovers de limite - Application entièrement gratuite
             .onChange(of: hasCompletedOnboarding) { _, newValue in
                 guard isViewActive else { return }
                 handleOnboardingChange(newValue)
@@ -1143,7 +1052,7 @@ struct ContentView: View {
             .onChange(of: selectedTab) { _, newTab in
                 guard isViewActive else { return }
                 handleTabChange(newTab)
-                
+
                 // ✅ Déplacer l'arrêt audio en dehors de l'animation pour éviter le scintillement
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     AudioManager.shared.stopAudio()
@@ -1161,7 +1070,7 @@ struct ContentView: View {
                 debouncedNavigationUpdate()
             }
             .alert("alert_error", isPresented: $showDuplicateSubjectAlert) {
-                Button("OK", role: .cancel) { }
+                Button("OK", role: .cancel) {}
             } message: {
                 Text(String(localized: "error_subject_duplicate").replacingOccurrences(of: "%@", with: duplicateSubjectName))
             }
@@ -1175,7 +1084,7 @@ struct ContentView: View {
             }
             .onReceive(PersistenceController.shared.$isReady) { isReady in
                 print("🔔 [PERIOD_PERSISTENCE] PersistenceController.isReady: \(isReady)")
-                
+
                 if isReady && selectedPeriod == nil {
                     print("🚀 [PERIOD_PERSISTENCE] PersistenceController prêt - tentative restauration immédiate")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1183,12 +1092,10 @@ struct ContentView: View {
                     }
                 }
             }
-
     }
 
-    
     // MARK: - ✅ NOUVELLE TabBar Custom avec Animations
-    
+
     private var customTabBarView: some View {
         ZStack {
             // ✅ Contenu principal qui occupe tout l'écran
@@ -1208,7 +1115,7 @@ struct ContentView: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 83)
             }
-            
+
             VStack {
                 Spacer()
                 nativeStyleTabBar
@@ -1217,9 +1124,7 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.keyboard)
         }
-        .sheet(isPresented: $showPremiumView) {
-            PremiumView(highlightedFeature: .unlimitedDecks)
-        }
+        // ✅ MODIFIÉ : Supprimé - Application entièrement gratuite
     }
 
     private var nativeStyleTabBar: some View {
@@ -1246,65 +1151,39 @@ struct ContentView: View {
         .tint(.blue)
     }
 
-    
     private func selectTab(_ index: Int) {
         guard isViewActive else { return }
-        
+
         let now = Date()
         guard now.timeIntervalSince(lastTapTime) > 0.03 else { return }
         lastTapTime = now
-        
+
         if selectedTab == index { return }
-        
+
         // ✅ Suppression de l'animation pour un changement instantané
         selectedTab = index
-        
+
         symbolAnimations[index].toggle()
     }
 
     private var homeBackground: Color {
         colorScheme == .light ? Color(hex: "F2F2F6") : Color(.systemBackground)
     }
-    
+
+    // ✅ MODIFIÉ : Supprimé - Plus de popover de limite - Application entièrement gratuite
     private var importLimitPopoverContent: some View {
-        (Text(String(localized: "premium_deck_limit_reached")) +
-         Text(" Gradefy Pro").foregroundColor(.blue) +
-         Text("."))
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
-            .frame(maxWidth: 300)
-            .onTapGesture {
-                showPremiumView = true
-                showImportLimitPopover = false
-            }
+        EmptyView()
     }
-    
+
+    // ✅ MODIFIÉ : Supprimé - Plus de popovers de limite - Application entièrement gratuite
     private var flashcardGlobalFreePopoverContent: some View {
-        (Text(String(localized: "premium_flashcard_limit_reached")) +
-         Text(" Gradefy Pro").foregroundColor(.blue) +
-         Text("."))
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
-            .frame(maxWidth: 300)
-            .onTapGesture {
-                showPremiumView = true
-                showFlashcardGlobalFreePopover = false
-            }
+        EmptyView()
     }
-    
+
     private var flashcardGlobalPremiumPopoverContent: some View {
-        Text(String(localized: "premium_flashcard_limit_premium"))
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
-            .frame(maxWidth: 300)
+        EmptyView()
     }
-    
+
     private var subjectsTabContent: some View {
         NavigationStack(path: $navigationPath) {
             Group {
@@ -1319,7 +1198,7 @@ struct ContentView: View {
                         .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        
+
                         // Section bouton Sort
                         Section {
                             HStack {
@@ -1354,7 +1233,7 @@ struct ContentView: View {
                     .scrollContentBackground(.hidden)
                     .background(adaptiveBackground)
                     .scrollIndicators(.hidden)
-                    .contentMargins(.top, 25)   // remonte légèrement le contenu
+                    .contentMargins(.top, 25) // remonte légèrement le contenu
                     .contentMargins(.bottom, 80) // coussin bas pour voir la dernière carte entière
                     .scrollDisabled(false)
                 }
@@ -1414,7 +1293,7 @@ struct ContentView: View {
                 )
             }
             .alert(String(localized: "no_period_title"), isPresented: $showNoPeriodAlert) {
-                Button("OK", role: .cancel) { }
+                Button("OK", role: .cancel) {}
             } message: {
                 Text(String(localized: "error_add_period_first"))
             }
@@ -1429,11 +1308,11 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var rowBackground: Color {
         colorScheme == .light ? Color.white : Color(.secondarySystemBackground)
     }
-    
+
     private var revisionTabContent: some View {
         NavigationStack {
             Group {
@@ -1468,7 +1347,7 @@ struct ContentView: View {
                                     Label(String(localized: "action_modify"), systemImage: "pencil")
                                 }
                                 .tint(.blue)
-                                
+
                                 // ✅ SOLUTION : role: .none au lieu de .destructive
                                 Button(role: .none) { // ← CHANGEMENT ICI
                                     print("🟠 [DEBUG] TAP sur bouton trash pour : \(deck.name ?? "sans nom")")
@@ -1483,7 +1362,6 @@ struct ContentView: View {
                                 }
                                 .tint(.red)
                             }
-
                         }
                     }
                     .listStyle(.insetGrouped)
@@ -1515,26 +1393,24 @@ struct ContentView: View {
                 deckName: $deckName,
                 onSave: handleDeckSaveSimplified
             )
-            .presentationDetents([.height(150)])  // ✅ Hauteur fixe adaptée au contenu
-            .presentationDragIndicator(.hidden)   // ✅ Indicateur de glissement
-            .presentationCornerRadius(16)          // ✅ Coins arrondis
+            .presentationDetents([.height(150)]) // ✅ Hauteur fixe adaptée au contenu
+            .presentationDragIndicator(.hidden) // ✅ Indicateur de glissement
+            .presentationCornerRadius(16) // ✅ Coins arrondis
         }
         .sheet(item: $selectedDeckToEdit) { deck in
             EditDeckView(deck: deck)
-                .presentationDetents([.height(150)])  // ✅ Hauteur fixe adaptée au contenu
-                .presentationDragIndicator(.hidden)   // ✅ Indicateur de glissement
-                .presentationCornerRadius(16)         // ✅ Coins arrondis
+                .presentationDetents([.height(150)]) // ✅ Hauteur fixe adaptée au contenu
+                .presentationDragIndicator(.hidden) // ✅ Indicateur de glissement
+                .presentationCornerRadius(16) // ✅ Coins arrondis
         }
     }
-    
-    private var profileTabContent: some View {
-            ProfileView()
-    }
-    
-    // MARK: - Period Selector (inchangé)
-    
 
-    
+    private var profileTabContent: some View {
+        ProfileView()
+    }
+
+    // MARK: - Period Selector (inchangé)
+
     private var periodSelectorMenu: some View {
         Group {
             ForEach(periods, id: \.id) { period in
@@ -1558,13 +1434,13 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var subjectsEmptyState: some View {
         VStack {
             Spacer()
             AdaptiveLottieView(animationName: "subjectblue")
                 .frame(width: 110, height: 110)
-            
+
             VStack(spacing: 8) {
                 Text(String(localized: "empty_subjects_message"))
                     .font(.headline.weight(.medium))
@@ -1573,9 +1449,9 @@ struct ContentView: View {
                     .padding(.horizontal, 40)
             }
             .padding(.top, 16)
-            
+
             Spacer()
-            
+
             Button(action: handleAddSubjectTap) {
                 Text(String(localized: "action_add_subject"))
                     .font(.headline.weight(.semibold))
@@ -1593,31 +1469,31 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
-    
+
     private var revisionEmptyState: some View {
         VStack {
             Spacer()
-            
+
             // ✅ ANIMATION ADAPTIVE au mode sombre
             AdaptiveLottieView(animationName: "notesblue")
                 .frame(width: 110, height: 110)
-            
+
             // ✅ TEXTE parfaitement adaptatif
             VStack(spacing: 8) {
-                Text(String(localized: "empty_list_title"))                    .font(.headline.weight(.medium))
+                Text(String(localized: "empty_list_title")).font(.headline.weight(.medium))
                     .foregroundColor(colorScheme == .dark ? .white : .primary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
             .padding(.top, 16)
-            
+
             Spacer()
-            
+
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .medium)
                 showAddFlashcardSheet = true
             }) {
-                Text(String(localized: "empty_list_button_add"))                    .font(.headline.weight(.semibold))
+                Text(String(localized: "empty_list_button_add")).font(.headline.weight(.semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
@@ -1632,9 +1508,9 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
-    
+
     // MARK: - Helper Functions (inchangé)
-    
+
     private func toolbarButtonView(systemImage: String) -> some View {
         ZStack {
             Circle()
@@ -1645,19 +1521,19 @@ struct ContentView: View {
                 .foregroundColor(colorScheme == .dark ? .white : .black)
         }
     }
-    
+
     private var sortedSubjects: [Subject] {
         switch (sortOption, sortOrder) {
         case (.alphabetical, .ascending):
             return allSubjects.sorted { ($0.name ?? "") < ($1.name ?? "") }
-            
+
         case (.alphabetical, .descending):
             return allSubjects.sorted { ($0.name ?? "") > ($1.name ?? "") }
-            
+
         case (.grade, .ascending):
             return allSubjects.sorted { subject1, subject2 in
                 // ✅ Gestion NO_GRADE comme dans l'exemple Python
-                if subject1.grade == NO_GRADE && subject2.grade == NO_GRADE {
+                if subject1.grade == NO_GRADE, subject2.grade == NO_GRADE {
                     return false
                 }
                 if subject1.grade == NO_GRADE {
@@ -1668,11 +1544,11 @@ struct ContentView: View {
                 }
                 return subject1.grade < subject2.grade
             }
-            
+
         case (.grade, .descending):
             return allSubjects.sorted { subject1, subject2 in
                 // ✅ Gestion NO_GRADE pour tri descendant
-                if subject1.grade == NO_GRADE && subject2.grade == NO_GRADE {
+                if subject1.grade == NO_GRADE, subject2.grade == NO_GRADE {
                     return false
                 }
                 if subject1.grade == NO_GRADE {
@@ -1685,8 +1561,7 @@ struct ContentView: View {
             }
         }
     }
-    
-    
+
     private var sortMenuContent: some View {
         Group {
             // ✅ Section pour le critère de tri
@@ -1704,7 +1579,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
                 Button {
                     sortOption = .grade
                     debouncedNavigationUpdate()
@@ -1719,7 +1594,7 @@ struct ContentView: View {
                     }
                 }
             }
-            
+
             // ✅ Section pour l'ordre de tri
             Section(String(localized: "sort_section_order")) {
                 Button {
@@ -1735,7 +1610,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
                 Button {
                     sortOrder = .descending
                     debouncedNavigationUpdate()
@@ -1752,52 +1627,53 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func updateRelevantDecks() {
         let subjectNames = displayedSubjects.map { $0.name?.lowercased() ?? "" }
-        
+
         let filteredDecks = allDecks.filter { deck in
             guard let deckName = deck.name?.lowercased() else { return false }
             return subjectNames.contains { subjectName in
                 deckName.contains(subjectName) || subjectName.contains(deckName)
             }
         }
-        
+
         Task { @MainActor in
             self.cachedRelevantDecks = filteredDecks
             self.lastDecksUpdate = Date()
         }
     }
-    
+
     private func handleContentViewAppear() {
         ensureAtLeastOnePeriodExists()
         checkAndCreateOnboardingPeriod()
-        
+
         // Initialisation locale uniquement
         Task {
             await initializeLocalConfiguration()
         }
-        
+
         // ✅ Widget sync simplifié pour le nouveau système
         WidgetCenter.shared.reloadAllTimelines()
     }
-    
+
     private func initializeLocalConfiguration() async {
         print("🔄 Initialisation de la configuration locale...")
-        
+
         let persistenceController = PersistenceController.shared
         let configManager = ConfigurationManager(context: persistenceController.container.viewContext)
-        
+
         configManager.initializeUserDefaultsIfNeeded()
         print("✅ Configuration locale restaurée avec succès")
     }
-    
+
     private func ensureAtLeastOnePeriodExists() {
         if selectedPeriod == nil || !periods.contains(where: { $0.id == selectedPeriod?.id }) {
             // PRIORITÉ : Restauration depuis activePeriodIDString
             if !activePeriodIDString.isEmpty,
                let uuid = UUID(uuidString: activePeriodIDString),
-               let foundPeriod = periods.first(where: { $0.id == uuid }) {
+               let foundPeriod = periods.first(where: { $0.id == uuid })
+            {
                 print("🔄 [ENSURE_PERIOD] Restauration: \(foundPeriod.name ?? "")")
                 selectedPeriod = foundPeriod
                 activePeriodIDString = foundPeriod.id?.uuidString ?? ""
@@ -1808,7 +1684,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func handleOnboardingChange(_ newValue: Bool) {
         if newValue == true {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1816,20 +1692,20 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func handleContextSave(_ notification: Notification) {
         guard isViewActive else { return }
-        
+
         guard let userInfo = notification.userInfo else { return }
-        
+
         let changedObjects = [
             NSInsertedObjectsKey,
             NSUpdatedObjectsKey,
-            NSDeletedObjectsKey
+            NSDeletedObjectsKey,
         ].compactMap { key in
             userInfo[key] as? Set<NSManagedObject>
         }.flatMap { $0 }
-        
+
         let hasRelevantChanges = changedObjects.contains { object in
             if object is Evaluation {
                 return true
@@ -1846,46 +1722,47 @@ struct ContentView: View {
             }
             return false
         }
-        
+
         if hasRelevantChanges {
             DispatchQueue.main.async {
                 self.refreshID = UUID()
-                
+
                 // ✅ SYNCHRONISATION WIDGET SIMPLIFIÉE
                 WidgetCenter.shared.reloadAllTimelines()
-                
+
                 // ✅ NOUVEAU : Forcer la mise à jour des indicateurs de limite
                 self.forceUpdateLimitIndicators()
             }
         }
     }
-    
+
     // ✅ NOUVELLE FONCTION : Forcer la mise à jour des indicateurs
     private func forceUpdateLimitIndicators() {
         // Forcer la mise à jour des @State qui dépendent des limites
         DispatchQueue.main.async {
             // Rafraîchir les propriétés calculées
-            let _ = self.hasReachedDeckLimit
-            let _ = self.hasReachedImportLimit
-            let _ = self.allFlashcards.count
-            
+            _ = self.hasReachedDeckLimit
+            _ = self.hasReachedImportLimit
+            _ = self.allFlashcards.count
+
             // Notifier les vues enfants si nécessaire
             NotificationCenter.default.post(name: .dataDidChange, object: nil)
         }
     }
-    
+
     private func handleSystemChange() {
         guard isViewActive else { return }
-        
+
         let periodToMaintain = activePeriod
-        
+
         refreshID = UUID()
         selectedSubjectForNavigation = nil
         selectedTab = 0
-        
+
         DispatchQueue.main.async {
             if let savedPeriod = periodToMaintain,
-               self.periods.contains(where: { $0.id == savedPeriod.id }) {
+               self.periods.contains(where: { $0.id == savedPeriod.id })
+            {
                 self.selectedPeriod = savedPeriod
             } else if !self.periods.isEmpty {
                 self.selectedPeriod = self.periods.first
@@ -1894,36 +1771,36 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func handleEditProfileCancel() {
         showingEditProfile = false
     }
-    
+
     private func handleEditProfileApply() {
         username = tempUsername
         profileSubtitle = tempSubtitle
-        
+
         if selectedGradient.count >= 2 {
             profileGradientStartHex = selectedGradient[0].toHex()
             profileGradientEndHex = selectedGradient[1].toHex()
         }
-        
+
         showingEditProfile = false
     }
-    
+
     func handleTabChange(_ newTab: Int) {
         guard isViewActive else { return }
         selectedTab = newTab
     }
-    
+
     private func cleanupTimers() {
         navigationUpdateTimer?.invalidate()
         navigationUpdateTimer = nil
     }
-    
+
     private func debouncedNavigationUpdate() {
         guard isViewActive else { return }
-        
+
         navigationUpdateTimer?.invalidate()
         navigationUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
             DispatchQueue.main.async {
@@ -1933,19 +1810,20 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func checkAndCreateOnboardingPeriod() {
         let savedPeriod = UserDefaults.standard.string(forKey: "selectedPeriod") ?? ""
         let processed = UserDefaults.standard.bool(forKey: "onboardingPeriodProcessed")
-        
-        if hasCompletedOnboarding && !savedPeriod.isEmpty && !processed {
+
+        if hasCompletedOnboarding, !savedPeriod.isEmpty, !processed {
             createOnboardingPeriodIfNeeded()
         } else {
-            if selectedPeriod == nil && !periods.isEmpty {
+            if selectedPeriod == nil, !periods.isEmpty {
                 // PRIORITÉ : Restauration depuis activePeriodIDString
                 if !activePeriodIDString.isEmpty,
                    let uuid = UUID(uuidString: activePeriodIDString),
-                   let foundPeriod = periods.first(where: { $0.id == uuid }) {
+                   let foundPeriod = periods.first(where: { $0.id == uuid })
+                {
                     print("🔄 [ONBOARDING] Restauration: \(foundPeriod.name ?? "")")
                     selectedPeriod = foundPeriod
                 } else {
@@ -1955,18 +1833,19 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func createOnboardingPeriodIfNeeded() {
         let hasCompleted = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         let processed = UserDefaults.standard.bool(forKey: "onboardingPeriodProcessed")
         let savedPeriod = UserDefaults.standard.string(forKey: "selectedPeriod") ?? ""
-        
-        guard hasCompleted && !processed && !savedPeriod.isEmpty else {
-            if selectedPeriod == nil && !periods.isEmpty {
+
+        guard hasCompleted, !processed, !savedPeriod.isEmpty else {
+            if selectedPeriod == nil, !periods.isEmpty {
                 // PRIORITÉ : Restauration depuis activePeriodIDString
                 if !activePeriodIDString.isEmpty,
                    let uuid = UUID(uuidString: activePeriodIDString),
-                   let foundPeriod = periods.first(where: { $0.id == uuid }) {
+                   let foundPeriod = periods.first(where: { $0.id == uuid })
+                {
                     print("🔄 [CREATE_ONBOARDING] Restauration: \(foundPeriod.name ?? "")")
                     selectedPeriod = foundPeriod
                 } else {
@@ -1976,13 +1855,13 @@ struct ContentView: View {
             }
             return
         }
-        
+
         let request: NSFetchRequest<Period> = Period.fetchRequest()
         request.predicate = NSPredicate(format: "name == %@", savedPeriod)
-        
+
         do {
             let foundPeriods = try viewContext.fetch(request)
-            
+
             if let foundPeriod = foundPeriods.first {
                 selectedPeriod = foundPeriod
                 activePeriodIDString = foundPeriod.id?.uuidString ?? ""
@@ -1992,28 +1871,27 @@ struct ContentView: View {
                     activePeriodIDString = firstPeriod.id?.uuidString ?? ""
                 }
             }
-            
+
             UserDefaults.standard.set(true, forKey: "onboardingPeriodProcessed")
             UserDefaults.standard.removeObject(forKey: "selectedPeriod")
             UserDefaults.standard.synchronize()
-            
+
         } catch {
             if let firstPeriod = periods.first {
                 selectedPeriod = firstPeriod
                 activePeriodIDString = firstPeriod.id?.uuidString ?? ""
             }
-            
+
             UserDefaults.standard.set(true, forKey: "onboardingPeriodProcessed")
             UserDefaults.standard.removeObject(forKey: "selectedPeriod")
             UserDefaults.standard.synchronize()
         }
     }
-    
+
     private var adaptiveBackground: Color {
         colorScheme == .dark ? Color(.systemBackground) : Color(.systemGray6)
     }
-    
-    
+
     private func addNewPeriod(name: String, startDate: Date, endDate: Date) {
         viewContext.performAndWait {
             do {
@@ -2022,9 +1900,9 @@ struct ContentView: View {
                 newPeriod.name = name
                 newPeriod.startDate = startDate
                 newPeriod.endDate = endDate
-                
+
                 try viewContext.save()
-                
+
                 DispatchQueue.main.async {
                     selectedPeriod = newPeriod
                     activePeriodIDString = newPeriod.id?.uuidString ?? ""
@@ -2035,7 +1913,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func handleDeckSaveSimplified(name: String) {
         viewContext.performAndWait {
             do {
@@ -2043,7 +1921,7 @@ struct ContentView: View {
                 newDeck.id = UUID()
                 newDeck.createdAt = Date()
                 newDeck.name = name
-                
+
                 try viewContext.save()
             } catch {
                 viewContext.rollback()
@@ -2052,7 +1930,7 @@ struct ContentView: View {
         showAddFlashcardSheet = false
         deckName = ""
     }
-    
+
     private func deleteDeck(_ deck: FlashcardDeck) {
         viewContext.performAndWait {
             do {
@@ -2063,7 +1941,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func handleAddSubjectTap() {
         if periods.isEmpty {
             showNoPeriodAlert = true
@@ -2071,14 +1949,14 @@ struct ContentView: View {
             showingAddSubjectSheet = true
         }
     }
-    
+
     private func addNewSubject(_ subjectData: SubjectData) {
         print("🔹 === DÉBUT addNewSubject ===")
         print("🔹 Données reçues: nom='\(subjectData.name)', période='\(subjectData.periodName)'")
         print("🔹 Avant fermeture sheet: showingAddSubjectSheet = \(showingAddSubjectSheet)")
         print("🔹 État isViewActive: \(isViewActive)")
         print("🔹 refreshID actuel: \(refreshID)")
-        
+
         viewContext.performAndWait {
             do {
                 // ✅ ÉTAPE 1: Vérification des doublons
@@ -2090,10 +1968,10 @@ struct ContentView: View {
                     subjectData.periodName
                 )
                 duplicateRequest.fetchLimit = 1
-                
+
                 let existingSubjects = try viewContext.fetch(duplicateRequest)
                 print("🔸 Doublons trouvés: \(existingSubjects.count)")
-                
+
                 if !existingSubjects.isEmpty {
                     print("⚠️ Doublon détecté pour '\(subjectData.name)', abandon de la création")
                     print("⚠️ Fermeture de la sheet pour doublon...")
@@ -2105,19 +1983,19 @@ struct ContentView: View {
                     }
                     return
                 }
-                
+
                 // ✅ ÉTAPE 2: Récupération de la période dans le bon contexte
                 print("🔸 Recherche de la période '\(subjectData.periodName)'...")
                 let periodRequest: NSFetchRequest<Period> = Period.fetchRequest()
                 periodRequest.predicate = NSPredicate(format: "name == %@", subjectData.periodName)
                 periodRequest.fetchLimit = 1
-                
+
                 let foundPeriods = try viewContext.fetch(periodRequest)
                 print("🔸 Périodes trouvées: \(foundPeriods.count)")
-                
+
                 // ✅ CORRECTION CRITIQUE: Validation du contexte
                 var targetPeriod: Period?
-                
+
                 if let period = foundPeriods.first {
                     // Vérifier que la période est dans le bon contexte
                     if period.managedObjectContext == viewContext {
@@ -2135,11 +2013,11 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
                 // ✅ FALLBACK: Utiliser activePeriod si nécessaire
                 if targetPeriod == nil {
                     print("⚠️ Aucune période trouvée, utilisation de activePeriod...")
-                    
+
                     // Vérifier le contexte de activePeriod
                     if let activePeriod = activePeriod {
                         if activePeriod.managedObjectContext == viewContext {
@@ -2159,7 +2037,7 @@ struct ContentView: View {
                         print("❌ Aucune période active disponible")
                     }
                 }
-                
+
                 // ✅ VALIDATION FINALE
                 guard let finalPeriod = targetPeriod else {
                     print("❌ Impossible de trouver une période valide")
@@ -2170,7 +2048,7 @@ struct ContentView: View {
                     }
                     throw NSError(domain: "SubjectCreation", code: 1, userInfo: [NSLocalizedDescriptionKey: "Aucune période valide trouvée"])
                 }
-                
+
                 // ✅ ÉTAPE 3: Création de la matière
                 print("🔸 Création de la nouvelle matière...")
                 let newSubject = Subject(context: viewContext)
@@ -2182,22 +2060,22 @@ struct ContentView: View {
                 newSubject.grade = NO_GRADE
                 newSubject.createdAt = Date()
                 newSubject.lastModified = Date()
-                
+
                 print("🔸 Attribution de la période...")
                 newSubject.period = finalPeriod
                 print("✅ Relation établie: '\(newSubject.name ?? "")' → '\(finalPeriod.name ?? "")'")
-                
+
                 // ✅ ÉTAPE 4: Sauvegarde
                 print("🔸 Sauvegarde en cours...")
                 try viewContext.save()
                 print("✅ Matière créée et sauvegardée avec succès: '\(newSubject.name ?? "")'")
-                
+
             } catch {
                 print("❌ Erreur lors de la création de la matière: \(error.localizedDescription)")
                 print("❌ Détails de l'erreur: \(error)")
                 viewContext.rollback()
                 print("🔄 Rollback effectué")
-                
+
                 // ✅ FERMETURE en cas d'erreur
                 DispatchQueue.main.async {
                     print("❌ Fermeture sheet (catch) - showingAddSubjectSheet: \(self.showingAddSubjectSheet) → false")
@@ -2206,7 +2084,7 @@ struct ContentView: View {
                 return
             }
         }
-        
+
         // ✅ FERMETURE DE LA SHEET EN CAS DE SUCCÈS (CORRECTION PRINCIPALE)
         DispatchQueue.main.async {
             print("🔹 === FERMETURE EFFECTIVE DE LA SHEET ===")
@@ -2216,19 +2094,18 @@ struct ContentView: View {
             print("🔹 Après modification: showingAddSubjectSheet = \(self.showingAddSubjectSheet)")
             print("🔹 === FERMETURE TERMINÉE ===")
         }
-        
+
         print("🔹 === FIN addNewSubject ===")
         print("🔹 Fonction terminée, fermeture sheet programmée")
     }
 }
-
 
 // Enum pour définir les onglets
 enum TabItem: Int, CaseIterable {
     case subjects = 0
     case revision = 1
     case settings = 2
-    
+
     var icon: String {
         switch self {
         case .subjects: return "square.stack.3d.up.fill"
@@ -2236,7 +2113,7 @@ enum TabItem: Int, CaseIterable {
         case .settings: return "gear"
         }
     }
-    
+
     var title: String {
         switch self {
         case .subjects: return String(localized: "tab_subjects")
@@ -2244,31 +2121,30 @@ enum TabItem: Int, CaseIterable {
         case .settings: return String(localized: "tab_settings")
         }
     }
-    
+
     var accessibilityLabel: String {
         return "Onglet \(title)"
     }
 }
-
 
 struct NativeTabButton: View {
     let tab: TabItem
     let isSelected: Bool
     let animate: Bool
     let action: () -> Void
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     var body: some View {
         VStack(spacing: 0) {
             Image(systemName: tab.icon)
                 .font(.system(size: 22, weight: .medium))
                 .foregroundColor(isSelected ? Color.blue : (colorScheme == .dark ? Color.gray.opacity(0.8) : Color.gray))
-                .symbolEffect(.bounce.up.byLayer, options: .speed(1), value: animate)                .frame(height: 24)
+                .symbolEffect(.bounce.up.byLayer, options: .speed(1), value: animate).frame(height: 24)
                 .scaleEffect(x: 1, y: tab.icon == "rectangle.portrait.on.rectangle.portrait.angled.fill" ? 0.94 : 1)
             Spacer()
                 .frame(height: 4)
-            
+
             Text(tab.title)
                 .font(.caption2)
                 .fontWeight(.medium)
@@ -2285,7 +2161,6 @@ struct NativeTabButton: View {
     }
 }
 
-
 // MARK: - LazyView Helper (inchangé)
 
 struct LazyView<Content: View>: View {
@@ -2293,6 +2168,7 @@ struct LazyView<Content: View>: View {
     init(_ build: @autoclosure @escaping () -> Content) {
         self.build = build
     }
+
     var body: Content {
         build()
     }
@@ -2311,7 +2187,7 @@ struct MainContentView: View {
     let onCancel: () -> Void
     let onApply: () -> Void
     let mainTabView: AnyView
-    
+
     var body: some View {
         ZStack {
             if showSplash {
@@ -2327,7 +2203,6 @@ struct MainContentView: View {
     }
 }
 
-
 // MARK: - Splash Screen (inchangé)
 
 struct SplashScreenView: View {
@@ -2335,16 +2210,16 @@ struct SplashScreenView: View {
     private let letters = Array("Gradefy")
     @State private var letterVisible: [Bool]
     @State private var dragOffset: CGSize = .zero
-    
+
     init(onCompletion: @escaping () -> Void) {
         self.onCompletion = onCompletion
-        self._letterVisible = State(initialValue: Array(repeating: false, count: letters.count))
+        _letterVisible = State(initialValue: Array(repeating: false, count: letters.count))
     }
-    
+
     var body: some View {
         ZStack {
             Color(.systemBackground).ignoresSafeArea()
-            
+
             HStack(spacing: 0) {
                 ForEach(letters.indices, id: \.self) { index in
                     letterView(at: index)
@@ -2356,7 +2231,7 @@ struct SplashScreenView: View {
             .onAppear(perform: startAnimation)
         }
     }
-    
+
     private func letterView(at index: Int) -> some View {
         Text(String(letters[index]))
             .foregroundColor(Color.blue)
@@ -2365,20 +2240,20 @@ struct SplashScreenView: View {
             .opacity(letterVisible[index] ? 1 : 0)
             .animation(.interpolatingSpring(stiffness: 250, damping: 15), value: letterVisible[index])
     }
-    
+
     private var dragGesture: some Gesture {
         DragGesture()
             .onChanged { dragOffset = $0.translation }
             .onEnded { _ in dragOffset = .zero }
     }
-    
+
     private func startAnimation() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             for index in letters.indices {
                 letterVisible[index] = true
             }
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
             onCompletion()
         }
@@ -2442,7 +2317,7 @@ struct NoPressButtonStyle: ButtonStyle {
 
 struct TagListView: View {
     let tags: [String]
-    
+
     var body: some View {
         FlowLayout(spacing: 8) {
             ForEach(tags, id: \.self) { tag in
@@ -2454,7 +2329,7 @@ struct TagListView: View {
 
 private struct TagView: View {
     let text: String
-    
+
     var body: some View {
         Text(text)
             .font(.caption.weight(.medium))
@@ -2490,11 +2365,11 @@ struct FlowLayout: Layout {
         arrangeViews(proposal: .unspecified, subviews: subviews)
     }
 
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) -> CGSize {
+    func sizeThatFits(proposal: ProposedViewSize, subviews _: Subviews, cache: inout Cache) -> CGSize {
         CGSize(width: proposal.width ?? 0, height: cache.height)
     }
 
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) {
+    func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews _: Subviews, cache: inout Cache) {
         var y = bounds.minY
         for row in cache.rows {
             var x = bounds.minX
@@ -2546,7 +2421,7 @@ struct BouncedScrollView<Content: View>: UIViewRepresentable {
         self.content = content
     }
 
-    func makeUIView(context: Context) -> UIScrollView {
+    func makeUIView(context _: Context) -> UIScrollView {
         let scrollView = UIScrollView()
         scrollView.bounces = false
         scrollView.alwaysBounceVertical = false
@@ -2562,30 +2437,30 @@ struct BouncedScrollView<Content: View>: UIViewRepresentable {
             hosting.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             hosting.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             hosting.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            hosting.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            hosting.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
         ])
 
         return scrollView
     }
 
-    func updateUIView(_ uiView: UIScrollView, context: Context) {
-    }
+    func updateUIView(_: UIScrollView, context _: Context) {}
 }
 
 // MARK: - Méthodes privées pour les gestionnaires
+
 extension ContentView {
-    
     private func handleActivePeriodChanged(_ notification: Notification) {
         print("📢 Notification reçue dans ContentView")
         print("📋 UserInfo: \(notification.userInfo ?? [:])")
-        
+
         if let newPeriodID = notification.userInfo?["newPeriodID"] as? String {
             print("🔄 Mise à jour vers période ID: \(newPeriodID)")
             activePeriodIDString = newPeriodID
-            
+
             // Forcer la mise à jour de selectedPeriod
             if let uuid = UUID(uuidString: newPeriodID),
-               let newPeriod = periods.first(where: { $0.id == uuid }) {
+               let newPeriod = periods.first(where: { $0.id == uuid })
+            {
                 selectedPeriod = newPeriod
                 print("✅ selectedPeriod mis à jour: \(newPeriod.name ?? "")")
             } else {
@@ -2595,22 +2470,22 @@ extension ContentView {
         } else {
             print("⚠️ Pas de newPeriodID dans la notification")
         }
-        
+
         // Rafraîchir l'interface
         refreshID = UUID()
         print("🔄 Interface rafraîchie (refreshID mis à jour)")
     }
-    
+
     private func handleViewAppear() {
         isViewActive = true
         handleContentViewAppear()
-        
+
         // RESTAURATION DE PÉRIODE - TIMING ADAPTÉ à votre architecture
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             print("⏰ [PERIOD_PERSISTENCE] Première tentative restauration (0.1s)")
             self.restoreActivePeriodWithCache()
         }
-        
+
         // Retry si nécessaire quand Core Data est stabilisé
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             print("⏰ [PERIOD_PERSISTENCE] Seconde tentative restauration (2.0s)")
@@ -2618,20 +2493,20 @@ extension ContentView {
                 self.restoreActivePeriodWithCache()
             }
         }
-        
+
         // ✅ SYNCHRONISATION WIDGET - Version simplifiée
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
-    private func handleSelectedPeriodChange(oldValue: Period?, newValue: Period?) {
+    private func handleSelectedPeriodChange(oldValue _: Period?, newValue _: Period?) {
         guard isViewActive else { return }
-        
+
         // ✅ Optimiser les refreshID pour éviter les re-renders inutiles
         debouncedNavigationUpdate()
     }
-    
+
     private func debugPrintAvailablePeriods() {
         print("📋 Périodes disponibles:")
         for period in periods {
@@ -2640,10 +2515,9 @@ extension ContentView {
     }
 }
 
-
 private extension View {
     func opacityButtonEffect() -> some View {
-        self.modifier(OpacityButtonEffect())
+        modifier(OpacityButtonEffect())
     }
 }
 
@@ -2670,8 +2544,3 @@ private struct OpacityButtonEffect: ViewModifier {
     ContentView()
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
-
-
-
-
-

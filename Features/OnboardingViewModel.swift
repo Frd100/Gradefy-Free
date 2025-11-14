@@ -1,15 +1,15 @@
 //
-// OnBoarding.swift
+// OnboardingViewModel.swift
 // PARALLAX
 //
 // Created by  on 6/27/25.
 //
 
-import SwiftUI
-import CoreData
 import Combine
-import UIKit
+import CoreData
 import Foundation
+import SwiftUI
+import UIKit
 
 // MARK: - Models
 
@@ -20,9 +20,9 @@ enum OnboardingStep: Int, CaseIterable, Identifiable {
     case profile = 3
     case period = 4
     case completion = 5
-    
+
     var id: Int { rawValue }
-    
+
     var title: String {
         print("🔍 [OnboardingStep] Getting title for step: \(self)")
         switch self {
@@ -34,7 +34,7 @@ enum OnboardingStep: Int, CaseIterable, Identifiable {
         case .completion: return ""
         }
     }
-    
+
     var icon: String {
         print("🔍 [OnboardingStep] Getting icon for step: \(self)")
         switch self {
@@ -46,7 +46,7 @@ enum OnboardingStep: Int, CaseIterable, Identifiable {
         case .completion: return "checkmark.seal.fill"
         }
     }
-    
+
     var iconColor: Color {
         print("🔍 [OnboardingStep] Getting iconColor for step: \(self)")
         switch self {
@@ -58,7 +58,7 @@ enum OnboardingStep: Int, CaseIterable, Identifiable {
         case .completion: return .green
         }
     }
-    
+
     var showIcon: Bool {
         print("🔍 [OnboardingStep] Getting showIcon for step: \(self)")
         switch self {
@@ -83,14 +83,14 @@ struct UserProfileData {
     var selectedGradient: [Color] = [Color(hex: "8B95A8"), Color(hex: "4A5568")]
     var selectedSystem: String = UserDefaults.standard.string(forKey: "GradingSystem") ?? "usa"
     var periodName: String = ""
-    var periodStartDate: Date = Date()
+    var periodStartDate: Date = .init()
     var periodEndDate: Date = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
-    
+
     var isValid: Bool {
         print("🔍 [UserProfileData] Checking isValid - username: '\(username)'")
         return !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
-    
+
     var isPeriodValid: Bool {
         print("🔍 [UserProfileData] Checking isPeriodValid - periodName: '\(periodName)'")
         return !periodName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -107,14 +107,14 @@ class OnboardingViewModel: ObservableObject {
             invalidateCaches()
         }
     }
-    
+
     @Published var userProfile = UserProfileData() {
         didSet {
             print("🔍 [OnboardingViewModel] userProfile changed")
             _cachedCanProceed = nil // Invalider seulement canProceed
         }
     }
-    
+
     @Published var isLoading = false {
         didSet {
             print("🔍 [OnboardingViewModel] isLoading changed: \(isLoading)")
@@ -122,7 +122,7 @@ class OnboardingViewModel: ObservableObject {
             _cachedButtonTitle = nil
         }
     }
-    
+
     @Published var errorMessage: String?
     @Published var isOnboardingCompleted = false
 
@@ -131,18 +131,18 @@ class OnboardingViewModel: ObservableObject {
     // ✅ AJOUT : Cache pour éviter les recalculs constants
     private var _cachedCanProceed: Bool?
     private var _cachedButtonTitle: String?
-    
+
     var onOnboardingComplete: (() -> Void)?
-    
+
     private let persistentContainer: NSPersistentContainer
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
         print("🔍 [OnboardingViewModel] init() appelé")
-        self.persistentContainer = PersistenceController.shared.container
+        persistentContainer = PersistenceController.shared.container
         setupValidation()
     }
-    
+
     // ✅ MÉTHODE OPTIMISÉE avec cache
     var currentStep: OnboardingStep {
         let step = OnboardingStep(rawValue: currentStepRaw) ?? .intro
@@ -150,16 +150,15 @@ class OnboardingViewModel: ObservableObject {
         return step
     }
 
-
     // ✅ MÉTHODE OPTIMISÉE avec cache
     var canProceed: Bool {
         if let cached = _cachedCanProceed {
             return cached
         }
-        
+
         let result: Bool
         let step = currentStep
-        
+
         switch step {
         case .intro, .welcome, .system, .completion:
             result = true
@@ -168,22 +167,22 @@ class OnboardingViewModel: ObservableObject {
         case .period:
             result = !userProfile.periodName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isLoading
         }
-        
+
         _cachedCanProceed = result
         print("🔍 [OnboardingViewModel] canProceed calculé pour \(step): \(result)")
         return result
     }
-    
+
     var buttonTitle: String {
         if let cached = _cachedButtonTitle {
             return cached
         }
-        
+
         if isLoading {
             _cachedButtonTitle = String(localized: "onboarding_loading")
             return String(localized: "onboarding_loading")
         }
-        
+
         let title: String
         switch currentStep {
         case .intro:
@@ -197,13 +196,12 @@ class OnboardingViewModel: ObservableObject {
         default:
             title = String(localized: "onboarding_continue")
         }
-        
+
         _cachedButtonTitle = title
         print("🔍 [OnboardingViewModel] buttonTitle calculé: '\(title)'")
         return title
     }
 
-    
     private func setupValidation() {
         $userProfile
             .map(\.periodEndDate)
@@ -213,29 +211,29 @@ class OnboardingViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private func validateDates() {
         print("🔍 [OnboardingViewModel] validateDates() appelé")
         print("🔍 [OnboardingViewModel] Start date: \(userProfile.periodStartDate)")
         print("🔍 [OnboardingViewModel] End date: \(userProfile.periodEndDate)")
-        
+
         if userProfile.periodEndDate <= userProfile.periodStartDate {
             userProfile.periodEndDate = Calendar.current.date(byAdding: .month, value: 1, to: userProfile.periodStartDate) ?? Date()
             print("⚠️ [OnboardingViewModel] Date corrigée: \(userProfile.periodEndDate)")
         }
     }
-    
+
     // ✅ NOUVELLE MÉTHODE pour invalider tous les caches
     private func invalidateCaches() {
         print("🧹 [OnboardingViewModel] Invalidation de tous les caches")
         _cachedCanProceed = nil
         _cachedButtonTitle = nil
     }
-    
+
     // ✅ MÉTHODE AMÉLIORÉE de reset
     func resetToInitialState() {
         print("🔄 [OnboardingViewModel] resetToInitialState() appelé")
-        
+
         // Reset complet avec invalidation des caches
         path = NavigationPath()
         currentStepRaw = 0
@@ -243,17 +241,17 @@ class OnboardingViewModel: ObservableObject {
         isLoading = false
         errorMessage = nil
         isOnboardingCompleted = false
-        
+
         // Invalidation explicite des caches
         invalidateCaches()
-        
+
         // Reset des observateurs
         cancellables.removeAll()
         setupValidation()
-        
+
         print("✅ [OnboardingViewModel] État complètement réinitialisé")
     }
-    
+
     // Reste de vos méthodes inchangées...
     func nextStep() {
         guard canProceed else {
@@ -264,21 +262,21 @@ class OnboardingViewModel: ObservableObject {
             print("⚠️ [OnboardingViewModel] Loading in progress")
             return
         }
-        
+
         print("🔍 === [NEXT_STEP] DÉBUT ===")
         print("🔍 [NEXT_STEP] Current step: \(currentStep)")
         print("🔍 [NEXT_STEP] Path count: \(path.count)")
-        
+
         // Invalider les caches avant la transition
         invalidateCaches()
-        
+
         HapticFeedbackManager.shared.impact(style: .medium)
 
         if currentStep == .profile {
             print("📝 [NEXT_STEP] Étape PROFILE - sauvegarde des données")
             saveProfileData()
         }
-        
+
         if currentStep == .period {
             print("📅 [NEXT_STEP] Étape PERIOD - création de la période")
             Task {
@@ -310,113 +308,113 @@ class OnboardingViewModel: ObservableObject {
             path.append(nextRaw)
         }
     }
-    
+
     // ✅ ANCIENNE MÉTHODE - Ne touche PAS au système de notation
     private func saveProfileData() {
         print("🔍 --- DEBUT saveProfileData() ---")
         print("🔍 Username: '\(userProfile.username)'")
         print("🔍 Système sélectionné: '\(userProfile.selectedSystem)'")
-        
+
         // ✅ SEULEMENT username et couleurs - PAS le système
         UserDefaults.standard.set(userProfile.username, forKey: "username")
-        
+
         if userProfile.selectedGradient.count >= 2 {
             let profileGradientStartHex = userProfile.selectedGradient[0].toHex()
             let profileGradientEndHex = userProfile.selectedGradient[1].toHex()
-            
+
             UserDefaults.standard.set(profileGradientStartHex, forKey: "profileGradientStartHex")
             UserDefaults.standard.set(profileGradientEndHex, forKey: "profileGradientEndHex")
-            
+
             print("🔍 Couleurs sauvegardées: \(profileGradientStartHex) -> \(profileGradientEndHex)")
         }
-        
+
         UserDefaults.standard.synchronize()
         print("✅ Profil sauvegardé dans UserDefaults")
         print("🔍 --- FIN saveProfileData() ---")
     }
-    
+
     private func finishOnboarding() {
         print("🎉 ===== ONBOARDING TERMINÉ =====")
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         UserDefaults.standard.synchronize()
-        
+
         NotificationCenter.default.post(
             name: NSNotification.Name("OnboardingCompleted"),
             object: nil
         )
-        
+
         print("✅ hasCompletedOnboarding = true")
         print("🎉 ===== NAVIGATION VERS APP PRINCIPALE =====")
-        
+
         onOnboardingComplete?()
     }
-    
+
     // ✅ ANCIENNE MÉTHODE - Avec continuation et background context
     private func createPeriod() async {
         print("🏗️ === [CREATE_PERIOD] DÉBUT ===")
-        
+
         await MainActor.run {
             isLoading = true
             errorMessage = nil
         }
-        
+
         do {
             // ✅ ANCIENNE MÉTHODE avec withCheckedThrowingContinuation
             let createdPeriodID = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<UUID, Error>) in
                 persistentContainer.performBackgroundTask { backgroundContext in
                     do {
                         print("💾 [BACKGROUND] Création Period dans background context")
-                        
+
                         let newPeriod = Period(context: backgroundContext)
                         newPeriod.id = UUID()
                         newPeriod.name = self.userProfile.periodName
                         newPeriod.startDate = self.userProfile.periodStartDate
                         newPeriod.endDate = self.userProfile.periodEndDate
                         newPeriod.createdAt = Date()
-                        
+
                         print("💾 [BACKGROUND] Période configurée: '\(newPeriod.name ?? "sans nom")'")
-                        
+
                         try backgroundContext.save()
                         let periodID = newPeriod.id ?? UUID()
-                        
+
                         print("✅ [BACKGROUND] Période sauvegardée avec ID: \(periodID)")
                         continuation.resume(returning: periodID)
-                        
+
                     } catch {
                         print("❌ [BACKGROUND] Erreur création période: \(error)")
                         continuation.resume(throwing: error)
                     }
                 }
             }
-            
+
             // ✅ SAUVEGARDE CONFIGURATION après création période
             print("⚙️ [CREATE_PERIOD] Sauvegarde configuration centralisée")
             await saveConfigurationCentralized(activePeriodID: createdPeriodID.uuidString)
-            
+
         } catch {
             print("❌ [CREATE_PERIOD] Erreur: \(error)")
             await MainActor.run {
                 errorMessage = "Erreur lors de la création de la période: \(error.localizedDescription)"
             }
         }
-        
+
         await MainActor.run {
             isLoading = false
         }
-        
+
         print("🏗️ === [CREATE_PERIOD] FIN ===")
     }
-    
+
     // ✅ ANCIENNE MÉTHODE - Configuration centralisée simple
     private func saveConfigurationCentralized(activePeriodID: String) async {
         print("⚙️ === [SAVE_CONFIG] DÉBUT ===")
-        
+
         let configManager = ConfigurationManager(context: persistentContainer.viewContext)
-        
+
         // Extraction couleurs
         let startHex: String
         let endHex: String
-        
+
         if userProfile.selectedGradient.count >= 2 {
             startHex = userProfile.selectedGradient[0].toHex()
             endHex = userProfile.selectedGradient[1].toHex()
@@ -426,7 +424,7 @@ class OnboardingViewModel: ObservableObject {
             endHex = "#4A5568"
             print("⚠️ [SAVE_CONFIG] Utilisation des couleurs par défaut")
         }
-        
+
         do {
             // ✅ ANCIENNE MÉTHODE - Configuration simple et directe
             try await configManager.saveUserConfiguration(
@@ -436,25 +434,25 @@ class OnboardingViewModel: ObservableObject {
                 profileGradientEnd: endHex.hasPrefix("#") ? endHex : "#\(endHex)",
                 activePeriodID: activePeriodID
             )
-            
+
             print("✅ [SAVE_CONFIG] Configuration sauvegardée")
             print("✅ [SAVE_CONFIG] Système final: \(userProfile.selectedSystem)")
-            
+
         } catch {
             print("❌ [SAVE_CONFIG] Erreur sauvegarde: \(error)")
             await MainActor.run {
                 errorMessage = "Erreur lors de la sauvegarde: \(error.localizedDescription)"
             }
         }
-        
+
         print("⚙️ === [SAVE_CONFIG] FIN ===")
     }
-    
+
     func clearError() {
         print("🔍 [OnboardingViewModel] clearError() appelé")
         errorMessage = nil
     }
-    
+
     func dismissKeyboard() {
         print("🔍 [OnboardingViewModel] dismissKeyboard() appelé")
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -466,7 +464,7 @@ struct IntroView: View {
         print("👀 [IntroView] body appelé")
         return VStack(spacing: 40) {
             Spacer()
-            
+
             // Logo de l'application
             Image("AppIconPreview")
                 .resizable()
@@ -477,21 +475,21 @@ struct IntroView: View {
                 .onAppear {
                     print("👀 [IntroView] Logo appeared")
                 }
-            
+
             // Titre et sous-titre
             VStack(spacing: 16) {
                 Text(String(localized: "intro_welcome_title"))
                     .font(.title.bold())
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
-                
+
                 Text(String(localized: "intro_subtitle"))
                     .font(.title3)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
-            
+
             Spacer()
             Spacer()
         }
@@ -505,31 +503,30 @@ struct IntroView: View {
     }
 }
 
-
 // MARK: - Main View
 
 struct AppleStyleOnboardingView: View {
     @StateObject private var viewModel = OnboardingViewModel()
     @Environment(\.colorScheme) var colorScheme
-    
+
     // ✅ AJOUT : Stabilité de l'instance
     @State private var viewID = UUID()
-    
+
     let onCompletion: () -> Void
-    
+
     init(onCompletion: @escaping () -> Void) {
         print("🔍 [AppleStyleOnboardingView] init() appelé")
         self.onCompletion = onCompletion
     }
-    
+
     var body: some View {
-        let _ = print("👀 [AppleStyleOnboardingView] body appelé - viewID: \(viewID)")
-        
+        _ = print("👀 [AppleStyleOnboardingView] body appelé - viewID: \(viewID)")
+
         return NavigationStack(path: $viewModel.path) {
             viewForStep(.intro)
                 .navigationBarHidden(viewModel.currentStep == .intro || viewModel.currentStep == .welcome)
                 .navigationDestination(for: Int.self) { stepValue in
-                    let _ = print("🧭 [AppleStyleOnboardingView] Navigation to step: \(stepValue)")
+                    _ = print("🧭 [AppleStyleOnboardingView] Navigation to step: \(stepValue)")
                     return viewForStep(OnboardingStep(rawValue: stepValue) ?? .intro)
                         .navigationTitle(OnboardingStep(rawValue: stepValue)?.title ?? "")
                         .navigationBarTitleDisplayMode(.large)
@@ -540,7 +537,8 @@ struct AppleStyleOnboardingView: View {
                             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                                let window = windowScene.windows.first,
                                let navigationController = window.rootViewController as? UINavigationController ??
-                               window.rootViewController?.navigationController {
+                               window.rootViewController?.navigationController
+                            {
                                 navigationController.interactivePopGestureRecognizer?.isEnabled = false
                             }
                         }
@@ -567,26 +565,25 @@ struct AppleStyleOnboardingView: View {
         }
     }
 
-    
     @ViewBuilder
     private func viewForStep(_ step: OnboardingStep) -> some View {
-        let _ = print("🔍 [AppleStyleOnboardingView] viewForStep appelé pour: \(step)")
+        _ = print("🔍 [AppleStyleOnboardingView] viewForStep appelé pour: \(step)")
         GeometryReader { geometry in
             ZStack {
                 Color(UIColor.systemBackground).ignoresSafeArea()
-                
+
                 // Contenu principal
                 VStack(spacing: 0) {
                     currentStepContent(step)
-                    
+
                     // Spacer pour pousser le contenu vers le haut
                     Spacer()
                 }
-                
+
                 // Bouton fixe en overlay
                 VStack {
                     Spacer()
-                    
+
                     primaryButton
                         .padding(.horizontal, 30)
                         .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
@@ -603,10 +600,10 @@ struct AppleStyleOnboardingView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onTapGesture(perform: viewModel.dismissKeyboard)
     }
-    
+
     @ViewBuilder
     private func currentStepContent(_ step: OnboardingStep) -> some View {
-        let _ = print("🔍 [AppleStyleOnboardingView] currentStepContent pour: \(step)")
+        _ = print("🔍 [AppleStyleOnboardingView] currentStepContent pour: \(step)")
         switch step {
         case .intro:
             IntroView()
@@ -627,7 +624,7 @@ struct AppleStyleOnboardingView: View {
                 }
         }
     }
-    
+
     private var primaryButton: some View {
         print("🔍 [AppleStyleOnboardingView] primaryButton créé")
         return Button(action: {
@@ -675,21 +672,21 @@ struct WelcomeView: View {
                 title: String(localized: "feature_weekly_title"),
                 description: String(localized: "feature_weekly_description"),
                 color: .mint
-            )
+            ),
         ]
     }
-    
+
     var body: some View {
         print("👀 [WelcomeView] body appelé")
         return VStack(spacing: 40) {
             Spacer()
-            
+
             // Titre simple comme dans IntroView
             Text(String(localized: "welcome_features_title"))
                 .font(.title.bold())
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
-            
+
             // Features directement sans wrapper List
             VStack(spacing: 24) {
                 ForEach(features) { feature in
@@ -697,7 +694,7 @@ struct WelcomeView: View {
                 }
             }
             .padding(.horizontal, 24)
-            
+
             Spacer()
             Spacer()
             Spacer()
@@ -714,7 +711,7 @@ struct WelcomeView: View {
 
 struct FeatureRow2: View {
     let feature: FeatureItem
-    
+
     var body: some View {
         print("👀 [FeatureRow2] body pour feature: \(feature.title)")
         return HStack(spacing: 16) {
@@ -722,17 +719,17 @@ struct FeatureRow2: View {
                 .font(.title3.weight(.medium))
                 .foregroundColor(feature.color)
                 .frame(width: 30)
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(feature.title)
                     .font(.headline)
                     .foregroundColor(Color(UIColor.label))
-                
+
                 Text(feature.description)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             // ✅ AJOUTÉ : Le Spacer pousse tout le contenu à gauche.
             Spacer()
         }
@@ -757,52 +754,52 @@ extension View {
 struct OnboardingProfileView: View {
     @Binding var userProfile: UserProfileData
     @FocusState private var isTextFieldFocused: Bool
-    
+
     // ✅ EXACTEMENT LES MÊMES GRADIENTS QUE EditProfileSheet
     private let availableGradients: [[Color]] = [
         // Gris bleu clair → Gris bleu foncé
         [Color(hex: "8B95A8"), Color(hex: "4A5568")],
-        
+
         // Violet lavande clair → Violet lavande foncé
         [Color(hex: "B8A9DC"), Color(hex: "6B46C1")],
-        
+
         // Bleu ciel clair → Bleu ciel foncé
         [Color(hex: "87CEEB"), Color(hex: "2563EB")],
-        
+
         // Rose clair → Rose foncé
         [Color(hex: "F8BBD9"), Color(hex: "EC4899")],
-        
+
         // Beige/Jaune clair → Beige/Jaune foncé
         [Color(hex: "F3E8A6"), Color(hex: "D69E2E")],
-        
+
         // Vert menthe clair → Vert menthe foncé
         [Color(hex: "A7E6A3"), Color(hex: "16A085")],
-        
+
         // Taupe/Marron clair → Taupe/Marron foncé
         [Color(hex: "C8A882"), Color(hex: "8B5A2B")],
-        
+
         // Orange pêche clair → Orange pêche foncé
         [Color(hex: "FFB07A"), Color(hex: "E67E22")],
-        
+
         // Lavande gris clair → Lavande gris foncé
         [Color(hex: "D1C4E9"), Color(hex: "7B1FA2")],
-        
+
         // Bleu acier clair → Bleu acier foncé
         [Color(hex: "90A4AE"), Color(hex: "263238")],
-        
+
         // Turquoise menthe clair → Turquoise menthe foncé
         [Color(hex: "A8E6CF"), Color(hex: "00695C")],
-        
+
         // Violet magenta clair → Violet magenta foncé
         [Color(hex: "E1BEE7"), Color(hex: "8E24AA")],
-        
+
         // Cyan aqua clair → Cyan aqua foncé
         [Color(hex: "81D4FA"), Color(hex: "0097A7")],
-        
+
         // Vert lime clair → Vert lime foncé
-        [Color(hex: "C8E6C9"), Color(hex: "388E3C")]
+        [Color(hex: "C8E6C9"), Color(hex: "388E3C")],
     ]
-    
+
     var body: some View {
         print("👀 [OnboardingProfileView] body appelé - username: '\(userProfile.username)'")
         return VStack(spacing: 0) {
@@ -811,7 +808,7 @@ struct OnboardingProfileView: View {
                 Text(String(localized: "profile_title"))
                     .font(.title.bold())
                     .foregroundColor(.primary)
-                
+
                 Circle()
                     .fill(LinearGradient(
                         gradient: Gradient(colors: userProfile.selectedGradient),
@@ -821,14 +818,14 @@ struct OnboardingProfileView: View {
                     .frame(width: 80, height: 80)
                     .overlay(
                         Text(userProfile.username.isEmpty ? "" :
-                             String(userProfile.username.prefix(1).uppercased()))
+                            String(userProfile.username.prefix(1).uppercased()))
                             .font(.title.bold())
                             .foregroundColor(.white)
                     )
             }
             .padding(.top, 40)
             .padding(.bottom, 20)
-            
+
             // Zone scrollable avec le contenu
             ScrollView {
                 VStack(spacing: 24) {
@@ -843,10 +840,10 @@ struct OnboardingProfileView: View {
                         .onChange(of: userProfile.username) { _, newValue in
                             print("🔍 [OnboardingProfileView] Username changed to: '\(newValue)'")
                         }
-                    
+
                     // Sélection de couleurs - MÊME LOGIQUE QUE EditProfileSheet
                     colorSelectionGrid
-                    
+
                     // Espacement pour éviter que le contenu soit masqué
                     Spacer()
                         .frame(height: 120)
@@ -868,13 +865,13 @@ struct OnboardingProfileView: View {
             print("👋 [OnboardingProfileView] View disappeared")
         }
     }
-    
+
     private var colorSelectionGrid: some View {
         print("🔍 [OnboardingProfileView] colorSelectionGrid créé")
         return VStack(spacing: 12) {
             // Première ligne (0 à 6) - IDENTIQUE À EditProfileSheet
             HStack(spacing: 16) {
-                ForEach(0..<7, id: \.self) { index in
+                ForEach(0 ..< 7, id: \.self) { index in
                     MinimalGradientButton(
                         gradient: availableGradients[index],
                         isSelected: userProfile.selectedGradient == availableGradients[index]
@@ -885,10 +882,10 @@ struct OnboardingProfileView: View {
                     }
                 }
             }
-            
+
             // Deuxième ligne (7 à 13) - IDENTIQUE À EditProfileSheet
             HStack(spacing: 16) {
-                ForEach(7..<14, id: \.self) { index in
+                ForEach(7 ..< 14, id: \.self) { index in
                     MinimalGradientButton(
                         gradient: availableGradients[index],
                         isSelected: userProfile.selectedGradient == availableGradients[index]
@@ -908,7 +905,7 @@ struct OnboardingGradientButton: View {
     let gradient: [Color]
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         print("👀 [OnboardingGradientButton] body - isSelected: \(isSelected)")
         return Button(action: action) {
@@ -932,18 +929,18 @@ struct OnboardingGradientButton: View {
 struct PeriodView: View {
     @Binding var userProfile: UserProfileData
     @FocusState private var isTextFieldFocused: Bool
-    
+
     var body: some View {
         print("👀 [PeriodView] body appelé - periodName: '\(userProfile.periodName)'")
         return VStack(spacing: 40) {
             Spacer()
-            
+
             // ✅ TITRE CENTRÉ
             Text(String(localized: "period_title"))
                 .font(.title.bold())
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
-            
+
             VStack(spacing: 32) {
                 // ✅ SECTION NOM DE LA PÉRIODE
                 VStack(spacing: 8) {
@@ -959,7 +956,7 @@ struct PeriodView: View {
                             print("🔍 [PeriodView] Period name changed to: '\(newValue)'")
                         }
                 }
-                
+
                 // ✅ SECTION DATES
                 VStack(spacing: 16) {
                     VStack(spacing: 12) {
@@ -973,7 +970,7 @@ struct PeriodView: View {
                             .onChange(of: userProfile.periodStartDate) { _, newValue in
                                 print("🔍 [PeriodView] Start date changed to: \(newValue)")
                             }
-                        
+
                         DatePicker(String(localized: "field_end_date"), selection: $userProfile.periodEndDate, displayedComponents: .date)
                             .datePickerStyle(.compact)
                             .padding()
@@ -988,7 +985,7 @@ struct PeriodView: View {
                 }
                 .padding(.horizontal, 24)
             }
-            
+
             Spacer()
             Spacer()
             Spacer()
@@ -1007,27 +1004,27 @@ struct PeriodView: View {
 
 struct CompletionView: View {
     let username: String
-    
+
     var body: some View {
         print("👀 [CompletionView] body appelé - username: '\(username)'")
         return VStack(spacing: 32) {
             Spacer()
-            
+
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 80))
                 .foregroundColor(.green)
-            
+
             VStack(spacing: 16) {
                 Text(String(localized: "completion_ready_title").replacingOccurrences(of: "%@", with: username))
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
-                
+
                 Text(String(localized: "completion_configured"))
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
             }
-            
+
             VStack(spacing: 12) {
                 CompletionItem(
                     icon: "person.circle.fill",
@@ -1046,7 +1043,7 @@ struct CompletionView: View {
                 )
             }
             .padding(.top, 20)
-            
+
             Spacer()
             Spacer()
             Spacer()
@@ -1062,11 +1059,10 @@ struct CompletionView: View {
     }
 }
 
-
 // N'oubliez pas de garder cette struct que nous avons créée précédemment.
 struct SystemView: View {
     @Binding var selectedSystem: String
-    
+
     private var systems: [SystemItem] {
         [
             SystemItem(id: "usa", flag: "🇺🇸", name: String(localized: "country_usa"), description: "GPA"),
@@ -1076,17 +1072,17 @@ struct SystemView: View {
             SystemItem(id: "spain", flag: "🇪🇸", name: String(localized: "country_spain"), description: "0–10"),
         ]
     }
-    
+
     var body: some View {
         print("👀 [SystemView] body appelé - selectedSystem: '\(selectedSystem)'")
         return VStack(spacing: 20) {
             Spacer()
-            
+
             Text(String(localized: "system_selection_title"))
                 .font(.title.bold())
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
-            
+
             // ✅ REMPLACEMENT : VStack au lieu de List
             VStack(spacing: 16) {
                 ForEach(systems) { system in
@@ -1110,7 +1106,7 @@ struct SystemView: View {
                 }
             }
             .padding(.horizontal, 0)
-            
+
             Spacer()
             Spacer()
             Spacer()
@@ -1130,24 +1126,24 @@ struct SystemView: View {
 struct SystemCardDisplay: View {
     let system: SystemItem
     let isSelected: Bool
-    
+
     var body: some View {
         print("👀 [SystemCardDisplay] body - system: \(system.id), isSelected: \(isSelected)")
         return HStack(spacing: 16) {
             Text(system.flag)
                 .font(.title2)
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(system.name)
                     .font(.headline)
-                
+
                 Text(system.description)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.title3)
@@ -1160,36 +1156,36 @@ struct SystemCardDisplay: View {
     }
 }
 
-
 struct SystemItem: Identifiable {
     let id: String
     let flag: String
     let name: String
     let description: String
 }
+
 // SystemCard reste la même, elle fonctionne parfaitement dans une List
 struct SystemCard: View {
     let system: SystemItem
     let isSelected: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
         print("👀 [SystemCard] body - system: \(system.id), isSelected: \(isSelected)")
         return HStack(spacing: 16) {
             Text(system.flag)
                 .font(.title2)
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(system.name)
                     .font(.headline)
-                
+
                 Text(system.description)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.title3)
@@ -1210,7 +1206,7 @@ struct CompletionItem: View {
     let icon: String
     let text: String
     let color: Color
-    
+
     var body: some View {
         print("👀 [CompletionItem] body - text: '\(text)'")
         return HStack(spacing: 12) {
@@ -1218,13 +1214,13 @@ struct CompletionItem: View {
                 .font(.headline)
                 .foregroundColor(color)
                 .frame(width: 24)
-            
+
             Text(text)
                 .font(.headline)
                 .foregroundColor(Color(UIColor.label))
-            
+
             Spacer()
-            
+
             Image(systemName: "checkmark.circle.fill")
                 .font(.headline)
                 .foregroundColor(.green)

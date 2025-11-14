@@ -6,11 +6,11 @@
 //
 
 import ActivityKit
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 struct PARALLAXWidgetAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
+    struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
     }
@@ -56,24 +56,24 @@ struct PARALLAXWidgetLiveActivity: Widget {
     }
 }
 
-extension PARALLAXWidgetAttributes {
-    fileprivate static var preview: PARALLAXWidgetAttributes {
+private extension PARALLAXWidgetAttributes {
+    static var preview: PARALLAXWidgetAttributes {
         PARALLAXWidgetAttributes(name: "World")
     }
 }
 
-extension PARALLAXWidgetAttributes.ContentState {
-    fileprivate static var smiley: PARALLAXWidgetAttributes.ContentState {
+private extension PARALLAXWidgetAttributes.ContentState {
+    static var smiley: PARALLAXWidgetAttributes.ContentState {
         PARALLAXWidgetAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: PARALLAXWidgetAttributes.ContentState {
-         PARALLAXWidgetAttributes.ContentState(emoji: "🤩")
-     }
+    }
+
+    static var starEyes: PARALLAXWidgetAttributes.ContentState {
+        PARALLAXWidgetAttributes.ContentState(emoji: "🤩")
+    }
 }
 
 #Preview("Notification", as: .content, using: PARALLAXWidgetAttributes.preview) {
-   PARALLAXWidgetLiveActivity()
+    PARALLAXWidgetLiveActivity()
 } contentStates: {
     PARALLAXWidgetAttributes.ContentState.smiley
     PARALLAXWidgetAttributes.ContentState.starEyes

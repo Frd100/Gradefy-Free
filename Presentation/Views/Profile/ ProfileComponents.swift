@@ -1,18 +1,18 @@
 //
-// ProfileComponents.swift
+//  ProfileComponents.swift
 // PARALLAX
 //
 // Created by  on 6/28/25.
 //
 
-import SwiftUI
-import CoreData
-import UIKit
-import WidgetKit
-import Lottie
-import UniformTypeIdentifiers
 import Combine
+import CoreData
 import Foundation
+import Lottie
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import WidgetKit
 
 // MARK: - AdaptiveImage Component
 
@@ -20,9 +20,9 @@ struct AdaptiveImage: View {
     let lightImageName: String
     let darkImageName: String
     let size: CGSize
-    
+
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         Group {
             if colorScheme == .light {
@@ -69,17 +69,17 @@ struct PremiumFeatureRow: View {
     let feature: PremiumFeature
     let hasAccess: Bool
     let premiumManager: PremiumManager
-    
+
     var body: some View {
         HStack {
             Image(systemName: featureIcon)
                 .foregroundColor(hasAccess ? .green : .gray)
-            
+
             Text(featureTitle)
                 .foregroundColor(.primary)
-            
+
             Spacer()
-            
+
             if hasAccess {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
@@ -89,7 +89,7 @@ struct PremiumFeatureRow: View {
             }
         }
     }
-    
+
     private var featureIcon: String {
         switch feature {
         case .unlimitedFlashcardsPerDeck: return "rectangle.stack.fill"
@@ -121,7 +121,7 @@ struct ProfileTextField: View {
     let title: String
     @Binding var text: String
     let placeholder: String
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -136,20 +136,19 @@ struct ProfileTextField: View {
 
 struct ShareSheet: UIViewControllerRepresentable {
     let activityItems: [Any]
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
+
+    func makeUIViewController(context _: Context) -> UIActivityViewController {
         UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
     }
-    
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
 
+    func updateUIViewController(_: UIActivityViewController, context _: Context) {}
+}
 
 struct MinimalGradientButton: View {
     let gradient: [Color]
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Circle()
@@ -171,7 +170,7 @@ struct ModelSelectionView: View {
     @StateObject private var modelManager = ModelManager.shared
     @State private var showingDeleteConfirmation = false
     @State private var modelToDelete: AIModel?
-    
+
     var body: some View {
         List {
             Section {
@@ -217,14 +216,14 @@ struct ModelRowView: View {
     let model: AIModel
     let onDownload: () -> Void
     let onDelete: () -> Void
-    
+
     @StateObject private var modelManager = ModelManager.shared
-    
+
     // ✅ NOUVEAU : Vérification de compatibilité RAM
     private var isCompatible: Bool {
         modelManager.isDeviceCompatibleForAI()
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // Bouton de téléchargement/progression
@@ -235,7 +234,7 @@ struct ModelRowView: View {
                     .foregroundColor(.blue)
             } else {
                 Button(action: {
-                    if !modelManager.isDownloading(model) && isCompatible {
+                    if !modelManager.isDownloading(model), isCompatible {
                         onDownload()
                     }
                 }) {
@@ -245,7 +244,7 @@ struct ModelRowView: View {
                             Circle()
                                 .stroke(Color.blue.opacity(0.3), lineWidth: 3)
                                 .frame(width: 24, height: 24)
-                            
+
                             Circle()
                                 .trim(from: 0, to: modelManager.downloadProgress(for: model))
                                 .stroke(Color.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
@@ -263,28 +262,28 @@ struct ModelRowView: View {
                 .buttonStyle(.plain)
                 .disabled(modelManager.isDownloading(model) || !isCompatible)
             }
-            
+
             // Informations du modèle
             VStack(alignment: .leading, spacing: 4) {
                 Text(model.displayName)
                     .font(.headline)
                     .foregroundColor(.primary)
-                
+
                 // ✅ NOUVEAU : Message de compatibilité
                 if !isCompatible {
                     Text("Non compatible")
                         .font(.caption)
                         .foregroundColor(.primary.opacity(0.6))
                 }
-                
+
                 Text(model.description)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(2)
             }
-            
+
             Spacer(minLength: 8)
-            
+
             // Bouton ellipses pour menu de suppression quand téléchargé
             if modelManager.isModelDownloaded(model) {
                 Menu {

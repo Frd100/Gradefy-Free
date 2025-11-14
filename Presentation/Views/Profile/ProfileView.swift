@@ -4,21 +4,23 @@
 //
 //  Created by  on 7/21/25.
 //
-import SwiftUI
-import CoreData
-import UIKit
-import WidgetKit
-import Lottie
-import UniformTypeIdentifiers
 import Combine
+import CoreData
 import Foundation
+import Lottie
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import WidgetKit
 
 struct ProfileView: View {
     // MARK: - Environment
+
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - App Storage
+
     @AppStorage("showCreatorInShare") private var showCreatorInShare: Bool = true
     @AppStorage("username") private var username: String = ""
     @AppStorage("profileSubtitle") private var profileSubtitle: String = ""
@@ -28,31 +30,35 @@ struct ProfileView: View {
     @AppStorage("darkModeEnabled") private var darkModeEnabled: Bool = false
     @AppStorage("GradingSystem") private var selectedGradingSystem: String = "france"
     @State private var premiumManager = PremiumManager.shared
+
     // MARK: - State Variables
+
     @State private var showingEditProfile = false
     @State private var showingShareSheet = false
     @State private var showingPremiumView = false
     @State private var refreshID = UUID()
     @State private var exportedURL: URL?
     @State private var navigationPath = NavigationPath()
-    
+
     // Variables pour import/export
 
     @StateObject private var importExportManager = DataImportExportManager()
-    
+
     // MARK: - Computed Properties
+
     private var profileGradient: [Color] {
         [Color(hex: profileGradientStartHex), Color(hex: profileGradientEndHex)]
     }
-    
+
     // MARK: - Main Body
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
             List {
                 profileSection
                 settingsSection
                 dataSection
-                premiumSection
+                // ✅ MODIFIÉ : Section premium supprimée - Application entièrement gratuite
                 debugSection
                 aboutSection
             }
@@ -70,13 +76,11 @@ struct ProfileView: View {
                 destinationView(for: destination)
             }
         }
-        
+
         .sheet(isPresented: $showingEditProfile) {
             EditProfileSheet()
         }
-        .sheet(isPresented: $showingPremiumView) {
-            PremiumView()
-        }
+        // ✅ MODIFIÉ : Supprimé - Application entièrement gratuite
         .sheet(isPresented: $showingShareSheet) {
             if let url = exportedURL {
                 ShareSheet(activityItems: [url])
@@ -94,14 +98,13 @@ struct ProfileView: View {
             updateProfileFromUserDefaults()
         }
     }
-    
+
     @ViewBuilder
     private func destinationView(for destination: ProfileDestination) -> some View {
         switch destination {
         case .editProfile:
             EditProfileView()
-        case .premium:
-            PremiumView()
+        // ✅ MODIFIÉ : Cas premium supprimé - Application entièrement gratuite
         case .debug:
             DebugView()
         case .about:
@@ -122,7 +125,7 @@ struct ProfileView: View {
             ModelSelectionView()
         }
     }
-    
+
     private func updateProfileFromUserDefaults() {
         importExportManager.setContext(viewContext)
         print("✅ Contexte reconfiguré dans updateProfileFromUserDefaults")
@@ -130,9 +133,10 @@ struct ProfileView: View {
 }
 
 // MARK: - Profile Sections
+
 extension ProfileView {
-    
     // MARK: - Profile Section
+
     private var profileSection: some View {
         Section {
             Button(action: {
@@ -148,20 +152,20 @@ extension ProfileView {
                                 endPoint: .bottomTrailing
                             ))
                             .frame(width: AppConstants.Animation.profileAvatarSize, height: AppConstants.Animation.profileAvatarSize)
-                        
+
                         Text(username.isEmpty ? "" : String(username.prefix(1).uppercased()))
                             .font(.title.weight(.semibold))
                             .foregroundColor(.white)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: 4) {
                         Text(username.isEmpty ? String(localized: "profile_username_placeholder") : username)
                             .font(.headline)
                             .foregroundColor(.primary)
                     }
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -172,8 +176,9 @@ extension ProfileView {
             .buttonStyle(.plain)
         }
     }
-    
+
     // MARK: - Premium Section (à déplacer dans une section séparée)
+
     private var premiumSection: some View {
         Section {
             Button(action: {
@@ -190,13 +195,13 @@ extension ProfileView {
                                 .foregroundColor(.white)
                                 .frame(width: AppConstants.Animation.iconPreviewSize, height: AppConstants.Animation.iconPreviewSize)
                         )
-                    
+
                     Text(String(localized: "premium_gradefy_pro"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     // Badge conditionnel pour les utilisateurs premium
                     if premiumManager.isPremium {
                         Text(String(localized: "premium_active_badge"))
@@ -220,10 +225,10 @@ extension ProfileView {
             .buttonStyle(.plain)
         }
     }
-    
+
     // ✅ NOUVELLE section unifiée
     private var settingsSection: some View {
-        Section{
+        Section {
             // Système de notation
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .light)
@@ -238,13 +243,13 @@ extension ProfileView {
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.white)
                         )
-                    
+
                     Text(String(localized: "settings_grading_system"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -253,7 +258,7 @@ extension ProfileView {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             // Apparence
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .light)
@@ -268,13 +273,13 @@ extension ProfileView {
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.white)
                         )
-                    
+
                     Text(String(localized: "nav_appearance"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -283,7 +288,7 @@ extension ProfileView {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             // Préférences
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .light)
@@ -298,13 +303,13 @@ extension ProfileView {
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.white)
                         )
-                    
+
                     Text(String(localized: "settings_preferences"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -313,7 +318,7 @@ extension ProfileView {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             // Model
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .light)
@@ -328,13 +333,13 @@ extension ProfileView {
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.white)
                         )
-                    
+
                     Text("Modèle")
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -346,9 +351,8 @@ extension ProfileView {
         }
     }
 
-
-    
     // MARK: - Data Section (MODIFIÉE)
+
     private var dataSection: some View {
         Section {
             Button(action: {
@@ -365,13 +369,13 @@ extension ProfileView {
                                 .foregroundColor(.white)
                                 .frame(width: AppConstants.Animation.iconPreviewSize, height: AppConstants.Animation.iconPreviewSize)
                         )
-                    
+
                     Text(String(localized: "settings_manage_periods"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -380,7 +384,7 @@ extension ProfileView {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             // AJOUTÉ : Nouveau bouton unifié pour la gestion des données
             Button(action: {
                 HapticFeedbackManager.shared.impact(style: .light)
@@ -395,13 +399,13 @@ extension ProfileView {
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.white)
                         )
-                    
+
                     Text(String(localized: "settings_data_backup"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -412,16 +416,18 @@ extension ProfileView {
             .buttonStyle(.plain)
         }
     }
-    
+
     // MARK: - Debug Section
+
     private var debugSection: some View {
         Section {
             DebugPremiumButton()
                 .environment(\.managedObjectContext, viewContext)
         }
     }
-    
+
     // MARK: - About Section
+
     private var aboutSection: some View {
         Section {
             Button(action: {
@@ -438,13 +444,13 @@ extension ProfileView {
                                 .foregroundColor(.white)
                                 .frame(width: AppConstants.Animation.iconPreviewSize, height: AppConstants.Animation.iconPreviewSize)
                         )
-                    
+
                     Text(String(localized: "about_gradefy"))
                         .font(.body)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.secondary)

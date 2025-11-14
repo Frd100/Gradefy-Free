@@ -5,15 +5,14 @@
 //  Created by Farid on 7/27/25.
 //
 
-
 // Nouveau fichier : FlashcardContentType.swift
 import Foundation
 
 enum FlashcardContentType: String, CaseIterable, Codable {
-    case text = "text"
-    case image = "image"
-    case audio = "audio"
-    
+    case text
+    case image
+    case audio
+
     var displayName: String {
         switch self {
         case .text: return "Texte"
@@ -21,7 +20,7 @@ enum FlashcardContentType: String, CaseIterable, Codable {
         case .audio: return "Audio"
         }
     }
-    
+
     var systemImage: String {
         switch self {
         case .text: return "text.alignleft"

@@ -5,14 +5,14 @@
 //  Created by  on 7/17/25.
 //
 
-
 import SwiftUI
 
 // MARK: - Preview Models
+
 struct PreviewShareableDeck {
     let metadata: Metadata
     let flashcards: [ShareableFlashcard]
-    
+
     struct Metadata {
         let id: String
         let name: String
@@ -22,7 +22,7 @@ struct PreviewShareableDeck {
         let appVersion: String
         let shareVersion: String
     }
-    
+
     struct ShareableFlashcard {
         let question: String
         let answer: String
@@ -31,22 +31,23 @@ struct PreviewShareableDeck {
 }
 
 // MARK: - Import Sheet Preview
+
 struct ImportDeckPreviewView: View {
     let shareableDeck: PreviewShareableDeck
     let isPremium: Bool
     let onImport: (Bool) -> Void
     let onCancel: () -> Void
-    
+
     // Note: Cette logique simplifiée ne prend pas en compte les limites globales
     // car c'est seulement une preview. La vraie logique est dans ImportDeckView
     private var canImportAll: Bool {
         isPremium // Premium peut tout importer, gratuit sera limité par la logique globale
     }
-    
+
     private var hasMoreCards: Bool {
         !isPremium && shareableDeck.metadata.totalCards > 100 // Seuil indicatif pour la preview
     }
-    
+
     var body: some View {
         VStack(spacing: 0) {
             // Header avec X
@@ -62,7 +63,7 @@ struct ImportDeckPreviewView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
-            
+
             // Contenu principal
             VStack(spacing: 24) {
                 // Titre et sous-titre
@@ -71,7 +72,7 @@ struct ImportDeckPreviewView: View {
                         .font(.title.bold())
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
-                    
+
                     if let creatorName = shareableDeck.metadata.creatorName {
                         Text(String(localized: "shared_by").replacingOccurrences(of: "%@", with: creatorName))
                             .font(.subheadline)
@@ -79,14 +80,14 @@ struct ImportDeckPreviewView: View {
                     }
                 }
                 .padding(.top, 20)
-                
+
                 // Texte descriptif
                 VStack(spacing: 16) {
                     Text("Ce deck contient \(shareableDeck.metadata.totalCards) cartes.")
                         .font(.body)
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
-                    
+
                     if hasMoreCards {
                         Text("Gradefy Pro vous permet d'importer toutes les cartes selon vos limites globales.")
                             .font(.callout.weight(.medium))
@@ -94,9 +95,9 @@ struct ImportDeckPreviewView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 // Boutons d'action
                 VStack(spacing: 12) {
                     // Bouton principal d'import
@@ -114,7 +115,7 @@ struct ImportDeckPreviewView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    
+
                     // Bouton Premium si nécessaire
                     if hasMoreCards {
                         Button(action: {
@@ -142,6 +143,7 @@ struct ImportDeckPreviewView: View {
 }
 
 // MARK: - Previews
+
 struct ImportDeckPreview_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -164,7 +166,7 @@ struct ImportDeckPreview_Previews: PreviewProvider {
                 onCancel: {}
             )
             .previewDisplayName("Version Premium")
-            
+
             // Version Gratuite
             ImportDeckPreviewView(
                 shareableDeck: PreviewShareableDeck(
@@ -184,7 +186,7 @@ struct ImportDeckPreview_Previews: PreviewProvider {
                 onCancel: {}
             )
             .previewDisplayName("Version Gratuite")
-            
+
             // Version sans nom de créateur
             ImportDeckPreviewView(
                 shareableDeck: PreviewShareableDeck(
