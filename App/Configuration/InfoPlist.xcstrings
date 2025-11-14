@@ -1,0 +1,169 @@
+{
+  "sourceLanguage" : "fr",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "PARALLAX"
+          }
+        }
+      }
+    },
+    "Deck de cartes Gradefy" : {
+
+    },
+    "DOCUMENTS_USAGE_DESCRIPTION" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy benötigt Zugriff auf den Dokumentenordner, um Ihre Sicherungsdaten zu importieren und zu exportieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy needs access to the Documents folder to import and export your backup data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy necesita acceso a la carpeta Documentos para importar y exportar tus datos de respaldo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy a besoin d'accéder au dossier Documents pour importer et exporter vos données de sauvegarde."
+          }
+        }
+      }
+    },
+    "Fichier de données Gradefy" : {
+
+    },
+    "Fichier JSON" : {
+
+    },
+    "FILE_PROVIDER_USAGE_DESCRIPTION" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy muss auf Dateien zugreifen, um Ihre Sicherungsdaten importieren und exportieren zu können."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy must access files to import and export your backup data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy debe acceder a los archivos para importar y exportar tus datos de respaldo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gradefy doit accéder aux fichiers pour pouvoir importer et exporter vos données de sauvegarde."
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy - Camera Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy a besoin d'accéder à l'appareil photo pour prendre des photos directement dans vos flashcards."
+          }
+        }
+      }
+    },
+    "NSDocumentsFolderUsageDescription" : {
+      "comment" : "Privacy - Documents Folder Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy stocke vos médias localement pour un accès hors ligne."
+          }
+        }
+      }
+    },
+    "NSHumanReadableCopyright" : {
+      "comment" : "Copyright (human-readable)",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "comment" : "Privacy - Microphone Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy a besoin d'accéder au microphone pour enregistrer des prononciations et du contenu audio dans vos flashcards."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "comment" : "Privacy - Photo Library Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy a besoin d'accéder à vos photos pour ajouter des images à vos flashcards."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "comment" : "Privacy - Speech Recognition Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Gradefy utilise la reconnaissance vocale pour transcrire automatiquement vos enregistrements audio et améliorer l'expérience d'apprentissage."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

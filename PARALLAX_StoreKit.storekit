@@ -1,0 +1,147 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "AB7C3D64",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "BB924613",
+      "localizations" : [
+
+      ],
+      "name" : "Gradefy Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "0ED171C7",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Access all Pro features – Monthly subscription\n",
+              "displayName" : "Gradefy Pro Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Accès à toutes les fonctionnalités Pro - Abonnement mensuel",
+              "displayName" : "Gradefy Pro Mensuel",
+              "locale" : "fr"
+            }
+          ],
+          "productID" : "com.gradefy.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Gradefy Pro Monthly  ",
+          "subscriptionGroupID" : "BB924613",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "BB5EA669",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Access all Pro features – Annual subscription",
+              "displayName" : "Gradefy Pro Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.gradefy.pro.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Gradefy Pro Annual",
+          "subscriptionGroupID" : "BB924613",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

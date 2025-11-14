@@ -7,10 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		75C2E18A2E1545A900BBFCB3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 75C2E1892E1545A900BBFCB3 /* Lottie */; };
-		75D777792DE1C76400EB29BC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75D777782DE1C76300EB29BC /* WidgetKit.framework */; };
-		75D7777B2DE1C76400EB29BC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75D7777A2DE1C76400EB29BC /* SwiftUI.framework */; };
-		75D7778A2DE1C76500EB29BC /* RevisionLiveActivityExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 75D777762DE1C76300EB29BC /* RevisionLiveActivityExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		75494AF92E203E5200E72D3D /* PARALLAX_StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */; };
+		756C02EF2E50E8C200048CC8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 756C02EE2E50E8C200048CC8 /* Lottie */; };
+		75994D272E60597E00FE86A3 /* MLXFast in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D262E60597E00FE86A3 /* MLXFast */; };
+		75994D2C2E60697F00FE86A3 /* MLXEmbedders in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D2B2E60697F00FE86A3 /* MLXEmbedders */; };
+		75994D2E2E60697F00FE86A3 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D2D2E60697F00FE86A3 /* MLXLLM */; };
+		75994D302E60697F00FE86A3 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D2F2E60697F00FE86A3 /* MLXLMCommon */; };
+		75994D322E60697F00FE86A3 /* MLXMNIST in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D312E60697F00FE86A3 /* MLXMNIST */; };
+		75994D342E60697F00FE86A3 /* MLXVLM in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D332E60697F00FE86A3 /* MLXVLM */; };
+		75994D362E60697F00FE86A3 /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D352E60697F00FE86A3 /* StableDiffusion */; };
+		75994D492E6069CA00FE86A3 /* MLXFFT in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D482E6069CA00FE86A3 /* MLXFFT */; };
+		75994D4B2E6069CA00FE86A3 /* MLXLinalg in Frameworks */ = {isa = PBXBuildFile; productRef = 75994D4A2E6069CA00FE86A3 /* MLXLinalg */; };
+		75BE95102E5F990200ED108D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 75BE950F2E5F990200ED108D /* ZIPFoundation */; };
+		75BE951E2E5F9CAC00ED108D /* MLX in Frameworks */ = {isa = PBXBuildFile; productRef = 75BE951D2E5F9CAC00ED108D /* MLX */; };
+		75BE95202E5F9CAC00ED108D /* MLXNN in Frameworks */ = {isa = PBXBuildFile; productRef = 75BE951F2E5F9CAC00ED108D /* MLXNN */; };
+		75BE95222E5F9CAC00ED108D /* MLXOptimizers in Frameworks */ = {isa = PBXBuildFile; productRef = 75BE95212E5F9CAC00ED108D /* MLXOptimizers */; };
+		75BE95242E5F9CAC00ED108D /* MLXRandom in Frameworks */ = {isa = PBXBuildFile; productRef = 75BE95232E5F9CAC00ED108D /* MLXRandom */; };
+		75E7238D2E1B285500C48507 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E7238C2E1B285500C48507 /* WidgetKit.framework */; };
+		75E7238F2E1B285500C48507 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E7238E2E1B285500C48507 /* SwiftUI.framework */; };
+		75E7239E2E1B285700C48507 /* PARALLAXWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,12 +36,12 @@
 			remoteGlobalIDString = 75B6CB2A2DD8B2F500359A17;
 			remoteInfo = PARALLAX;
 		};
-		75D777882DE1C76500EB29BC /* PBXContainerItemProxy */ = {
+		75E7239C2E1B285700C48507 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 75B6CB232DD8B2F500359A17 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 75D777752DE1C76300EB29BC;
-			remoteInfo = RevisionLiveActivityExtension;
+			remoteGlobalIDString = 75E723892E1B285500C48507;
+			remoteInfo = PARALLAXWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -36,7 +51,7 @@
 			dstPath = "";
 			dstSubfolder = PlugIns;
 			files = (
-				75D7778A2DE1C76500EB29BC /* RevisionLiveActivityExtension.appex in Embed Foundation Extensions */,
+				75E7239E2E1B285700C48507 /* PARALLAXWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 		};
@@ -44,34 +59,49 @@
 
 /* Begin PBXFileReference section */
 		751899E12E1335340066AFF2 /* PARALLAXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PARALLAXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7522A7382E92C8E4007A10AC /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		752F027A2E53BF300021E7EB /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		753F3B572E50DC400014E249 /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PARALLAX_StoreKit.storekit; sourceTree = "<group>"; };
+		75494B052E20CB5000E72D3D /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		75494B062E20CB5000E72D3D /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		754DB3FA2E5F9E7C0038DC2B /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		756C027A2E50E15C00048CC8 /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75994CC42E5FACA800FE86A3 /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75994E3B2E60B12C00FE86A3 /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
 		75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PARALLAX.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		75D777762DE1C76300EB29BC /* RevisionLiveActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RevisionLiveActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		75D777782DE1C76300EB29BC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		75D7777A2DE1C76400EB29BC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		75BE94C22E5F941E00ED108D /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75CC52482E53236500E470BF /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75D73A522E61AE67007A1BAD /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
+		75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PARALLAXWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		75E7238C2E1B285500C48507 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		75E7238E2E1B285500C48507 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		75E723AC2E1C32B200C48507 /* PARALLAXWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PARALLAXWidgetExtension.entitlements; sourceTree = "<group>"; };
+		75EF59092E8446FB00BF7FBC /* PARALLAX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PARALLAX.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		752554172DF62A7C0085277D /* Exceptions for "RevisionLiveActivity" folder in "PARALLAX" target */ = {
+		75884A7B2E2FBAB200A0DA6A /* Exceptions for "App" folder in "PARALLAXWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Assets.xcassets,
-				RevisionAttributes.swift,
+				Configuration/InfoPlist.xcstrings,
+			);
+			target = 75E723892E1B285500C48507 /* PARALLAXWidgetExtension */;
+		};
+		75DA83522E1EAE7F006B2E90 /* Exceptions for "App" folder in "PARALLAX" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Configuration/Info.plist,
+				Info.plist,
 			);
 			target = 75B6CB2A2DD8B2F500359A17 /* PARALLAX */;
 		};
-		753BD5DD2DE1DBF10013991E /* Exceptions for "RevisionLiveActivity" folder in "RevisionLiveActivityExtension" target */ = {
+		75E723A22E1B285700C48507 /* Exceptions for "PARALLAXWidget" folder in "PARALLAXWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 75D777752DE1C76300EB29BC /* RevisionLiveActivityExtension */;
-		};
-		753BD5DE2DE1DBF50013991E /* Exceptions for "PARALLAX" folder in "PARALLAX" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 75B6CB2A2DD8B2F500359A17 /* PARALLAX */;
+			target = 75E723892E1B285500C48507 /* PARALLAXWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -81,31 +111,61 @@
 			path = PARALLAXTests;
 			sourceTree = "<group>";
 		};
+		756C02D92E50E7EB00048CC8 /* Revision */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Revision;
+			sourceTree = "<group>";
+		};
+		7576105D2E2DA98900DDFDB6 /* Domain */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		75994D572E608C5400FE86A3 /* configuration */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = configuration;
+			sourceTree = "<group>";
+		};
+		759C36352E2DB221002222C3 /* Data */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Data;
+			sourceTree = "<group>";
+		};
+		759C36432E2DB40E002222C3 /* Presentation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Presentation;
+			sourceTree = "<group>";
+		};
 		75B6CB2D2DD8B2F500359A17 /* PARALLAX */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				753BD5DE2DE1DBF50013991E /* Exceptions for "PARALLAX" folder in "PARALLAX" target */,
-			);
 			path = PARALLAX;
 			sourceTree = "<group>";
 		};
-		75C2E1722E13C35D00BBFCB3 /* CacheSystem */ = {
+		75DA53A72E285F5500AEB4DC /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = CacheSystem;
+			path = Shared;
 			sourceTree = "<group>";
 		};
-		75C2E1912E15507D00BBFCB3 /* Animations */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Animations;
-			sourceTree = "<group>";
-		};
-		75D7777C2DE1C76400EB29BC /* RevisionLiveActivity */ = {
+		75DA82F12E1EA903006B2E90 /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				752554172DF62A7C0085277D /* Exceptions for "RevisionLiveActivity" folder in "PARALLAX" target */,
-				753BD5DD2DE1DBF10013991E /* Exceptions for "RevisionLiveActivity" folder in "RevisionLiveActivityExtension" target */,
+				75DA83522E1EAE7F006B2E90 /* Exceptions for "App" folder in "PARALLAX" target */,
+				75884A7B2E2FBAB200A0DA6A /* Exceptions for "App" folder in "PARALLAXWidgetExtension" target */,
 			);
-			path = RevisionLiveActivity;
+			path = App;
+			sourceTree = "<group>";
+		};
+		75DA82F72E1EAAD4006B2E90 /* Features */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Features;
+			sourceTree = "<group>";
+		};
+		75E723902E1B285500C48507 /* PARALLAXWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				75E723A22E1B285700C48507 /* Exceptions for "PARALLAXWidget" folder in "PARALLAXWidgetExtension" target */,
+			);
+			path = PARALLAXWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -119,29 +179,100 @@
 		75B6CB282DD8B2F500359A17 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				75C2E18A2E1545A900BBFCB3 /* Lottie in Frameworks */,
+				75994D302E60697F00FE86A3 /* MLXLMCommon in Frameworks */,
+				75994D2E2E60697F00FE86A3 /* MLXLLM in Frameworks */,
+				75994D342E60697F00FE86A3 /* MLXVLM in Frameworks */,
+				75994D2C2E60697F00FE86A3 /* MLXEmbedders in Frameworks */,
+				75BE95222E5F9CAC00ED108D /* MLXOptimizers in Frameworks */,
+				75BE95242E5F9CAC00ED108D /* MLXRandom in Frameworks */,
+				75BE951E2E5F9CAC00ED108D /* MLX in Frameworks */,
+				75994D322E60697F00FE86A3 /* MLXMNIST in Frameworks */,
+				756C02EF2E50E8C200048CC8 /* Lottie in Frameworks */,
+				75994D272E60597E00FE86A3 /* MLXFast in Frameworks */,
+				75994D4B2E6069CA00FE86A3 /* MLXLinalg in Frameworks */,
+				75BE95202E5F9CAC00ED108D /* MLXNN in Frameworks */,
+				75994D492E6069CA00FE86A3 /* MLXFFT in Frameworks */,
+				75994D362E60697F00FE86A3 /* StableDiffusion in Frameworks */,
+				75BE95102E5F990200ED108D /* ZIPFoundation in Frameworks */,
 			);
 		};
-		75D777732DE1C76300EB29BC /* Frameworks */ = {
+		75E723872E1B285500C48507 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				75D7777B2DE1C76400EB29BC /* SwiftUI.framework in Frameworks */,
-				75D777792DE1C76400EB29BC /* WidgetKit.framework in Frameworks */,
+				75E7238F2E1B285500C48507 /* SwiftUI.framework in Frameworks */,
+				75E7238D2E1B285500C48507 /* WidgetKit.framework in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7522A73A2E92C8E4007A10AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		752F027C2E53BF300021E7EB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		753F3B592E50DC400014E249 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		754DB3FC2E5F9E7C0038DC2B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		756C027C2E50E15C00048CC8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75994CC62E5FACA800FE86A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75994E3D2E60B12C00FE86A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		75B6CB222DD8B2F500359A17 = {
 			isa = PBXGroup;
 			children = (
-				75C2E1912E15507D00BBFCB3 /* Animations */,
-				75C2E1722E13C35D00BBFCB3 /* CacheSystem */,
-				75D777772DE1C76300EB29BC /* Frameworks */,
+				756C02D92E50E7EB00048CC8 /* Revision */,
+				759C36432E2DB40E002222C3 /* Presentation */,
+				759C36352E2DB221002222C3 /* Data */,
+				7576105D2E2DA98900DDFDB6 /* Domain */,
+				75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */,
+				75DA53A72E285F5500AEB4DC /* Shared */,
+				75DA82F72E1EAAD4006B2E90 /* Features */,
+				75DA82F12E1EA903006B2E90 /* App */,
+				75E723AC2E1C32B200C48507 /* PARALLAXWidgetExtension.entitlements */,
 				75B6CB2D2DD8B2F500359A17 /* PARALLAX */,
 				751899E22E1335350066AFF2 /* PARALLAXTests */,
+				75E723902E1B285500C48507 /* PARALLAXWidget */,
+				75E7238B2E1B285500C48507 /* Frameworks */,
 				75B6CB2C2DD8B2F500359A17 /* Products */,
-				75D7777C2DE1C76400EB29BC /* RevisionLiveActivity */,
+				75994D572E608C5400FE86A3 /* configuration */,
 			);
 			sourceTree = "<group>";
 		};
@@ -149,19 +280,49 @@
 			isa = PBXGroup;
 			children = (
 				75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */,
-				75D777762DE1C76300EB29BC /* RevisionLiveActivityExtension.appex */,
 				751899E12E1335340066AFF2 /* PARALLAXTests.xctest */,
+				75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		75D777772DE1C76300EB29BC /* Frameworks */ = {
+		75BE94C42E5F941E00ED108D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				75D777782DE1C76300EB29BC /* WidgetKit.framework */,
-				75D7777A2DE1C76400EB29BC /* SwiftUI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75CC524A2E53236500E470BF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75D73A542E61AE67007A1BAD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75E7238B2E1B285500C48507 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				75494B052E20CB5000E72D3D /* EventKit.framework */,
+				75494B062E20CB5000E72D3D /* EventKitUI.framework */,
+				75E7238C2E1B285500C48507 /* WidgetKit.framework */,
+				75E7238E2E1B285500C48507 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		75EF590B2E8446FB00BF7FBC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,37 +361,57 @@
 			buildRules = (
 			);
 			dependencies = (
-				75D777892DE1C76500EB29BC /* PBXTargetDependency */,
+				75E7239D2E1B285700C48507 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				756C02D92E50E7EB00048CC8 /* Revision */,
+				7576105D2E2DA98900DDFDB6 /* Domain */,
+				75994D572E608C5400FE86A3 /* configuration */,
+				759C36352E2DB221002222C3 /* Data */,
+				759C36432E2DB40E002222C3 /* Presentation */,
 				75B6CB2D2DD8B2F500359A17 /* PARALLAX */,
-				75C2E1722E13C35D00BBFCB3 /* CacheSystem */,
-				75C2E1912E15507D00BBFCB3 /* Animations */,
+				75DA53A72E285F5500AEB4DC /* Shared */,
+				75DA82F12E1EA903006B2E90 /* App */,
+				75DA82F72E1EAAD4006B2E90 /* Features */,
 			);
 			name = PARALLAX;
 			packageProductDependencies = (
-				75C2E1892E1545A900BBFCB3 /* Lottie */,
+				756C02EE2E50E8C200048CC8 /* Lottie */,
+				75BE950F2E5F990200ED108D /* ZIPFoundation */,
+				75BE951D2E5F9CAC00ED108D /* MLX */,
+				75BE951F2E5F9CAC00ED108D /* MLXNN */,
+				75BE95212E5F9CAC00ED108D /* MLXOptimizers */,
+				75BE95232E5F9CAC00ED108D /* MLXRandom */,
+				75994D262E60597E00FE86A3 /* MLXFast */,
+				75994D2B2E60697F00FE86A3 /* MLXEmbedders */,
+				75994D2D2E60697F00FE86A3 /* MLXLLM */,
+				75994D2F2E60697F00FE86A3 /* MLXLMCommon */,
+				75994D312E60697F00FE86A3 /* MLXMNIST */,
+				75994D332E60697F00FE86A3 /* MLXVLM */,
+				75994D352E60697F00FE86A3 /* StableDiffusion */,
+				75994D482E6069CA00FE86A3 /* MLXFFT */,
+				75994D4A2E6069CA00FE86A3 /* MLXLinalg */,
 			);
 			productName = PARALLAX;
 			productReference = 75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */;
 			productType = "com.apple.product-type.application";
 		};
-		75D777752DE1C76300EB29BC /* RevisionLiveActivityExtension */ = {
+		75E723892E1B285500C48507 /* PARALLAXWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 75D7778B2DE1C76500EB29BC /* Build configuration list for PBXNativeTarget "RevisionLiveActivityExtension" */;
+			buildConfigurationList = 75E7239F2E1B285700C48507 /* Build configuration list for PBXNativeTarget "PARALLAXWidgetExtension" */;
 			buildPhases = (
-				75D777722DE1C76300EB29BC /* Sources */,
-				75D777732DE1C76300EB29BC /* Frameworks */,
-				75D777742DE1C76300EB29BC /* Resources */,
+				75E723862E1B285500C48507 /* Sources */,
+				75E723872E1B285500C48507 /* Frameworks */,
+				75E723882E1B285500C48507 /* Resources */,
 			);
 			buildRules = (
 			);
 			fileSystemSynchronizedGroups = (
-				75D7777C2DE1C76400EB29BC /* RevisionLiveActivity */,
+				75E723902E1B285500C48507 /* PARALLAXWidget */,
 			);
-			name = RevisionLiveActivityExtension;
-			productName = RevisionLiveActivityExtension;
-			productReference = 75D777762DE1C76300EB29BC /* RevisionLiveActivityExtension.appex */;
+			name = PARALLAXWidgetExtension;
+			productName = PARALLAXWidgetExtension;
+			productReference = 75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -241,7 +422,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					751899E02E1335340066AFF2 = {
 						CreatedOnToolsVersion = 16.4;
@@ -251,8 +432,8 @@
 					75B6CB2A2DD8B2F500359A17 = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					75D777752DE1C76300EB29BC = {
-						CreatedOnToolsVersion = 16.3;
+					75E723892E1B285500C48507 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -262,21 +443,72 @@
 			knownRegions = (
 				en,
 				fr,
+				de,
+				es,
 				Base,
 			);
 			mainGroup = 75B6CB222DD8B2F500359A17;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				75C2E1882E1545A900BBFCB3 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				756C02ED2E50E8C200048CC8 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				75BE950E2E5F990200ED108D /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */,
+				75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 75B6CB2C2DD8B2F500359A17 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 753F3B592E50DC400014E249 /* Products */;
+					ProjectRef = 753F3B572E50DC400014E249 /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 756C027C2E50E15C00048CC8 /* Products */;
+					ProjectRef = 756C027A2E50E15C00048CC8 /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75EF590B2E8446FB00BF7FBC /* Products */;
+					ProjectRef = 75EF59092E8446FB00BF7FBC /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 7522A73A2E92C8E4007A10AC /* Products */;
+					ProjectRef = 7522A7382E92C8E4007A10AC /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75CC524A2E53236500E470BF /* Products */;
+					ProjectRef = 75CC52482E53236500E470BF /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 754DB3FC2E5F9E7C0038DC2B /* Products */;
+					ProjectRef = 754DB3FA2E5F9E7C0038DC2B /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75D73A542E61AE67007A1BAD /* Products */;
+					ProjectRef = 75D73A522E61AE67007A1BAD /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75994E3D2E60B12C00FE86A3 /* Products */;
+					ProjectRef = 75994E3B2E60B12C00FE86A3 /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 752F027C2E53BF300021E7EB /* Products */;
+					ProjectRef = 752F027A2E53BF300021E7EB /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75BE94C42E5F941E00ED108D /* Products */;
+					ProjectRef = 75BE94C22E5F941E00ED108D /* PARALLAX.xcodeproj */;
+				},
+				{
+					ProductGroup = 75994CC62E5FACA800FE86A3 /* Products */;
+					ProjectRef = 75994CC42E5FACA800FE86A3 /* PARALLAX.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				75B6CB2A2DD8B2F500359A17 /* PARALLAX */,
-				75D777752DE1C76300EB29BC /* RevisionLiveActivityExtension */,
 				751899E02E1335340066AFF2 /* PARALLAXTests */,
+				75E723892E1B285500C48507 /* PARALLAXWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -290,9 +522,10 @@
 		75B6CB292DD8B2F500359A17 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				75494AF92E203E5200E72D3D /* PARALLAX_StoreKit.storekit in Resources */,
 			);
 		};
-		75D777742DE1C76300EB29BC /* Resources */ = {
+		75E723882E1B285500C48507 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -310,7 +543,7 @@
 			files = (
 			);
 		};
-		75D777722DE1C76300EB29BC /* Sources */ = {
+		75E723862E1B285500C48507 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
 			);
@@ -323,10 +556,10 @@
 			target = 75B6CB2A2DD8B2F500359A17 /* PARALLAX */;
 			targetProxy = 751899E52E1335350066AFF2 /* PBXContainerItemProxy */;
 		};
-		75D777892DE1C76500EB29BC /* PBXTargetDependency */ = {
+		75E7239D2E1B285700C48507 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 75D777752DE1C76300EB29BC /* RevisionLiveActivityExtension */;
-			targetProxy = 75D777882DE1C76500EB29BC /* PBXContainerItemProxy */;
+			target = 75E723892E1B285500C48507 /* PARALLAXWidgetExtension */;
+			targetProxy = 75E7239C2E1B285700C48507 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -340,10 +573,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				INFOPLIST_FILE = App/Configuration/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Parallax.PARALLAXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG_TESTING;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -361,7 +596,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				INFOPLIST_FILE = App/Configuration/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Parallax.PARALLAXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -426,14 +662,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = PARALLAX/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -486,13 +724,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = PARALLAX/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -504,14 +744,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = PARALLAX/PARALLAX.entitlements;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = App/Configuration/PARALLAX.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = PARALLAX/Info.plist;
+				INFOPLIST_FILE = App/Configuration/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Gradefy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -519,13 +760,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.PARALLAX2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -545,14 +786,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = PARALLAX/PARALLAX.entitlements;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = App/Configuration/PARALLAX.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = PARALLAX/Info.plist;
+				INFOPLIST_FILE = App/Configuration/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Gradefy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -560,13 +802,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.PARALLAX2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -579,68 +821,60 @@
 			};
 			name = Release;
 		};
-		75D7778C2DE1C76500EB29BC /* Debug configuration for PBXNativeTarget "RevisionLiveActivityExtension" */ = {
+		75E723A02E1B285700C48507 /* Debug configuration for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PARALLAXWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RevisionLiveActivity/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RevisionLiveActivity;
+				INFOPLIST_FILE = PARALLAXWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PARALLAXWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.PARALLAX2.RevisionLiveActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy.PARALLAXWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
-		75D7778D2DE1C76500EB29BC /* Release configuration for PBXNativeTarget "RevisionLiveActivityExtension" */ = {
+		75E723A12E1B285700C48507 /* Release configuration for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PARALLAXWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S94PF99FLH;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RevisionLiveActivity/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RevisionLiveActivity;
+				INFOPLIST_FILE = PARALLAXWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PARALLAXWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.PARALLAX2.RevisionLiveActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy.PARALLAXWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -674,32 +908,126 @@
 			);
 			defaultConfigurationName = Release;
 		};
-		75D7778B2DE1C76500EB29BC /* Build configuration list for PBXNativeTarget "RevisionLiveActivityExtension" */ = {
+		75E7239F2E1B285700C48507 /* Build configuration list for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				75D7778C2DE1C76500EB29BC /* Debug configuration for PBXNativeTarget "RevisionLiveActivityExtension" */,
-				75D7778D2DE1C76500EB29BC /* Release configuration for PBXNativeTarget "RevisionLiveActivityExtension" */,
+				75E723A02E1B285700C48507 /* Debug configuration for PBXNativeTarget "PARALLAXWidgetExtension" */,
+				75E723A12E1B285700C48507 /* Release configuration for PBXNativeTarget "PARALLAXWidgetExtension" */,
 			);
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		75C2E1882E1545A900BBFCB3 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+		756C02ED2E50E8C200048CC8 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			repositoryURL = "https://github.com/airbnb/lottie-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 4.5.2;
 			};
 		};
+		75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		75BE950E2E5F990200ED108D /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
+		75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		75C2E1892E1545A900BBFCB3 /* Lottie */ = {
+		756C02EE2E50E8C200048CC8 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 75C2E1882E1545A900BBFCB3 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			package = 756C02ED2E50E8C200048CC8 /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
+		};
+		75994D262E60597E00FE86A3 /* MLXFast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFast;
+		};
+		75994D2B2E60697F00FE86A3 /* MLXEmbedders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXEmbedders;
+		};
+		75994D2D2E60697F00FE86A3 /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
+		};
+		75994D2F2E60697F00FE86A3 /* MLXLMCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLMCommon;
+		};
+		75994D312E60697F00FE86A3 /* MLXMNIST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXMNIST;
+		};
+		75994D332E60697F00FE86A3 /* MLXVLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXVLM;
+		};
+		75994D352E60697F00FE86A3 /* StableDiffusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75994D2A2E60697F00FE86A3 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = StableDiffusion;
+		};
+		75994D482E6069CA00FE86A3 /* MLXFFT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFFT;
+		};
+		75994D4A2E6069CA00FE86A3 /* MLXLinalg */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXLinalg;
+		};
+		75BE950F2E5F990200ED108D /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE950E2E5F990200ED108D /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
+		75BE951D2E5F9CAC00ED108D /* MLX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLX;
+		};
+		75BE951F2E5F9CAC00ED108D /* MLXNN */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXNN;
+		};
+		75BE95212E5F9CAC00ED108D /* MLXOptimizers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXOptimizers;
+		};
+		75BE95232E5F9CAC00ED108D /* MLXRandom */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75BE951C2E5F9CAC00ED108D /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXRandom;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

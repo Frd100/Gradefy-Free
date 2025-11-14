@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Evaluation" representedClassName="Evaluation" syncable="YES" codeGenerationType="class">
+        <attribute name="coefficient" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" defaultDateTimeInterval="772993020" usesScalarValueType="NO"/>
+        <attribute name="grade" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="title" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <relationship name="subject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subject" inverseName="evaluations" inverseEntity="Subject"/>
+    </entity>
+    <entity name="Flashcard" representedClassName="Flashcard" syncable="YES" codeGenerationType="class">
+        <attribute name="answer" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="answerAudioDuration" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="answerAudioFileName" optional="YES" attributeType="String"/>
+        <attribute name="answerImageData" optional="YES" attributeType="Binary"/>
+        <attribute name="answerImageFileName" optional="YES" attributeType="String"/>
+        <attribute name="answerTranscription" optional="YES" attributeType="String"/>
+        <attribute name="answerTranscriptionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="answerType" optional="YES" attributeType="String" defaultValueString="text"/>
+        <attribute name="correctCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="easeFactor" optional="YES" attributeType="Double" defaultValueString="2.5" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="interval" optional="YES" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="lastReviewDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastReviewed" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nextReviewDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="question" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="questionAudioDuration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="questionAudioFileName" optional="YES" attributeType="String"/>
+        <attribute name="questionImageData" optional="YES" attributeType="Binary"/>
+        <attribute name="questionImageFileName" optional="YES" attributeType="String"/>
+        <attribute name="questionTranscription" optional="YES" attributeType="String"/>
+        <attribute name="questionTranscriptionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="questionType" optional="YES" attributeType="String" defaultValueString="text"/>
+        <attribute name="reviewCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="difficulty" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="stability" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="quality" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="schemaVersion" optional="YES" attributeType="String" defaultValueString="1.0"/>
+        <relationship name="deck" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FlashcardDeck" inverseName="flashcards" inverseEntity="FlashcardDeck"/>
+    </entity>
+    <entity name="FlashcardDeck" representedClassName="FlashcardDeck" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" attributeType="Date" defaultDateTimeInterval="772993080" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <relationship name="flashcards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Flashcard" inverseName="deck" inverseEntity="Flashcard"/>
+    </entity>
+    <entity name="Period" representedClassName="Period" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="startDate" attributeType="Date" defaultDateTimeInterval="772993260" usesScalarValueType="NO"/>
+        <relationship name="subjects" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Subject" inverseName="period" inverseEntity="Subject"/>
+    </entity>
+    <entity name="Subject" representedClassName="Subject" syncable="YES" codeGenerationType="class">
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="coefficient" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="creditHours" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="grade" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <relationship name="evaluations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Evaluation" inverseName="subject" inverseEntity="Evaluation"/>
+        <relationship name="period" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Period" inverseName="subjects" inverseEntity="Period"/>
+    </entity>
+    <entity name="UserConfiguration" representedClassName="UserConfiguration" syncable="YES" codeGenerationType="class">
+        <attribute name="activePeriodID" optional="YES" attributeType="String"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hasCompletedOnboarding" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="profileGradientEnd" optional="YES" attributeType="String"/>
+        <attribute name="profileGradientStart" optional="YES" attributeType="String"/>
+        <attribute name="selectedSystem" optional="YES" attributeType="String"/>
+        <attribute name="username" optional="YES" attributeType="String"/>
+    </entity>
+</model>

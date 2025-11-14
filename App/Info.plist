@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- =============================================== -->
+    <!--              BUNDLE CONFIGURATION               -->
+    <!-- =============================================== -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>fr</string>
+
+    <!-- ✅ LANGUES SUPPORTÉES -->
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>fr</string>
+        <string>en</string>
+        <string>es</string>
+        <string>de</string>
+    </array>
+
+    <key>CFBundleDisplayName</key>
+    <string>Gradefy</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+
+    <!-- =============================================== -->
+    <!--                    APP ICONS                    -->
+    <!-- =============================================== -->
+    <key>CFBundleIcons</key>
+    <dict>
+        <key>CFBundleAlternateIcons</key>
+        <dict>
+            <key>AppIcon-Colorful</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>AppIcon-Colorful</string>
+                </array>
+            </dict>
+            <key>AppIcon-Dark</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>AppIcon-Dark</string>
+                </array>
+            </dict>
+            <key>AppIcon-Minimal</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>AppIcon-Minimal</string>
+                </array>
+            </dict>
+        </dict>
+        <key>CFBundlePrimaryIcon</key>
+        <dict>
+            <key>CFBundleIconFiles</key>
+            <array>
+                <string>AppIcon</string>
+            </array>
+            <key>UIPrerenderedIcon</key>
+            <false/>
+        </dict>
+    </dict>
+
+    <!-- =============================================== -->
+    <!--                 DOCUMENT TYPES                  -->
+    <!-- =============================================== -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>gradefy</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>Gradefy Data File</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.gradefy.data</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>gradefy</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>Gradefy Deck</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.gradefy.deck</string>
+            </array>
+        </dict>
+        <!-- Rétrocompatibilité JSON -->
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>json</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>JSON Document</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.json</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- =============================================== -->
+    <!--            EXPORTED TYPE DECLARATIONS           -->
+    <!-- =============================================== -->
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+                <string>public.content</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Fichier de données Gradefy</string>
+            <key>UTTypeIdentifier</key>
+            <string>com.gradefy.data</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>gradefy</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>application/gradefy</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+                <string>public.content</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Deck de cartes Gradefy</string>
+            <key>UTTypeIdentifier</key>
+            <string>com.gradefy.deck</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>gradefy</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>application/gradefy-deck</string>
+            </dict>
+        </dict>
+    </array>
+
+    <!-- =============================================== -->
+    <!--            IMPORTED TYPE DECLARATIONS           -->
+    <!-- =============================================== -->
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.text</string>
+                <string>public.data</string>
+                <string>public.content</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Fichier JSON</string>
+            <key>UTTypeIdentifier</key>
+            <string>public.json</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>json</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>application/json</string>
+            </dict>
+        </dict>
+    </array>
+
+    <!-- =============================================== -->
+    <!--         FILE ACCESS & DOCUMENT SUPPORT          -->
+    <!-- =============================================== -->
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
+    <key>NSUserDefinedUIApplicationIsDocumentApplication</key>
+    <true/>
+
+    <!-- =============================================== -->
+    <!--               APP CONFIGURATION                 -->
+    <!-- =============================================== -->
+    <key>GradefyDefaultGradingSystem</key>
+    <string>french</string>
+    <key>GradefySupportedGradingSystems</key>
+    <array>
+        <string>french</string>
+        <string>usa</string>
+        <string>germany</string>
+        <string>uk</string>
+        <string>spain</string>
+        <string>canada</string>
+    </array>
+
+    <!-- =============================================== -->
+    <!--             SYSTEM REQUIREMENTS                 -->
+    <!-- =============================================== -->
+    <key>LSMinimumSystemVersion</key>
+    <string>17.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.education</string>
+
+    <!-- =============================================== -->
+    <!--                   SECURITY                      -->
+    <!-- =============================================== -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>localhost</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+
+    <!-- =============================================== -->
+    <!--              PERMISSIONS MÉDIAS                 -->
+    <!-- =============================================== -->
+    
+    <!-- Permission pour enregistrement audio -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Gradefy a besoin d'accéder au microphone pour enregistrer des prononciations et du contenu audio dans vos flashcards.</string>
+
+    <!-- ✅ AJOUT CRUCIAL : Permission pour reconnaissance vocale -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Gradefy utilise la reconnaissance vocale pour transcrire automatiquement vos enregistrements audio et améliorer l'expérience d'apprentissage.</string>
+
+    <!-- Permission pour sélection photos -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Gradefy a besoin d'accéder à vos photos pour ajouter des images à vos flashcards.</string>
+
+    <!-- Permission pour prise de photos (optionnel) -->
+    <key>NSCameraUsageDescription</key>
+    <string>Gradefy a besoin d'accéder à l'appareil photo pour prendre des photos directement dans vos flashcards.</string>
+
+    <!-- Permission pour accès fichiers -->
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>Gradefy stocke vos médias localement pour un accès hors ligne.</string>
+
+    <!-- =============================================== -->
+    <!--              USER INTERFACE                     -->
+    <!-- =============================================== -->
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <false/>
+        <key>UISceneConfigurations</key>
+        <dict>
+            <key>UIWindowSceneSessionRoleApplication</key>
+            <array>
+                <dict>
+                    <key>UISceneConfigurationName</key>
+                    <string>Default Configuration</string>
+                </dict>
+            </array>
+        </dict>
+    </dict>
+
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string>AccentColor</string>
+        <key>UIImageName</key>
+        <string>LaunchImage</string>
+    </dict>
+
+    <!-- Device Orientations -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+
+    <!-- Accessibility & Appearance -->
+    <key>UIAccessibilityContentSizeCategory</key>
+    <string>L</string>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <true/>
+
+    <!-- =============================================== -->
+    <!--           BACKGROUND CAPABILITIES               -->
+    <!-- =============================================== -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>background-processing</string>
+        <string>background-fetch</string>
+        <string>remote-notification</string>
+    </array>
+
+    <!-- =============================================== -->
+    <!--             TESTING & DEVELOPMENT               -->
+    <!-- =============================================== -->
+    <key>NSTestingSupported</key>
+    <true/>
+    <key>NSUserActivityTypes</key>
+    <array>
+        <string>AddEvaluationIntent</string>
+        <string>ViewGradesIntent</string>
+        <string>StartRevisionIntent</string>
+    </array>
+
+    <!-- =============================================== -->
+    <!--                APP STORE INFO                   -->
+    <!-- =============================================== -->
+    <key>SKAdNetworkItems</key>
+    <array/>
+    <key>SKStoreKitV2Enabled</key>
+    <true/>
+</dict>
+</plist>

@@ -1,0 +1,38 @@
+=== ANALYSE DES DÉPENDANCES ===
+
+--- Swift Package Manager ---
+❌ Pas de Package.swift trouvé
+
+--- CocoaPods ---
+❌ Pas de Podfile trouvé
+
+--- Configuration Info.plist ---
+Info.plist trouvé: ./PARALLAXWidget/Info.plist
+{
+  "NSExtension" => {
+    "NSExtensionPointIdentifier" => "com.apple.widgetkit-extension"
+  }
+}
+
+Info.plist trouvé: ./App/Configuration/Info.plist
+{
+  "CFBundleDevelopmentRegion" => "fr"
+  "CFBundleDisplayName" => "Gradefy"
+  "CFBundleDocumentTypes" => [
+    0 => {
+      "CFBundleTypeExtensions" => [
+        0 => "gradefy"
+      ]
+      "CFBundleTypeName" => "Gradefy Data File"
+      "CFBundleTypeRole" => "Editor"
+      "LSHandlerRank" => "Owner"
+      "LSItemContentTypes" => [
+        0 => "com.gradefy.data"
+      ]
+    }
+    1 => {
+      "CFBundleTypeExtensions" => [
+        0 => "gradefy"
+      ]
+      "CFBundleTypeName" => "Gradefy Deck"
+

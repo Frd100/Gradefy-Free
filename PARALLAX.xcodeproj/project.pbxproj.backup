@@ -1,0 +1,729 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 90;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		75494AF92E203E5200E72D3D /* PARALLAX_StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */; };
+		75DA539C2E25E37900AEB4DC /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 75DA539B2E25E37900AEB4DC /* Lottie */; };
+		75E7238D2E1B285500C48507 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E7238C2E1B285500C48507 /* WidgetKit.framework */; };
+		75E7238F2E1B285500C48507 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E7238E2E1B285500C48507 /* SwiftUI.framework */; };
+		75E7239E2E1B285700C48507 /* PARALLAXWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		751899E52E1335350066AFF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75B6CB232DD8B2F500359A17 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75B6CB2A2DD8B2F500359A17;
+			remoteInfo = PARALLAX;
+		};
+		75E7239C2E1B285700C48507 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75B6CB232DD8B2F500359A17 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75E723892E1B285500C48507;
+			remoteInfo = PARALLAXWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		75D7778F2DE1C76500EB29BC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				75E7239E2E1B285700C48507 /* PARALLAXWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		751899E12E1335340066AFF2 /* PARALLAXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PARALLAXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PARALLAX_StoreKit.storekit; sourceTree = "<group>"; };
+		75494B052E20CB5000E72D3D /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		75494B062E20CB5000E72D3D /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PARALLAX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PARALLAXWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		75E7238C2E1B285500C48507 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		75E7238E2E1B285500C48507 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		75E723AC2E1C32B200C48507 /* PARALLAXWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PARALLAXWidgetExtension.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		75DA83522E1EAE7F006B2E90 /* Exceptions for "App" folder in "PARALLAX" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 75B6CB2A2DD8B2F500359A17 /* PARALLAX */;
+		};
+		75E723A22E1B285700C48507 /* Exceptions for "PARALLAXWidget" folder in "PARALLAXWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 75E723892E1B285500C48507 /* PARALLAXWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		751899E22E1335350066AFF2 /* PARALLAXTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PARALLAXTests;
+			sourceTree = "<group>";
+		};
+		75B6CB2D2DD8B2F500359A17 /* PARALLAX */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PARALLAX;
+			sourceTree = "<group>";
+		};
+		75C2E1722E13C35D00BBFCB3 /* CacheSystem */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CacheSystem;
+			sourceTree = "<group>";
+		};
+		75C2E1912E15507D00BBFCB3 /* Animations */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		75DA53A72E285F5500AEB4DC /* Share */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Share;
+			sourceTree = "<group>";
+		};
+		75DA82F12E1EA903006B2E90 /* App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				75DA83522E1EAE7F006B2E90 /* Exceptions for "App" folder in "PARALLAX" target */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		75DA82F42E1EAA4D006B2E90 /* Core */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Core;
+			sourceTree = "<group>";
+		};
+		75DA82F72E1EAAD4006B2E90 /* Features */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Features;
+			sourceTree = "<group>";
+		};
+		75E723902E1B285500C48507 /* PARALLAXWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				75E723A22E1B285700C48507 /* Exceptions for "PARALLAXWidget" folder in "PARALLAXWidgetExtension" target */,
+			);
+			path = PARALLAXWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		751899DE2E1335340066AFF2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		75B6CB282DD8B2F500359A17 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				75DA539C2E25E37900AEB4DC /* Lottie in Frameworks */,
+			);
+		};
+		75E723872E1B285500C48507 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				75E7238F2E1B285500C48507 /* SwiftUI.framework in Frameworks */,
+				75E7238D2E1B285500C48507 /* WidgetKit.framework in Frameworks */,
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		75B6CB222DD8B2F500359A17 = {
+			isa = PBXGroup;
+			children = (
+				75494AF82E203E5200E72D3D /* PARALLAX_StoreKit.storekit */,
+				75DA53A72E285F5500AEB4DC /* Share */,
+				75DA82F72E1EAAD4006B2E90 /* Features */,
+				75DA82F42E1EAA4D006B2E90 /* Core */,
+				75DA82F12E1EA903006B2E90 /* App */,
+				75E723AC2E1C32B200C48507 /* PARALLAXWidgetExtension.entitlements */,
+				75C2E1912E15507D00BBFCB3 /* Animations */,
+				75C2E1722E13C35D00BBFCB3 /* CacheSystem */,
+				75B6CB2D2DD8B2F500359A17 /* PARALLAX */,
+				751899E22E1335350066AFF2 /* PARALLAXTests */,
+				75E723902E1B285500C48507 /* PARALLAXWidget */,
+				75E7238B2E1B285500C48507 /* Frameworks */,
+				75B6CB2C2DD8B2F500359A17 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		75B6CB2C2DD8B2F500359A17 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */,
+				751899E12E1335340066AFF2 /* PARALLAXTests.xctest */,
+				75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75E7238B2E1B285500C48507 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				75494B052E20CB5000E72D3D /* EventKit.framework */,
+				75494B062E20CB5000E72D3D /* EventKitUI.framework */,
+				75E7238C2E1B285500C48507 /* WidgetKit.framework */,
+				75E7238E2E1B285500C48507 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		751899E02E1335340066AFF2 /* PARALLAXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 751899E72E1335350066AFF2 /* Build configuration list for PBXNativeTarget "PARALLAXTests" */;
+			buildPhases = (
+				751899DD2E1335340066AFF2 /* Sources */,
+				751899DE2E1335340066AFF2 /* Frameworks */,
+				751899DF2E1335340066AFF2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				751899E62E1335350066AFF2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				751899E22E1335350066AFF2 /* PARALLAXTests */,
+			);
+			name = PARALLAXTests;
+			productName = PARALLAXTests;
+			productReference = 751899E12E1335340066AFF2 /* PARALLAXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		75B6CB2A2DD8B2F500359A17 /* PARALLAX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75B6CB3B2DD8B2F600359A17 /* Build configuration list for PBXNativeTarget "PARALLAX" */;
+			buildPhases = (
+				75B6CB272DD8B2F500359A17 /* Sources */,
+				75B6CB282DD8B2F500359A17 /* Frameworks */,
+				75B6CB292DD8B2F500359A17 /* Resources */,
+				75D7778F2DE1C76500EB29BC /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				75E7239D2E1B285700C48507 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				75B6CB2D2DD8B2F500359A17 /* PARALLAX */,
+				75C2E1722E13C35D00BBFCB3 /* CacheSystem */,
+				75C2E1912E15507D00BBFCB3 /* Animations */,
+				75DA53A72E285F5500AEB4DC /* Share */,
+				75DA82F12E1EA903006B2E90 /* App */,
+				75DA82F42E1EAA4D006B2E90 /* Core */,
+				75DA82F72E1EAAD4006B2E90 /* Features */,
+			);
+			name = PARALLAX;
+			packageProductDependencies = (
+				75DA539B2E25E37900AEB4DC /* Lottie */,
+			);
+			productName = PARALLAX;
+			productReference = 75B6CB2B2DD8B2F500359A17 /* PARALLAX.app */;
+			productType = "com.apple.product-type.application";
+		};
+		75E723892E1B285500C48507 /* PARALLAXWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75E7239F2E1B285700C48507 /* Build configuration list for PBXNativeTarget "PARALLAXWidgetExtension" */;
+			buildPhases = (
+				75E723862E1B285500C48507 /* Sources */,
+				75E723872E1B285500C48507 /* Frameworks */,
+				75E723882E1B285500C48507 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				75E723902E1B285500C48507 /* PARALLAXWidget */,
+			);
+			name = PARALLAXWidgetExtension;
+			productName = PARALLAXWidgetExtension;
+			productReference = 75E7238A2E1B285500C48507 /* PARALLAXWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		75B6CB232DD8B2F500359A17 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					751899E02E1335340066AFF2 = {
+						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
+						TestTargetID = 75B6CB2A2DD8B2F500359A17;
+					};
+					75B6CB2A2DD8B2F500359A17 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					75E723892E1B285500C48507 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 75B6CB262DD8B2F500359A17 /* Build configuration list for PBXProject "PARALLAX" */;
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				fr,
+				Base,
+			);
+			mainGroup = 75B6CB222DD8B2F500359A17;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				75DA539A2E25E37900AEB4DC /* XCRemoteSwiftPackageReference "lottie-spm" */,
+			);
+			preferredProjectObjectVersion = 90;
+			productRefGroup = 75B6CB2C2DD8B2F500359A17 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				75B6CB2A2DD8B2F500359A17 /* PARALLAX */,
+				751899E02E1335340066AFF2 /* PARALLAXTests */,
+				75E723892E1B285500C48507 /* PARALLAXWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		751899DF2E1335340066AFF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		75B6CB292DD8B2F500359A17 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				75494AF92E203E5200E72D3D /* PARALLAX_StoreKit.storekit in Resources */,
+			);
+		};
+		75E723882E1B285500C48507 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		751899DD2E1335340066AFF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		75B6CB272DD8B2F500359A17 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		75E723862E1B285500C48507 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		751899E62E1335350066AFF2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75B6CB2A2DD8B2F500359A17 /* PARALLAX */;
+			targetProxy = 751899E52E1335350066AFF2 /* PBXContainerItemProxy */;
+		};
+		75E7239D2E1B285700C48507 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75E723892E1B285500C48507 /* PARALLAXWidgetExtension */;
+			targetProxy = 75E7239C2E1B285700C48507 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		751899E82E1335350066AFF2 /* Debug configuration for PBXNativeTarget "PARALLAXTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Parallax.PARALLAXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG_TESTING;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PARALLAX.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PARALLAX";
+			};
+			name = Debug;
+		};
+		751899E92E1335350066AFF2 /* Release configuration for PBXNativeTarget "PARALLAXTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Parallax.PARALLAXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PARALLAX.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PARALLAX";
+			};
+			name = Release;
+		};
+		75B6CB392DD8B2F600359A17 /* Debug configuration for PBXProject "PARALLAX" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = Q64RY7QU9S;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PARALLAX/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		75B6CB3A2DD8B2F600359A17 /* Release configuration for PBXProject "PARALLAX" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = Q64RY7QU9S;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PARALLAX/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		75B6CB3C2DD8B2F600359A17 /* Debug configuration for PBXNativeTarget "PARALLAX" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "\"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES\"";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = PARALLAX/PARALLAX.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Gradefy;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		75B6CB3D2DD8B2F600359A17 /* Release configuration for PBXNativeTarget "PARALLAX" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "\"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES\"";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = PARALLAX/PARALLAX.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Gradefy;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		75E723A02E1B285700C48507 /* Debug configuration for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PARALLAXWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PARALLAXWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PARALLAXWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy.PARALLAXWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		75E723A12E1B285700C48507 /* Release configuration for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PARALLAXWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S94PF99FLH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PARALLAXWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PARALLAXWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Coefficient.Gradefy.PARALLAXWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		751899E72E1335350066AFF2 /* Build configuration list for PBXNativeTarget "PARALLAXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				751899E82E1335350066AFF2 /* Debug configuration for PBXNativeTarget "PARALLAXTests" */,
+				751899E92E1335350066AFF2 /* Release configuration for PBXNativeTarget "PARALLAXTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		75B6CB262DD8B2F500359A17 /* Build configuration list for PBXProject "PARALLAX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75B6CB392DD8B2F600359A17 /* Debug configuration for PBXProject "PARALLAX" */,
+				75B6CB3A2DD8B2F600359A17 /* Release configuration for PBXProject "PARALLAX" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		75B6CB3B2DD8B2F600359A17 /* Build configuration list for PBXNativeTarget "PARALLAX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75B6CB3C2DD8B2F600359A17 /* Debug configuration for PBXNativeTarget "PARALLAX" */,
+				75B6CB3D2DD8B2F600359A17 /* Release configuration for PBXNativeTarget "PARALLAX" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		75E7239F2E1B285700C48507 /* Build configuration list for PBXNativeTarget "PARALLAXWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75E723A02E1B285700C48507 /* Debug configuration for PBXNativeTarget "PARALLAXWidgetExtension" */,
+				75E723A12E1B285700C48507 /* Release configuration for PBXNativeTarget "PARALLAXWidgetExtension" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		75DA539A2E25E37900AEB4DC /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		75DA539B2E25E37900AEB4DC /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75DA539A2E25E37900AEB4DC /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 75B6CB232DD8B2F500359A17 /* Project object */;
+}

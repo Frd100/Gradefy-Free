@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "8B858D31-F89F-418B-BD8F-55AD2FF202B9"
+   uuid = "BA07AB34-616D-4AEB-B7F6-CE6D51E07845"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D8DD42E7-3FE7-4E8D-83B4-EA65DE201E1B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "App/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2129"
+            endingLineNumber = "2129"
+            landmarkName = "addNewSubject(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D8DD42E7-3FE7-4E8D-83B4-EA65DE201E1B - b89e118bf25cb4f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable () -&gt; () in PARALLAX.ContentView.addNewSubject(PARALLAX.SubjectData) -&gt; ()"
+                  moduleName = "PARALLAX.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/farid/Documents/Gradefy/PARALLAX%20copie%2016%20dernier%20test%20copie/App/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2129"
+                  endingLineNumber = "2129">
+               </Location>
+               <Location
+                  uuid = "D8DD42E7-3FE7-4E8D-83B4-EA65DE201E1B - b89e118bf25cb4f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable () -&gt; () in PARALLAX.ContentView.addNewSubject(PARALLAX.SubjectData) -&gt; ()"
+                  moduleName = "PARALLAX.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/farid/Documents/Gradefy/PARALLAX%20copie%2016%20dernier%20test%20copie/App/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2129"
+                  endingLineNumber = "2129">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

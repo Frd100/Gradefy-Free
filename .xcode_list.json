@@ -1,0 +1,11 @@
+{
+  "workspace" : {
+    "name" : "PARALLAX",
+    "schemes" : [
+      "PARALLAX",
+      "PARALLAXTests",
+      "PARALLAXWidgetExtension",
+      "RevisionLiveActivityExtension"
+    ]
+  }
+}

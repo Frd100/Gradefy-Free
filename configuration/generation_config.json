@@ -1,0 +1,16 @@
+{
+  "_from_model_config": true,
+  "bos_token_id": 128000,
+  "eos_token_id": 128001,
+  "do_sample": true,
+  "temperature": 0.2,
+  "top_p": 0.9,
+  "top_k": 50,
+  "repetition_penalty": 1.0,
+  "max_new_tokens": 512,
+  "pad_token_id": 128004,
+  "use_cache": true,
+  "num_beams": 1,
+  "early_stopping": true,
+  "no_repeat_ngram_size": 2
+}

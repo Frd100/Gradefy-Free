@@ -1,0 +1,73 @@
+=== ANALYSE DE LA STRUCTURE DU CODE ===
+Date: Thu Jul 24 11:20:27 CEST 2025
+
+=== STATISTIQUES GÉNÉRALES ===
+Total fichiers Swift:       56
+Total lignes de code:    21526 total
+
+=== RÉPARTITION PAR DOSSIER ===
+   8 ./Revision
+   8 ./Presentation/Views/Profile
+   8 ./Features
+   7 ./PARALLAXWidget
+   5 ./Shared
+   5 ./Data/Cache
+   3 ./App/Core
+   2 ./Presentation/Views/Profile/Data
+   2 ./PARALLAX
+   2 ./Domain/GradingSystems
+   2 ./App
+   1 ./Domain/Views
+   1 ./Domain/Utilities
+   1 ./Domain/Entities
+   1 ./Data/Persistence
+
+=== TOP 10 FICHIERS LES PLUS VOLUMINEUX ===
+   21526 total
+    2509 ./App/ContentView.swift
+    1251 ./Features/OnboardingViewModel.swift
+    1245 ./Revision/DeckManagement.swift
+    1024 ./Revision/ FlashcardRevisionSystem.swift
+    1009 ./Features/DataImportExportManager.swift
+     991 ./Domain/Views/SubjectAndEvaluationViews.swift
+     980 ./PARALLAX/HomeViewComponents.swift
+     964 ./App/PARALLAXApp.swift
+     913 ./Presentation/Views/Profile/Data/DataManagementViews.swift
+
+=== ANALYSE DES PATTERNS ===
+Classes détectées:
+      11
+Structs détectées:
+     152
+Enums détectées:
+      21
+Protocols détectés:
+       1
+Extensions détectées:
+      32
+
+=== IMPORTS LES PLUS UTILISÉS ===
+   1 ./Shared/ShareableDeck.swift:import UniformTypeIdentifiers
+   1 ./Shared/ShareableDeck.swift:import SwiftUI
+   1 ./Shared/ShareableDeck.swift:import Foundation
+   1 ./Shared/PreviewShareableDeck.swift:import SwiftUI
+   1 ./Shared/ImportDeckView.swift:import SwiftUI
+   1 ./Shared/ImportDeckView.swift:import CoreData
+   1 ./Shared/DeckSharingManager.swift:import os.log
+   1 ./Shared/DeckSharingManager.swift:import SwiftUI
+   1 ./Shared/DeckSharingManager.swift:import Foundation
+   1 ./Shared/DeckSharingManager.swift:import CoreData
+
+=== ANALYSE DE LA DETTE TECHNIQUE ===
+TODO trouvés:
+       0
+FIXME trouvés:
+       0
+Force unwrapping (!) détectés:
+     217
+
+=== SwiftUI vs UIKit ===
+Fichiers utilisant SwiftUI:
+       0
+Fichiers utilisant UIKit:
+       0

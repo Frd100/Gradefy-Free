@@ -1,0 +1,63 @@
+=== PROJET PARALLAX - ANALYSE DÉTAILLÉE ===
+Date: Thu Jul 24 11:20:25 CEST 2025
+Chemin: /Users/farid/Documents/PARALLAX/PARALLAX
+
+=== INFORMATIONS XCODE ===
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -list -project PARALLAX.xcodeproj
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  Lottie: https://github.com/airbnb/lottie-spm.git @ 4.5.2
+
+Information about project "PARALLAX":
+    Targets:
+        PARALLAX
+        PARALLAXTests
+        PARALLAXWidgetExtension
+
+    Build Configurations:
+        Debug
+        Release
+
+    If no build configuration is specified and -scheme is not passed then "Release" is used.
+
+    Schemes:
+        PARALLAX
+        PARALLAXTests
+        PARALLAXWidgetExtension
+        RevisionLiveActivityExtension
+
+
+=== STRUCTURE DES FICHIERS ===
+Fichiers Swift: 56
+Storyboards: 0
+XIB files: 0
+Asset Catalogs: 2
+JSON files: 25
+Plist files: 5
+
+=== ARBORESCENCE DES SOURCES ===
+./PARALLAXWidget/EvaluationDataManager.swift
+./PARALLAXWidget/AppIntent.swift
+./PARALLAXWidget/WidgetPremiumHelper.swift
+./PARALLAXWidget/PARALLAXWidgetBundle.swift
+./PARALLAXWidget/PARALLAXWidgetLiveActivity.swift
+./PARALLAXWidget/MainWidgets.swift
+./PARALLAXWidget/WidgetLockedView.swift
+./App/Core/ExtensionColor.swift
+./App/Core/ConfigurationManager.swift
+./App/Core/HapticFeedbackManager.swift
+./App/ContentView.swift
+./App/PARALLAXApp.swift
+./Features/ExportDataView.swift
+./Features/DebugPremiumButton.swift
+./Features/StoreKitHelper.swift
+./Features/PremiumManager.swift
+./Features/DataImportExportManager.swift
+./Features/PremiumView.swift
+./Features/DocumentPickerView.swift
+./Features/OnboardingViewModel.swift
+... et 36 autres fichiers
