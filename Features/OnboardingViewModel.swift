@@ -362,32 +362,34 @@ class OnboardingViewModel: ObservableObject {
             // ✅ ANCIENNE MÉTHODE avec withCheckedThrowingContinuation
             let createdPeriodID = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<UUID, Error>) in
                 persistentContainer.performBackgroundTask { backgroundContext in
-                    do {
-                        print("💾 [BACKGROUND] Création Period dans background context")
+                    Task {
+                        do {
+                            print("💾 [BACKGROUND] Création Period dans background context")
 
-                        // Capture des valeurs localement pour éviter les warnings d'isolation
-                        let periodName = await MainActor.run { self.userProfile.periodName }
-                        let periodStartDate = await MainActor.run { self.userProfile.periodStartDate }
-                        let periodEndDate = await MainActor.run { self.userProfile.periodEndDate }
+                            // Capture des valeurs localement pour éviter les warnings d'isolation
+                            let periodName = await MainActor.run { self.userProfile.periodName }
+                            let periodStartDate = await MainActor.run { self.userProfile.periodStartDate }
+                            let periodEndDate = await MainActor.run { self.userProfile.periodEndDate }
 
-                        let newPeriod = Period(context: backgroundContext)
-                        newPeriod.id = UUID()
-                        newPeriod.name = periodName
-                        newPeriod.startDate = periodStartDate
-                        newPeriod.endDate = periodEndDate
-                        newPeriod.createdAt = Date()
+                            let newPeriod = Period(context: backgroundContext)
+                            newPeriod.id = UUID()
+                            newPeriod.name = periodName
+                            newPeriod.startDate = periodStartDate
+                            newPeriod.endDate = periodEndDate
+                            newPeriod.createdAt = Date()
 
-                        print("💾 [BACKGROUND] Période configurée: '\(newPeriod.name ?? "sans nom")'")
+                            print("💾 [BACKGROUND] Période configurée: '\(newPeriod.name ?? "sans nom")'")
 
-                        try backgroundContext.save()
-                        let periodID = newPeriod.id ?? UUID()
+                            try backgroundContext.save()
+                            let periodID = newPeriod.id ?? UUID()
 
-                        print("✅ [BACKGROUND] Période sauvegardée avec ID: \(periodID)")
-                        continuation.resume(returning: periodID)
+                            print("✅ [BACKGROUND] Période sauvegardée avec ID: \(periodID)")
+                            continuation.resume(returning: periodID)
 
-                    } catch {
-                        print("❌ [BACKGROUND] Erreur création période: \(error)")
-                        continuation.resume(throwing: error)
+                        } catch {
+                            print("❌ [BACKGROUND] Erreur création période: \(error)")
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
             }

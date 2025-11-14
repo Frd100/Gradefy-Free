@@ -686,7 +686,8 @@ class DataImportExportManager: ObservableObject {
         do {
             archive = try Archive(url: zipURL, accessMode: .create)
         } catch {
-            throw ImportExportError.exportFailed("Impossible de créer l'archive ZIP: \(error.localizedDescription)")
+            print("❌ [EXPORT] Impossible de créer l'archive ZIP: \(error.localizedDescription)")
+            throw DataError.corruptedData
         }
 
         // Ajouter data.json
